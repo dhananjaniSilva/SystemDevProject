@@ -1,15 +1,45 @@
 #sidebar {
-  width: 20vw;
+  width: 18vw;
+
+}
+.backdrop.show{
+  background-color:transparent;
 }
 .sidebar-header {
   background-color: #1d242e;
-  width: 20vw;
+  width: vw;
   height: 80px;
   position: relative; /* Ensure relative positioning for absolute positioning of child */
   display: flex;
   overflow: hidden;
 }
+.sidebar-body{
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  gap: 0;
+  background-color:#283342 ;
+}
+.sidebar-body .top{
+  display: flex;
+  padding-top: 10px;
+  justify-content: space-between;
+  height: 100px;
 
+}
+.sidebar-body .top h5, .top p{
+  color: white;
+  margin: 0;
+}
+.sidebar-body .top p{
+  color: #FED600;
+  margin: 0;
+}
+.button-group{
+  padding-left: 40px;
+  height: 100px;
+  transition: height 0.3 ease-in-out;
+}
 .sidebar-header img {
   max-width: 70%; /* Ensure image doesn't exceed container width */
   max-height: 100%; /* Ensure image doesn't exceed container height */

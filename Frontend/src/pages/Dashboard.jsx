@@ -4,7 +4,7 @@ import Button from "react-bootstrap/esm/Button";
 
 function Dashboard() {
   return <div>
-    <Button variant="primary">dashboard</Button>{' '}
+    
   </div>;
 }
 
