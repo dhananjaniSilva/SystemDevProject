@@ -3,7 +3,8 @@
 
 }
 .backdrop.show{
-  background-color:transparent;
+  display: none;
+  border: solid 5px green;
 }
 .sidebar-header {
   background-color: #1d242e;

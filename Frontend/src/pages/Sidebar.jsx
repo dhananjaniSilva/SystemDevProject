@@ -21,8 +21,8 @@ function Sidebar() {
   const [isVisiblereports, setIsVisiblereports] = useState(false);
 
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
   const handleVisibilityinv = () => {
     setIsVisibleinv(!isVisibleinv);
     
@@ -33,9 +33,7 @@ function Sidebar() {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Launch
-      </Button>
+  
 
       <Offcanvas show={true} id="sidebar" backdropClassName="backdrop">
         <Offcanvas.Header className="sidebar-header">

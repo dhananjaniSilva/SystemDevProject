@@ -1,0 +1,8 @@
+.body{
+    margin-left: 18vw;
+    height: 100vh;
+    width: 82vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

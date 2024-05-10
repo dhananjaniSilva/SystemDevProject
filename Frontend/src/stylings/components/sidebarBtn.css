@@ -8,7 +8,7 @@
     justify-content: start;
     gap: 20px;
     align-items: center;
-    padding-left: 30px;
+    padding-left: 1vw;
 }
 #sidebarBtn:hover{
     background-color: #009099;
