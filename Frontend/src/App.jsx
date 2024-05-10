@@ -7,9 +7,12 @@ import Dashboard from "./pages/Dashboard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UnAuthorizedPage from "./pages/UnAuthorized";
 import Sidebar from "./pages/Sidebar";
+import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
 
 function App() {
   const [count, setCount] = useState(0);
+
+  
 
   return (
     <>
@@ -27,6 +30,7 @@ function App() {
           />
           <Route path="/authorize" element={<AuthorizedPage />} />
           <Route path="/unauthorized" element={<UnAuthorizedPage />} />
+          <Route path="/inventoryListofmedicine" element={<InventoryListOfMedicine />} />
           
         </Routes>
       </Router>

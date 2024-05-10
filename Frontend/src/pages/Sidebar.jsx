@@ -1,59 +1,33 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import '../stylings/pages/sidebar.css'
+import logo from '../assets/logo.png'
+import logowithtext from '../assets/logotext.png'
 
-export default function Sidebar() {
-  const [open, setOpen] = React.useState(true);
+function Sidebar() {
+  const [show, setShow] = useState(true);
 
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
-
-  const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
-    <div>
-      {/* <Button onClick={toggleDrawer(true)}>Open drawer</Button> */}
-      <Drawer sx={{backgroundColor:"cyan"}}open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </div>
+    <>
+      <Button variant="primary" onClick={handleShow}>
+        Launch
+      </Button>
+
+      <Offcanvas show={show}  id="sidebar">
+        <Offcanvas.Header className='sidebar-header'>
+          <img src={logo}/>
+          <img src={logowithtext}/>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+         
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
   );
 }
+
+export default Sidebar;

@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/esm/Button";
 
 function Dashboard() {
-  return (
-    <div>
-     <h1> This is the dashboard</h1>
-    </div>
-  )
+  return <div>
+    <Button variant="primary">dashboard</Button>{' '}
+  </div>;
 }
 
 export default Dashboard;

@@ -1,0 +1,22 @@
+#sidebar {
+  width: 20vw;
+}
+.sidebar-header {
+  background-color: #1d242e;
+  width: 20vw;
+  height: 80px;
+  position: relative; /* Ensure relative positioning for absolute positioning of child */
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar-header img {
+  max-width: 70%; /* Ensure image doesn't exceed container width */
+  max-height: 100%; /* Ensure image doesn't exceed container height */
+  width: auto;
+  top: 0; /* Position image at the top of container */
+  left: 0; /* Position image at the left of container */
+  bottom: 0; /* Position image at the bottom of container */
+  right: 0; /* Position image at the right of container */
+  margin: auto; /* Center the image within the container */
+}
