@@ -1,0 +1,23 @@
+.outer-div{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+.top{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    height: 200px;
+}
+.top .left{
+
+}
+.top .right{
+
+}
+.table-div{
+    height: 100%;
+    border: 2px green solid;
+
+}

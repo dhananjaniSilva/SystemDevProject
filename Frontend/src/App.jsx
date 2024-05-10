@@ -12,8 +12,6 @@ import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
 function App() {
   const [count, setCount] = useState(0);
 
-  
-
   return (
     <>
       <Router>
@@ -30,8 +28,15 @@ function App() {
           />
           <Route path="/authorize" element={<AuthorizedPage />} />
           <Route path="/unauthorized" element={<UnAuthorizedPage />} />
-          <Route path="/inventoryListofmedicine" element={<InventoryListOfMedicine />} />
-          
+          <Route
+            path="/inventoryListofmedicine"
+            element={
+              <>
+                <InventoryListOfMedicine />
+                <Sidebar />
+              </>
+            }
+          />
         </Routes>
       </Router>
     </>

@@ -24,18 +24,26 @@ function Sidebar() {
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
   const handleVisibilityinv = () => {
-    setIsVisibleinv(!isVisibleinv);
-    
+    if(isVisiblereports && isVisibleinv==false){
+    setIsVisibleinv(!isVisibleinv)
+      setIsVisiblereports(false)
+    }
+    setIsVisibleinv(!isVisibleinv)
   };
   const handleVisibilityreports = () => {
-    setIsVisiblereports(!isVisiblereports);
+    if(isVisibleinv && isVisiblereports==false){
+      setIsVisiblereports(!isVisiblereports)
+        setIsVisibleinv(false)
+      }
+      setIsVisiblereports(!isVisibleinv)
+   
   };
 
   return (
     <>
   
 
-      <Offcanvas show={true} id="sidebar" backdropClassName="backdrop">
+      <Offcanvas show={true} id="sidebar" placement="start" backdropClassName="backdrop" backdrop="false" style={{ zIndex: 0 }}>
         <Offcanvas.Header className="sidebar-header">
           <img src={logo} />
           <img src={logowithtext} />
@@ -47,7 +55,7 @@ function Sidebar() {
             <p>Phamarmacy Manager</p>
             </div>
             <div style={{height:"40px" }}>
-              <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px" }}>
+              <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px",width:"20px" }}>
                 <FontAwesomeIcon icon={faEllipsisVertical}/>
               </Button>
             </div>

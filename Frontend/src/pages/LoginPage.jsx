@@ -3,13 +3,13 @@ import {Box,FormLabel,Paper,TextField,Button} from '@mui/material'
 import logo from '../assets/logo.png'
 import logotext from '../assets/logotext.png'
 import axios from 'axios'
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";//1
 
 
 function LoginPage() {
     const [userName,setUserName]=useState('');
     const [password,setPassword]=useState('');
-    const navigate=useNavigate();
+    const navigate=useNavigate();//2
 
     const handleSubmit = async (userName, password) => {
         const requestUserObjects = {
@@ -26,7 +26,7 @@ function LoginPage() {
               console.log("This is the response", res.data);
                 if(res.data.response===true){
                     console.log("Dashboard")
-                   navigate("/dashboard")
+                   navigate("/dashboard")//3
                 }else{
                     console.log("Authorized")
                     navigate("/unauthorized")

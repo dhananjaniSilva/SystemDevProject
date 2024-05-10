@@ -5,6 +5,7 @@
 .backdrop.show{
   display: none;
   border: solid 5px green;
+
 }
 .sidebar-header {
   background-color: #1d242e;
