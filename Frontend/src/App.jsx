@@ -9,6 +9,7 @@ import UnAuthorizedPage from "./pages/UnAuthorized";
 import Sidebar from "./pages/Sidebar";
 import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
 import MedicineGroups from "./pages/MedicineGroups";
+import NavBar from "./components/NavBar";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -22,6 +23,7 @@ function App() {
             path="/dashboard"
             element={
               <>
+                <NavBar/>
                 <Dashboard />
                 <Sidebar />
               </>
@@ -44,6 +46,14 @@ function App() {
               <>
                 <MedicineGroups />
                 <Sidebar />
+              </>
+            }
+          />
+          <Route
+            path="/nav"
+            element={
+              <>
+               <NavBar/>
               </>
             }
           />

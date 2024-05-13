@@ -46,7 +46,7 @@ function LoginPage() {
            <Box sx={{display:"flex",alignItems:"center",justifyContent:"center",width:"60%",height:"100%",backgroundColor:"#283342"}}>
 
                   
-                  <Paper elevation={10} sx={{height:"500px",width:"450px",display:"flex",flexDirection:"column",justifyContent:"space-evenly",p:8,borderRadius:5}}>
+                  <Paper elevation={10} sx={{height:"550px",width:"450px",display:"flex",flexDirection:"column",justifyContent:"space-evenly",p:8,borderRadius:5,gap:3}}>
                     <Box sx={{width:"100%",height:"20%"}}>
                         <h1>Login</h1>
                     </Box>
@@ -59,7 +59,7 @@ function LoginPage() {
                         <TextField fullWidth id="outlined-basic" label="" variant="outlined" onChange={(e)=>setPassword(e.target.value)}/>
                         <FormLabel>Forgot password ?</FormLabel>
                     </Box>
-                    <Box sx={{width:"100%",height:"20%",pt:10}}>
+                    <Box sx={{width:"100%",height:"20%",pt:7}}>
                         <Button fullWidth variant='outlined' sx={{height:"50px"}} onClick={()=>handleSubmit(userName,password)}>Login</Button>
                     </Box>
                   </Paper>

@@ -1,6 +1,7 @@
 #sidebar {
   width: 18vw;
-  
+  border: solid 1px;
+  border-radius: 0px 10px 10px 0px;
 }
 .backdrop.show{
   display: none;
@@ -11,9 +12,10 @@
   background-color: #1d242e;
   width: vw;
   height: 80px;
-  position: relative; /* Ensure relative positioning for absolute positioning of child */
+  position: relative;
   display: flex;
   overflow: hidden;
+  border-radius: 0px 10px 0px 0px;
 }
 .sidebar-body{
   display: flex;
@@ -21,6 +23,7 @@
   height: auto;
   gap: 0;
   background-color:#283342 ;
+  border-radius: 0px 0px 10px 0px;
 }
 .sidebar-body .top{
   display: flex;

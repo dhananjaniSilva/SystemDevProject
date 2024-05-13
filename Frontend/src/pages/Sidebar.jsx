@@ -36,7 +36,7 @@ function Sidebar() {
       setIsVisiblereports(!isVisiblereports)
         setIsVisibleinv(false)
       }
-      setIsVisiblereports(!isVisibleinv)
+      setIsVisiblereports(!isVisiblereports)
    
   };
   const handleNavigate =(path)=>{
@@ -64,7 +64,7 @@ function Sidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashbaord')}/>
+          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashboard')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}

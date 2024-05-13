@@ -1,4 +1,6 @@
 .body{
+    position: absolute;
+    top: 5%;
     margin-left: 20vw;
     height: 100vh;
     width: 78vw;
@@ -16,7 +18,7 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 200px;
+    height: 20%;
 }
 .top .left{
     display: flex;
@@ -36,18 +38,30 @@
     width: 17vw;
     
 }
-.bottompart{
-    height: 100%;
+.middle{
+    height: 30%;
     display: flex;
+    justify-content: space-between;
     padding: 20px;
+}
+.upper-card{
+    width: 20%;
+    height: 90%;
+}
+.bottompart{
+    height: 50%;
+    display: flex;
+    padding: 10px;
     
 
 
 }
 .p-2{
-    height: 40%;
+    height: 100%;
 }
 .k-2{
     width: 50%;
     height:100%;
+    
 }
+
