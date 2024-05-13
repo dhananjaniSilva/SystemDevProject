@@ -1,11 +1,15 @@
-import { ClassNames } from '@emotion/react';
-import Button from 'react-bootstrap/Button';
-import '../stylings/components/buttonComponent.css'
+import { ClassNames } from "@emotion/react";
+import Button from "react-bootstrap/Button";
+import "../stylings/components/buttonComponent.css";
 
 function ButtonComponent(props) {
+  const { variant, className, onClick, icon: IconComponent, text } = props;
+
   return (
     <>
-      <Button variant={props.variant} className={props.className}>+ {props.text}</Button>{' '}
+      <Button variant={variant} className={className} onClick={onClick}>
+        {IconComponent && <IconComponent />} {text}
+      </Button>
     </>
   );
 }

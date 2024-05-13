@@ -8,7 +8,7 @@ function SidebarBtn(props) {
 
   return (
     <div style={{gap:"20px"}}>
-    <Button id='sidebarBtn' onClick={props.onClick}>
+    <Button id='sidebarBtn' onClick={props.onClick} >
     <FontAwesomeIcon icon={props.icon} />
         {props.text}
     </Button>

@@ -3,16 +3,14 @@ import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
 import Form from "react-bootstrap/Form";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+
 import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
 import TableComponent from "../components/Inventory/TableComponent";
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
-function InventoryListOfMedicine() {
-  
-  const handleAddNew = (val) =>{
-    console.log("handleAdd new",val)
-  }
-
+function MedicineGroups() {
   return (
     <div className="body">
       <div className="outer-div">
@@ -28,24 +26,26 @@ function InventoryListOfMedicine() {
           <div className="right">
             <ButtonComponent
               variant="danger"
-              text="Add New Items"
+              text="Add Medicine"
               className="cat1"
-              onClick={()=>handleAddNew("hey")}
+              icon={AddOutlinedIcon}
             />
-            <Form.Select id="select">
+            {/* <Form.Select id="select">
               <option>-Select Group-</option>
               <option></option>
               <option>Motti</option>
-            </Form.Select>
+            </Form.Select> */}
           </div>
         </div>
         {/* table part */}
         <div className="table-div">
           <TableComponent/>
+          <ButtonComponent variant="outline-danger" className="cat1" text="Delete group" icon={DeleteOutlinedIcon}/>
         </div>
+        
       </div>
     </div>
   );
 }
 
-export default InventoryListOfMedicine;
+export default MedicineGroups;

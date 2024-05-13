@@ -1,21 +1,47 @@
 import React from "react";
-import Accordion from "react-bootstrap/Accordion";
-import Button from "react-bootstrap/esm/Button";
 import "../stylings/pages/dashboard.css";
-import IconBreadcrumbs from "../components/IconBreadcrumbs";
-import FormTextExample from "../components/Inventory/TextField";
-import { TextField } from "@mui/material";
+import DashbaordCardComponent from "../components/DashbaordCardComponent";
+import Stack from "react-bootstrap/Stack";
 
 function Dashboard() {
-  console.log("object")
-  const handleSearch =()=>{
-    console.log("Fuck you")
-  }
   return (
     <div className="body">
-
-      <div className="inner-div" style={{border:"solid 2px green"}}>
-      <TextField fullWidth id="outlined-basic" label="" variant="outlined" onChange={(e)=>handleSearch(e.target.value)}/>
+      <div className="outer-div">
+        {/* //top row */}
+        <div className="top">
+          <div className="left">
+            <div>
+              <h2>Dashboard</h2>
+              <h6>A quick data overview of the inventory</h6>
+            </div>
+          </div>
+          <div className="right"></div>
+        </div>
+        {/* table part */}
+        <div className="bottompart">
+          <Stack gap={3}>
+            <div className="p-2">
+              <Stack style={{ height: "100%" }} direction="horizontal" gap={3}>
+                <div className="k-2">
+                  <DashbaordCardComponent />
+                </div>
+                <div className="k-2">
+                  <DashbaordCardComponent />
+                </div>
+              </Stack>
+            </div>
+            <div className="p-2">
+              <Stack style={{ height: "100%" }} direction="horizontal" gap={3}>
+                <div className="k-2">
+                  <DashbaordCardComponent />
+                </div>
+                <div className="k-2">
+                  <DashbaordCardComponent />
+                </div>
+              </Stack>
+            </div>
+          </Stack>
+        </div>
       </div>
     </div>
   );

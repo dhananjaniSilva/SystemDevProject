@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UnAuthorizedPage from "./pages/UnAuthorized";
 import Sidebar from "./pages/Sidebar";
 import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
+import MedicineGroups from "./pages/MedicineGroups";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -22,7 +23,7 @@ function App() {
             element={
               <>
                 <Dashboard />
-                {/* <Sidebar /> */}
+                <Sidebar />
               </>
             }
           />
@@ -33,6 +34,15 @@ function App() {
             element={
               <>
                 <InventoryListOfMedicine />
+                <Sidebar />
+              </>
+            }
+          />
+          <Route
+            path="/medicinegroups"
+            element={
+              <>
+                <MedicineGroups />
                 <Sidebar />
               </>
             }

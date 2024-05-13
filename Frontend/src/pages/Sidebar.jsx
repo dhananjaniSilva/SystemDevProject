@@ -6,6 +6,7 @@ import logo from "../assets/logo.png";
 import logowithtext from "../assets/logotext.png";
 import SidebarBtn from "../components/SidebarBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from 'react-router-dom';
 import {
   faPager,
   faList,
@@ -19,7 +20,7 @@ function Sidebar() {
   const [show, setShow] = useState(true);
   const [isVisibleinv, setIsVisibleinv] = useState(false);
   const [isVisiblereports, setIsVisiblereports] = useState(false);
-
+  const navigate =useNavigate();
 
   // const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
@@ -38,6 +39,9 @@ function Sidebar() {
       setIsVisiblereports(!isVisibleinv)
    
   };
+  const handleNavigate =(path)=>{
+    navigate(path)
+  }
 
   return (
     <>
@@ -60,7 +64,7 @@ function Sidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn icon={faPager} text="Dashboard" />
+          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashbaord')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
@@ -68,8 +72,8 @@ function Sidebar() {
           />
           {isVisibleinv && (
             <div className="button-group">
-              <SidebarBtn text={"List of Medicines"} />
-              <SidebarBtn text={"Medicine Groups"} />
+              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/inventoryListofmedicine')}/>
+              <SidebarBtn text={"Medicine Groups"} onClick={()=>handleNavigate('/medicineGroups')}/>
             </div>
           )}
 
