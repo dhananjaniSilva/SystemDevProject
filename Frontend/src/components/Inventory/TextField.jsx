@@ -1,18 +1,19 @@
 import Form from 'react-bootstrap/Form';
 
-function FormTextExample() {
+function FormTextExample(props) {
   return (
     <>
-      <Form.Label htmlFor="inputPassword5">Password</Form.Label>
+      
       <Form.Control
-        type="password"
+        type={props.type}
         id="inputPassword5"
         aria-describedby="passwordHelpBlock"
+        placeholder={props.placeholderValue}
       />
-      <Form.Text id="passwordHelpBlock" muted>
+      {/* <Form.Text id="passwordHelpBlock" muted>
         Your password must be 8-20 characters long, contain letters and numbers,
         and must not contain spaces, special characters, or emoji.
-      </Form.Text>
+      </Form.Text> */}
     </>
   );
 }

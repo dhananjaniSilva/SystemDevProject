@@ -22,7 +22,7 @@ function App() {
             element={
               <>
                 <Dashboard />
-                <Sidebar />
+                {/* <Sidebar /> */}
               </>
             }
           />

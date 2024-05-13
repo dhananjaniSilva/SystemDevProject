@@ -1,0 +1,8 @@
+.cat1{
+    border-radius: 3px;
+    width: 12vw;
+    height: 5vh;
+    min-height: 25px;
+    padding: 0;
+    overflow: hidden;
+}
