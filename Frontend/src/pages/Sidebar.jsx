@@ -14,6 +14,7 @@ import {
   faBell,
   faGear,
   faEllipsisVertical,
+  faIceCream,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
@@ -45,9 +46,9 @@ function Sidebar() {
 
   return (
     <>
-  
 
-      <Offcanvas show={true} id="sidebar" placement="start" backdropClassName="backdrop" backdrop="false" style={{ zIndex: 0 }}>
+
+      <Offcanvas name="Disable backdrop" scroll={true} backdrop={false} bsPrefix="offcanvas" show={show} onHide={()=>setShow(false)} id="sidebar" > 
         <Offcanvas.Header className="sidebar-header">
           <img src={logo} />
           <img src={logowithtext} />
@@ -59,17 +60,19 @@ function Sidebar() {
             <p>Phamarmacy Manager</p>
             </div>
             <div style={{height:"40px" }}>
-              <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px",width:"20px" }}>
+              <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px",width:"20px" }} onClick={()=>setShow(!show)}>
                 <FontAwesomeIcon icon={faEllipsisVertical}/>
               </Button>
             </div>
           </div>
           <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashboard')}/>
+          <SidebarBtn icon={faIceCream} text="Invoice" onClick={()=>handleNavigate('/invoice')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
             onClick={handleVisibilityinv}
           />
+          
           {isVisibleinv && (
             <div className="button-group">
               <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/inventoryListofmedicine')}/>

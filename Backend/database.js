@@ -6,14 +6,14 @@ const pool = mysql
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'pharmacy_db',
+    database: 'pharmacy_database_new',
   })
   .promise();
 
   export async function loginValidate(userObject) {
    // console.log(userObject.username)
     const [user] = await pool.query(
-      "SELECT username FROM systemadmin WHERE username = ? AND password = ?",
+      "SELECT username FROM user WHERE username = ? AND password = ?",
       [userObject.username, userObject.password]
     );
     if (user.length > 0) {
@@ -25,10 +25,11 @@ const pool = mysql
         console.log("User does not exist:",user)
         return false;
       }
-
-
-
-    
-   
     }
-  
+  export async function fetchListofMedicine(){
+    const [listofMedicine]=await pool.query(
+      "SELECT * FROM medicine"
+    )
+    
+    return listofMedicine
+  }

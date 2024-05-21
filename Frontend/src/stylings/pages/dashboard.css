@@ -1,8 +1,8 @@
 .body{
     position: absolute;
-    top: 5%;
+    top: 10%;
     margin-left: 20vw;
-    height: 100vh;
+    height:90vh;
     width: 78vw;
     display: flex;
     justify-content: center;
@@ -18,20 +18,18 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 20%;
+    height: 10px;
 }
-.top .left{
+.left{
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 50%;
 }
 .top .right{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+
     width: 50%;
-    align-items: end;
+  
     
 }
 #select{

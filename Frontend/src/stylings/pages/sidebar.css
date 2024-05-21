@@ -3,11 +3,7 @@
   border: solid 1px;
   border-radius: 0px 10px 10px 0px;
 }
-.backdrop.show{
-  display: none;
-  border: solid 5px green;
 
-}
 .sidebar-header {
   background-color: #1d242e;
   width: vw;

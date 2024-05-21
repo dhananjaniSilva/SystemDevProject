@@ -10,6 +10,7 @@ import Sidebar from "./pages/Sidebar";
 import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
 import MedicineGroups from "./pages/MedicineGroups";
 import NavBar from "./components/NavBar";
+import Invoices from "./pages/Invoices";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -23,7 +24,7 @@ function App() {
             path="/dashboard"
             element={
               <>
-                <NavBar/>
+              
                 <Dashboard />
                 <Sidebar />
               </>
@@ -36,6 +37,15 @@ function App() {
             element={
               <>
                 <InventoryListOfMedicine />
+                <Sidebar />
+              </>
+            }
+          />
+           <Route
+            path="/invoice"
+            element={
+              <>
+                <Invoices />
                 <Sidebar />
               </>
             }

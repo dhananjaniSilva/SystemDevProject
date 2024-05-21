@@ -1,7 +1,7 @@
 import React from "react";
 import "../stylings/pages/dashboard.css";
-import DashbaordCardComponent from "../components/DashbaordCardComponent";
 import Stack from "react-bootstrap/Stack";
+import DashbaordCardComponent from "../components/DashbaordCardComponent";
 import HealthAndSafetyOutlinedIcon from '@mui/icons-material/HealthAndSafetyOutlined';
 import AddCardOutlinedIcon from '@mui/icons-material/AddCardOutlined';
 import MedicalServicesOutlinedIcon from '@mui/icons-material/MedicalServicesOutlined';
@@ -14,7 +14,7 @@ function Dashboard() {
         {/* //top row */}
         <div className="top">
           <div className="left">
-            <div style={{padding:"20px"}}>
+            <div style={{paddingLeft:"20px",paddingRight:"20px"}}>
               <h2>Dashboard</h2>
               <h6>A quick data overview of the inventory</h6>
             </div>

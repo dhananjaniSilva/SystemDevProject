@@ -2,12 +2,10 @@ import React from "react";
 import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
-import Form from "react-bootstrap/Form";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
-import TableComponent from "../components/Inventory/TableComponent";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 function MedicineGroups() {
@@ -39,7 +37,7 @@ function MedicineGroups() {
         </div>
         {/* table part */}
         <div className="table-div">
-          <TableComponent/>
+          {/* <TableComponent/> */}
           <ButtonComponent variant="outline-danger" className="cat1" text="Delete group" icon={DeleteOutlinedIcon}/>
         </div>
         

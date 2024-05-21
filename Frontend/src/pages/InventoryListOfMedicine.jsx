@@ -1,17 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
 import Form from "react-bootstrap/Form";
 import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
-import TableComponent from "../components/Inventory/TableComponent";
+import ListOfMedicineTable from "../components/Inventory/ListOfMedicineTable.jsx";
+import axios from "axios";
+import { useState } from "react";
 
 function InventoryListOfMedicine() {
-  
-  const handleAddNew = (val) =>{
-    console.log("handleAdd new",val)
-  }
+
+  const [listOfMedicineArray, setListOfMedicineArray] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
+      setListOfMedicineArray(res.data);
+      console.log(res.data);
+    });
+  }, []);
+
+  const handleAddNew = (val) => {
+    console.log("handleAdd new", val);
+  };
 
   return (
     <div className="body">
@@ -30,7 +41,7 @@ function InventoryListOfMedicine() {
               variant="danger"
               text="Add New Items"
               className="cat1"
-              onClick={()=>handleAddNew("hey")}
+              onClick={() => handleAddNew("hey")}
             />
             <Form.Select id="select">
               <option>-Select Group-</option>
@@ -41,7 +52,7 @@ function InventoryListOfMedicine() {
         </div>
         {/* table part */}
         <div className="table-div">
-          <TableComponent/>
+          <ListOfMedicineTable listofMedicineArray={listOfMedicineArray} />
         </div>
       </div>
     </div>
