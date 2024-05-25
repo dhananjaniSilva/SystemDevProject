@@ -9,14 +9,16 @@ import ListOfMedicineTable from "../components/Inventory/ListOfMedicineTable.jsx
 import axios from "axios";
 
 function InventoryListOfMedicine() {
-  const [listOfMedicineArray, setListOfMedicineArray] = useState([]);
+  const [listOfMedicineCategoryArray, setListOfMedicineCategoryArray] =
+    useState([]);
   const [selectedMdctCode, setSelectedMdctCode] = useState(null);
+  const [searchValue, setSearchValue] = useState();
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/fetchListOfMedicineCategory")
       .then((res) => {
-        setListOfMedicineArray(res.data);
+        setListOfMedicineCategoryArray(res.data);
         console.log(res.data);
       });
   }, []);
@@ -27,6 +29,17 @@ function InventoryListOfMedicine() {
 
   const handleOnChange = (categoryCode) => {
     setSelectedMdctCode(categoryCode);
+  };
+  const handleSearch = async (searchVal) => {
+    setSearchValue(searchVal);
+    try {
+      const res = await axios.get("http://localhost:8080/searchMedicine", {
+        params: { searchVal },
+      });
+      setMedicineArray(res.data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
   };
 
   return (
@@ -48,12 +61,22 @@ function InventoryListOfMedicine() {
               className="cat1"
               onClick={() => handleAddNew("hey")}
             />
+
+            <Form.Control
+              placeholder="Search here ..."
+              style={{ width: "309px" }}
+              onChange={(e) => handleSearch(e.target.value)}
+              type="text"
+              id="inputPassword5"
+              aria-describedby="passwordHelpBlock"
+            />
+
             <Form.Select
               id="select"
               onChange={(e) => handleOnChange(e.target.value)}
             >
               <option>-Select Group-</option>
-              {listOfMedicineArray.map((item, index) => (
+              {listOfMedicineCategoryArray.map((item, index) => (
                 <option key={index} value={item}>
                   {item}
                 </option>
@@ -63,7 +86,12 @@ function InventoryListOfMedicine() {
         </div>
         {/* table part */}
         <div className="table-div">
-          <ListOfMedicineTable listofMedicineArray={listOfMedicineArray} mdct_code={selectedMdctCode} />
+        <ListOfMedicineTable
+  istOfMedicineCategoryArray={listOfMedicineCategoryArray}
+  mdct_code={selectedMdctCode}
+  searchValue={searchValue} // Pass searchValue prop
+/>
+
         </div>
       </div>
     </div>
