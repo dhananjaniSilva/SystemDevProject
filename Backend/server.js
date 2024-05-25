@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import {
+  deleteMedicineById,
   fetchListofMedicine,
   fetchListofMedicineBySearch,
   fetchMedicineCategoryCode,
@@ -47,6 +48,14 @@ app.get("/searchMedicine", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+app.delete("/deleteMedicineById/:medicineId",async (req,res)=>{
+  try{
+    const response = await deleteMedicineById(req.params.medicineId);
+    return res.json(response)
+  }catch(error){
+    console.log("Error when deleting the medicine by Id",error)
+  }
+})
 
 app.get("/fetchListOfMedicineCategory", async (req, res) => {
   try {

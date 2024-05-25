@@ -89,3 +89,28 @@ export async function fetchMedicineCategoryCode() {
   );
   return mdctCodesArray;
 }
+export async function deleteMedicineById(medicineId){
+  const numericPart = medicineId.replace(/\D/g, ''); // Remove non-numeric characters
+  console.log("Numeric part:", numericPart);
+  const medId = parseInt(numericPart);
+  console.log("Parsed integer:", medId);
+  
+  try {
+    console.log("This is the medicine Id", medId);
+    const result = await pool.query(`
+      DELETE FROM medicine WHERE medicine_id = ?
+    `, [medId]);
+
+    if (result.affectedRows > 0) {
+      console.log(`Medicine with ID ${medicineId} deleted successfully.`);
+    } else {
+      console.log(`No medicine found with ID ${medicineId}.`);
+    }
+    
+    return result; // Return the result if needed
+
+  } catch(error) {
+    console.error("Error deleting medicine:", error);
+    throw error; // Rethrow the error to handle it in the caller function
+  }
+}

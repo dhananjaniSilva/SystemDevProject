@@ -10,6 +10,8 @@ import { TableVirtuoso } from "react-virtuoso";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
+import { Button } from "@mui/material";
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 const columns = [
   {
@@ -22,6 +24,8 @@ const columns = [
     label: "Brand Name",
     dataKey: "medicine_brandname",
   },
+  // Add the new column information
+
   {
     width: 200,
     label: "Generic Name",
@@ -58,7 +62,14 @@ const columns = [
     dataKey: "medicine_inhandquantity",
     numeric: true,
   },
+  {
+    width: 150,
+    label: "Delete",
+    dataKey: "new_column",
+    numeric: true,
+  },
 ];
+
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
@@ -67,7 +78,7 @@ const VirtuosoTableComponents = {
   Table: (props) => (
     <Table 
       {...props}
-      sx={{ borderCollapse: "separate", tableLayout: "fixed"}}
+      sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
     />
   ),
   TableHead,
@@ -111,28 +122,47 @@ function fixedHeaderContent({ sortColumn, sortDirection, onSort, selectedUnitNam
 }
 
 function rowContent(_index, row) {
-  const isHighQuantity = row.medicine_inhandquantity < 200;
+  const isHighQuantity = row.medicine_inhandquantity < 50;
 
+  
+  const handleDelete=(medicineId)=>{
+    axios .delete(`http://localhost:8080/deleteMedicineById/:${medicineId}`)
+  }
   const rowStyle = {
-    backgroundColor: isHighQuantity ? 'orange' : 'inherit',
+    backgroundColor: isHighQuantity ? '#e3707b' : 'inherit',
   };
   return (
     <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric ? "center" : "center"}
-          sx={{ backgroundColor: rowStyle.backgroundColor }}
-        >
-          {row[column.dataKey]}
-        </TableCell>
-      ))}
+      {columns.map((column) => {
+        if (column.dataKey === 'new_column') {
+          return (
+            <TableCell
+              key={column.dataKey}
+              align={column.numeric ? "center" : "center"}
+              sx={{ backgroundColor: rowStyle.backgroundColor }}
+            >
+              {/* Render your button here */}
+              <Button color="error" onClick={() => handleDelete(row.medicine_id)}><DeleteOutlinedIcon /></Button>
+            </TableCell>
+          );
+        } else {
+          return (
+            <TableCell
+              key={column.dataKey}
+              align={column.numeric ? "center" : "center"}
+              sx={{ backgroundColor: rowStyle.backgroundColor }}
+            >
+              {row[column.dataKey]}
+            </TableCell>
+          );
+        }
+      })}
     </React.Fragment>
   );
 }
 
 export default function ReactVirtualizedTable(props) {
-  const { mdct_code, searchValue } = props; // Add searchValue prop
+  const { mdct_code, searchValue } = props;
   const [allMedicines, setAllMedicines] = useState([]);
   const [filteredMedicines, setFilteredMedicines] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
@@ -148,11 +178,15 @@ export default function ReactVirtualizedTable(props) {
       setAllMedicines(modifiedData);
       setFilteredMedicines(modifiedData);
     });
-  }, []);useEffect(() => {
+  }, []);
+
+  useEffect(() => {
     let data = allMedicines;
-    if (mdct_code) {
+
+    if (mdct_code && mdct_code !== '0') {
       data = data.filter(item => item.mdct_code === mdct_code);
     }
+
     if (selectedUnitName) {
       data = data.filter(item => item.unit_name === selectedUnitName);
     }
@@ -172,24 +206,6 @@ export default function ReactVirtualizedTable(props) {
     }
     setFilteredMedicines(data);
   }, [mdct_code, sortColumn, sortDirection, allMedicines, selectedUnitName, searchValue]);
-  
-  useEffect(() => {
-    let data = allMedicines;
-    if (mdct_code) {
-      data = data.filter(item => item.mdct_code === mdct_code);
-    }
-    if (selectedUnitName) {
-      data = data.filter(item => item.unit_name === selectedUnitName);
-    }
-    if (sortColumn) {
-      data = [...data].sort((a, b) => {
-        if (a[sortColumn] < b[sortColumn]) return sortDirection === 'asc' ? -1 : 1;
-        if (a[sortColumn] > b[sortColumn]) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-    setFilteredMedicines(data);
-  }, [mdct_code, sortColumn, sortDirection, allMedicines, selectedUnitName]);
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -205,13 +221,13 @@ export default function ReactVirtualizedTable(props) {
   };
 
   return (
-    <Paper style={{ height: 400, width: "100%" }}>
+    <Paper style={{ height: "100%", width: "100%" }}>
       <TableVirtuoso
         data={filteredMedicines}
         components={{
           ...VirtuosoTableComponents,
           TableHead: (props) => (
-            <TableHead {...props}>
+            <TableHead {...props} sx={{ backgroundColor: '#fff' }}>
               {fixedHeaderContent({ sortColumn, sortDirection, onSort: handleSort, selectedUnitName, handleUnitNameChange })}
             </TableHead>
           ),

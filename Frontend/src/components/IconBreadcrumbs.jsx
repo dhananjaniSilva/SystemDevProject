@@ -22,7 +22,7 @@ export default function IconBreadcrumbs() {
           href="/authorize"
         >
           <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          MUI
+          Inventory
         </Link>
         <Link
           underline="hover"
@@ -31,7 +31,7 @@ export default function IconBreadcrumbs() {
           href="/material-ui/getting-started/installation/"
         >
           <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          Core
+          List of Medicine
         </Link>
         <Typography
           sx={{ display: 'flex', alignItems: 'center' }}

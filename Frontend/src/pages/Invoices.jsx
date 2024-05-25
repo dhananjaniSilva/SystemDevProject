@@ -3,7 +3,7 @@ import React from 'react'
 function Invoices() {
   return (
     <div>
-        Invoices motherfucker
+        Invoices 
     </div>
   )
 }

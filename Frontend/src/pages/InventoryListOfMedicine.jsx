@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
@@ -7,8 +7,13 @@ import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
 import ListOfMedicineTable from "../components/Inventory/ListOfMedicineTable.jsx";
 import axios from "axios";
+import OverlayDialogBox from "../components/OverlayDialogBox.jsx";
+import { PopupContext } from "../contexts/MainContexts.jsx";
+import MedicineEnterForm from "../components/MedicineEnterForm.jsx";
 
 function InventoryListOfMedicine() {
+  const { boolValue, setBoolValue } = useContext(PopupContext);
+
   const [listOfMedicineCategoryArray, setListOfMedicineCategoryArray] =
     useState([]);
   const [selectedMdctCode, setSelectedMdctCode] = useState(null);
@@ -49,18 +54,6 @@ function InventoryListOfMedicine() {
         <div className="top">
           <div className="left">
             <IconBreadcrumbs />
-            <FormTextExample
-              placeholderValue="Search Medicine Inventory"
-              type="text"
-            />
-          </div>
-          <div className="right">
-            <ButtonComponent
-              variant="danger"
-              text="Add New Items"
-              className="cat1"
-              onClick={() => handleAddNew("hey")}
-            />
 
             <Form.Control
               placeholder="Search here ..."
@@ -75,7 +68,7 @@ function InventoryListOfMedicine() {
               id="select"
               onChange={(e) => handleOnChange(e.target.value)}
             >
-              <option>-Select Group-</option>
+              <option value={0}>-Select Group-</option>
               {listOfMedicineCategoryArray.map((item, index) => (
                 <option key={index} value={item}>
                   {item}
@@ -83,17 +76,27 @@ function InventoryListOfMedicine() {
               ))}
             </Form.Select>
           </div>
+          <div className="right">
+            <ButtonComponent
+              variant="danger"
+              text="Add New Items"
+              className="cat1"
+              onClick={() => {
+                setBoolValue(true);
+              }}
+            />
+          </div>
         </div>
         {/* table part */}
         <div className="table-div">
-        <ListOfMedicineTable
-  istOfMedicineCategoryArray={listOfMedicineCategoryArray}
-  mdct_code={selectedMdctCode}
-  searchValue={searchValue} // Pass searchValue prop
-/>
-
+          <ListOfMedicineTable
+            istOfMedicineCategoryArray={listOfMedicineCategoryArray}
+            mdct_code={selectedMdctCode}
+            searchValue={searchValue} // Pass searchValue prop
+          />
         </div>
       </div>
+      <OverlayDialogBox><MedicineEnterForm/></OverlayDialogBox>
     </div>
   );
 }
