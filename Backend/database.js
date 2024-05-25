@@ -47,6 +47,42 @@ export async function fetchListofMedicine() {
   console.log(listofMedicine);
   return listofMedicine;
 }
+
+export async function fetchListofMedicineCategory() {
+  const [listofMedicineCategories] = await pool.query(`
+  SELECT *
+  FROM medicinecategory
+  `);
+  return listofMedicineCategories;
+}
+export async function deleteMedicineCategoryById(medicineCategoryId) {
+  console.log("type",typeof(medicineCategoryId))
+
+
+  try {
+
+    const result = await pool.query(
+      `
+      DELETE FROM medicine WHERE medicine_id = ?
+    `,
+      [medicineCategoryId]
+    );
+
+    if (result.affectedRows > 0) {
+      console.log(
+        `Medicine with ID ${medicineCategoryId} deleted successfully.`
+      );
+    } else {
+      console.log(`No medicine found with ID ${medicineCategoryId}.`);
+    }
+
+    return result; // Return the result if needed
+  } catch (error) {
+    console.error("Error deleting medicine:", error);
+    throw error; // Rethrow the error to handle it in the caller function
+  }
+}
+
 export async function fetchListofMedicineBySearch(searchvalue) {
   console.log("se", searchvalue);
   const [listofMedicine] = await pool.query(
@@ -89,27 +125,29 @@ export async function fetchMedicineCategoryCode() {
   );
   return mdctCodesArray;
 }
-export async function deleteMedicineById(medicineId){
-  const numericPart = medicineId.replace(/\D/g, ''); // Remove non-numeric characters
+export async function deleteMedicineById(medicineId) {
+  const numericPart = medicineId.replace(/\D/g, ""); // Remove non-numeric characters
   console.log("Numeric part:", numericPart);
   const medId = parseInt(numericPart);
   console.log("Parsed integer:", medId);
-  
+
   try {
     console.log("This is the medicine Id", medId);
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       DELETE FROM medicine WHERE medicine_id = ?
-    `, [medId]);
+    `,
+      [medId]
+    );
 
     if (result.affectedRows > 0) {
       console.log(`Medicine with ID ${medicineId} deleted successfully.`);
     } else {
       console.log(`No medicine found with ID ${medicineId}.`);
     }
-    
-    return result; // Return the result if needed
 
-  } catch(error) {
+    return result; // Return the result if needed
+  } catch (error) {
     console.error("Error deleting medicine:", error);
     throw error; // Rethrow the error to handle it in the caller function
   }

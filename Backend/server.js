@@ -2,8 +2,10 @@ import express from "express";
 import cors from "cors";
 import {
   deleteMedicineById,
+  deleteMedicineCategoryById,
   fetchListofMedicine,
   fetchListofMedicineBySearch,
+  fetchListofMedicineCategory,
   fetchMedicineCategoryCode,
   loginValidate,
 } from "./database.js";
@@ -38,6 +40,25 @@ app.get("/fetchListOfMedicine", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+app.get("/fetchListOfMedicineCategory", async (req, res) => {
+  try {
+    // console.log("express app ",req.query.username)
+
+    const response = await fetchListofMedicineCategory();
+    return res.json(response);
+  } catch (error) {
+    console.log("Error in loginValidate", error);
+  }
+});
+app.delete("/deleteMedicineCategoryById/:medicineCategoryId",async (req,res)=>{
+  try{
+    console.log(req.params.medicineCategoryId)
+    const response = await deleteMedicineCategoryById(req.params.medicineCategoryId);
+    return res.json(response)
+  }catch(error){
+    console.log("Error when deleting the medicine by Id",error)
+  }
+})
 app.get("/searchMedicine", async (req, res) => {
   try {
     // console.log("express app ",req.query.username)

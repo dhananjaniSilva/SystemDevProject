@@ -3,7 +3,7 @@ import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-
+import MedicineCategoryTable from '../components/Inventory/MedicineCategoryTable'
 import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -38,7 +38,8 @@ function MedicineGroups() {
         {/* table part */}
         <div className="table-div">
           {/* <TableComponent/> */}
-          <ButtonComponent variant="outline-danger" className="cat1" text="Delete group" icon={DeleteOutlinedIcon}/>
+            <MedicineCategoryTable/>
+
         </div>
         
       </div>
