@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { fetchListofMedicine, loginValidate } from "./database.js";
+import { fetchListofMedicine, fetchMedicineCategoryCode, loginValidate } from "./database.js";
 
 const app = express();
 app.use(cors());
@@ -32,7 +32,18 @@ app.get("/loginValidate",async (req,res)=>{
       console.log("Error in loginValidate",error)
     }
   })
+
+app.get("/fetchListOfMedicineCategory",async (req,res)=>{
+  try{
+    // console.log("express app ",req.query.username)
+    
+    const response = await fetchMedicineCategoryCode()
+    return res.json( response) ;
+  }catch(error){
+    console.log("Error in loginValidate",error)
+  }
+})
 const port = 8080;
 app.listen(port, () => {
-  console.log(`Listening to port ${port}`);
+console.log(`Listening to port ${port}`);
 });

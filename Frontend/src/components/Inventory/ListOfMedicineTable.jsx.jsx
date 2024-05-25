@@ -12,9 +12,9 @@ import { useState, useEffect } from "react";
 
 const columns = [
   {
-    width: 200,
-    label: "Medicine ID",
-    dataKey: "medicine_id",
+    width: 300, // Adjust the width as needed
+    label: "Medicine Id",
+    dataKey: "medicine_info",
   },
   {
     width: 200,
@@ -28,14 +28,14 @@ const columns = [
   },
   {
     width: 150,
-    label: "Category ID",
-    dataKey: "medicine_categoryid",
+    label: "Category Code",
+    dataKey: "mdct_code",
     numeric: true,
   },
   {
     width: 150,
-    label: "Unit ID",
-    dataKey: "medicine_unitid",
+    label: "Unit Name",
+    dataKey: "unit_name",
     numeric: true,
   },
   {
@@ -81,7 +81,7 @@ function fixedHeaderContent() {
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric ? "right" : "left"}
+          align={column.numeric ? "center" : "center"}
         >
           {column.label}
         </TableCell>
@@ -91,7 +91,7 @@ function fixedHeaderContent() {
 }
 
 function rowContent(_index, row) {
-   const isHighQuantity = row.medicine_inhandquantity < 200; // Example condition
+  const isHighQuantity = row.medicine_inhandquantity < 200; // Example condition
 
   const rowStyle = {
     backgroundColor: isHighQuantity ? 'orange' : 'inherit', // Change color based on condition
@@ -99,9 +99,10 @@ function rowContent(_index, row) {
   return (
     <React.Fragment>
       {columns.map((column) => (
-        <TableCell sx={{backgroundColor:rowStyle}}
+        <TableCell
           key={column.dataKey}
-          align={column.numeric ? "right" : "left"}
+          align={column.numeric ? "center" : "center"}
+          sx={{ backgroundColor: rowStyle.backgroundColor }}
         >
           {row[column.dataKey]}
         </TableCell>
@@ -109,24 +110,35 @@ function rowContent(_index, row) {
     </React.Fragment>
   );
 }
+
 export default function ReactVirtualizedTable(props) {
-  const {listOfMedicineArray}=props
-  useEffect(()=>{
-    
-  },[listOfMedicineArray])
-  const [listOfMedicineArray2, setListOfMedicineArray2] = useState([]);
+  const { mdct_code } = props;
+  const [allMedicines, setAllMedicines] = useState([]);
+  const [filteredMedicines, setFilteredMedicines] = useState([]);
 
   useEffect(() => {
     axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
-      setListOfMedicineArray2(res.data);
-      console.log(res.data);
+      const modifiedData = res.data.map(item => ({
+        ...item,
+        medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(5, '0')} `
+      }));
+      setAllMedicines(modifiedData);
+      setFilteredMedicines(modifiedData);
     });
   }, []);
+
+  useEffect(() => {
+    if (mdct_code) {
+      setFilteredMedicines(allMedicines.filter(item => item.mdct_code === mdct_code));
+    } else {
+      setFilteredMedicines(allMedicines);
+    }
+  }, [mdct_code, allMedicines]);
 
   return (
     <Paper style={{ height: 400, width: "100%" }}>
       <TableVirtuoso
-        data={listOfMedicineArray2}
+        data={filteredMedicines}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
         itemContent={rowContent}
