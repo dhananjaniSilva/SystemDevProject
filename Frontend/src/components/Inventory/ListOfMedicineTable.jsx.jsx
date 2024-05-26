@@ -11,38 +11,14 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "@mui/material";
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 const columns = [
-  {
-    width: 300,
-    label: "Medicine Id",
-    dataKey: "medicine_info",
-  },
-  {
-    width: 200,
-    label: "Brand Name",
-    dataKey: "medicine_brandname",
-  },
-  // Add the new column information
-
-  {
-    width: 200,
-    label: "Generic Name",
-    dataKey: "medicine_genericname",
-  },
-  {
-    width: 150,
-    label: "Category Code",
-    dataKey: "mdct_code",
-    numeric: true,
-  },
-  {
-    width: 150,
-    label: "Unit Name",
-    dataKey: "unit_name",
-    numeric: true,
-  },
+  { width: 300, label: "Medicine Id", dataKey: "medicine_info" },
+  { width: 200, label: "Brand Name", dataKey: "medicine_brandname" },
+  { width: 200, label: "Generic Name", dataKey: "medicine_genericname" },
+  { width: 150, label: "Category Code", dataKey: "mdct_code", numeric: true },
+  { width: 150, label: "Unit Name", dataKey: "unit_name", numeric: true },
   {
     width: 150,
     label: "Unit Price",
@@ -62,33 +38,40 @@ const columns = [
     dataKey: "medicine_inhandquantity",
     numeric: true,
   },
-  {
-    width: 150,
-    label: "Delete",
-    dataKey: "new_column",
-    numeric: true,
-  },
+  { width: 150, label: "Delete", dataKey: "new_column", numeric: true },
 ];
-
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
     <TableContainer component={Paper} {...props} ref={ref} />
   )),
   Table: (props) => (
-    <Table 
+    <Table
       {...props}
       sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
     />
   ),
-  TableHead,
-  TableRow: ({ item: _item, ...props }) => <TableRow  {...props} />,
+  TableHead: (props) => (
+    <TableHead
+      {...props}
+      sx={{
+        backgroundColor: "white", // Set the background color to white
+      }}
+    />
+  ),
+  TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
   TableBody: React.forwardRef((props, ref) => (
     <TableBody {...props} ref={ref} />
   )),
 };
 
-function fixedHeaderContent({ sortColumn, sortDirection, onSort, selectedUnitName, handleUnitNameChange }) {
+function fixedHeaderContent({
+  sortColumn,
+  sortDirection,
+  onSort,
+  selectedUnitName,
+  handleUnitNameChange,
+}) {
   return (
     <TableRow>
       {columns.map((column) => (
@@ -96,19 +79,16 @@ function fixedHeaderContent({ sortColumn, sortDirection, onSort, selectedUnitNam
           key={column.dataKey}
           align={column.numeric ? "center" : "center"}
           onClick={column.sortable ? () => onSort(column.dataKey) : null}
-          style={{ cursor: column.sortable ? 'pointer' : 'default' }}
+          style={{ cursor: column.sortable ? "pointer" : "default" }}
         >
           {column.label}
           {column.sortable && sortColumn === column.dataKey && (
-            <span>{sortDirection === 'asc' ? ' 🔼' : ' 🔽'}</span>
+            <span>{sortDirection === "asc" ? " 🔼" : " 🔽"}</span>
           )}
         </TableCell>
       ))}
       <TableCell align="center">
-        <Form.Select
-          value={selectedUnitName}
-          onChange={handleUnitNameChange}
-        >
+        <Form.Select value={selectedUnitName} onChange={handleUnitNameChange}>
           <option value="">All Units</option>
           <option value="Tablet">Tablet</option>
           <option value="Capsule">Capsule</option>
@@ -124,25 +104,30 @@ function fixedHeaderContent({ sortColumn, sortDirection, onSort, selectedUnitNam
 function rowContent(_index, row) {
   const isHighQuantity = row.medicine_inhandquantity < 50;
 
-  
-  const handleDelete=(medicineId)=>{
-    axios .delete(`http://localhost:8080/deleteMedicineById/:${medicineId}`)
-  }
-  const rowStyle = {
-    backgroundColor: isHighQuantity ? '#e3707b' : 'inherit',
+  const handleDelete = (medicineId) => {
+    axios.delete(`http://localhost:8080/deleteMedicineById/${medicineId}`);
   };
+
+  const rowStyle = {
+    backgroundColor: isHighQuantity ? "#e3707b" : "inherit",
+  };
+
   return (
     <React.Fragment>
       {columns.map((column) => {
-        if (column.dataKey === 'new_column') {
+        if (column.dataKey === "new_column") {
           return (
             <TableCell
               key={column.dataKey}
               align={column.numeric ? "center" : "center"}
               sx={{ backgroundColor: rowStyle.backgroundColor }}
             >
-              {/* Render your button here */}
-              <Button color="error" onClick={() => handleDelete(row.medicine_id)}><DeleteOutlinedIcon /></Button>
+              <Button
+                color="error"
+                onClick={() => handleDelete(row.medicine_id)}
+              >
+                <DeleteOutlinedIcon />
+              </Button>
             </TableCell>
           );
         } else {
@@ -162,58 +147,73 @@ function rowContent(_index, row) {
 }
 
 export default function ReactVirtualizedTable(props) {
-  const { mdct_code, searchValue } = props;
+  const { mdct_code, searchValue, medicineArray } = props;
   const [allMedicines, setAllMedicines] = useState([]);
   const [filteredMedicines, setFilteredMedicines] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [selectedUnitName, setSelectedUnitName] = useState('');
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [selectedUnitName, setSelectedUnitName] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
-      const modifiedData = res.data.map(item => ({
+    if (medicineArray.length > 0) {
+      const modifiedData = medicineArray.map((item) => ({
         ...item,
-        medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(5, '0')} `
+        medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(
+          5,
+          "0"
+        )} `,
       }));
       setAllMedicines(modifiedData);
-      setFilteredMedicines(modifiedData);
-    });
-  }, []);
+    } 
+    // else {
+    //   axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
+    //     const modifiedData = res.data.map((item) => ({
+    //       ...item,
+    //       medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(
+    //         5,
+    //         "0"
+    //       )} `,
+    //     }));
+    //     setAllMedicines(modifiedData);
+    //   });
+    // }
+  }, [medicineArray]);
 
   useEffect(() => {
-    let data = allMedicines;
+    let filteredData = allMedicines;
 
-    if (mdct_code && mdct_code !== '0') {
-      data = data.filter(item => item.mdct_code === mdct_code);
+    if (mdct_code) {
+      filteredData = filteredData.filter((item) => item.mdct_code == mdct_code);
     }
+
+    // if (searchValue) {
+    //   filteredData = filteredData.filter(item =>
+    //     item.medicine_brandname.toLowerCase().includes(searchValue.toLowerCase()) ||
+    //     item.medicine_genericname.toLowerCase().includes(searchValue.toLowerCase()) ||
+    //     String(item.medicine_id).toLowerCase().includes(searchValue.toLowerCase())
+    //   );
+    // }
 
     if (selectedUnitName) {
-      data = data.filter(item => item.unit_name === selectedUnitName);
-    }
-    if (searchValue) {
-      data = data.filter(item =>
-        item.medicine_info.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.medicine_brandname.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.medicine_genericname.toLowerCase().includes(searchValue.toLowerCase())
+      filteredData = filteredData.filter(
+        (item) => item.unit_name === selectedUnitName
       );
     }
-    if (sortColumn) {
-      data = [...data].sort((a, b) => {
-        if (a[sortColumn] < b[sortColumn]) return sortDirection === 'asc' ? -1 : 1;
-        if (a[sortColumn] > b[sortColumn]) return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-    setFilteredMedicines(data);
-  }, [mdct_code, sortColumn, sortDirection, allMedicines, selectedUnitName, searchValue]);
+
+    setFilteredMedicines(filteredData);
+  }, [allMedicines, mdct_code, searchValue, selectedUnitName]);
 
   const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
+    const newSortDirection =
+      sortColumn === column && sortDirection === "asc" ? "desc" : "asc";
+    const sortedData = [...filteredMedicines].sort((a, b) => {
+      if (a[column] < b[column]) return newSortDirection === "asc" ? -1 : 1;
+      if (a[column] > b[column]) return newSortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+    setSortColumn(column);
+    setSortDirection(newSortDirection);
+    setFilteredMedicines(sortedData);
   };
 
   const handleUnitNameChange = (event) => {
@@ -224,15 +224,16 @@ export default function ReactVirtualizedTable(props) {
     <Paper style={{ height: "100%", width: "100%" }}>
       <TableVirtuoso
         data={filteredMedicines}
-        components={{
-          ...VirtuosoTableComponents,
-          TableHead: (props) => (
-            <TableHead {...props} sx={{ backgroundColor: '#fff' }}>
-              {fixedHeaderContent({ sortColumn, sortDirection, onSort: handleSort, selectedUnitName, handleUnitNameChange })}
-            </TableHead>
-          ),
-        }}
-        fixedHeaderContent={() => fixedHeaderContent({ sortColumn, sortDirection, onSort: handleSort, selectedUnitName, handleUnitNameChange })}
+        components={VirtuosoTableComponents}
+        fixedHeaderContent={() =>
+          fixedHeaderContent({
+            sortColumn,
+            sortDirection,
+            onSort: handleSort,
+            selectedUnitName,
+            handleUnitNameChange,
+          })
+        }
         itemContent={rowContent}
       />
     </Paper>

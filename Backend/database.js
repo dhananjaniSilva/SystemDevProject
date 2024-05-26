@@ -104,10 +104,11 @@ ON
 WHERE 
     medicine.medicine_id LIKE CONCAT('%', ?, '%') OR
     medicine.medicine_brandname LIKE CONCAT('%', ?, '%') OR
-    medicine.medicine_genericname LIKE CONCAT('%', ?, '%');
+    medicine.medicine_genericname LIKE CONCAT('%', ?, '%') OR
+    medicinecategory.mdct_code LIKE CONCAT('%', ?, '%');
 
   `,
-    [searchvalue, searchvalue, searchvalue]
+    [searchvalue, searchvalue, searchvalue,searchvalue]
   );
   console.log(listofMedicine);
   return listofMedicine;

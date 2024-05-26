@@ -78,7 +78,7 @@ app.delete("/deleteMedicineById/:medicineId",async (req,res)=>{
   }
 })
 
-app.get("/fetchListOfMedicineCategory", async (req, res) => {
+app.get("/fetchListOfMedicineCategoryCode", async (req, res) => {
   try {
     // console.log("express app ",req.query.username)
 

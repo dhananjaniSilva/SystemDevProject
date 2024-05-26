@@ -97,7 +97,7 @@ export default function ReactVirtualizedTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/fetchListOfMedicineCategory');
+        const response = await axios.get('http://localhost:8080/fetchListOfMedicineCategoryCode');
         setRows(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
