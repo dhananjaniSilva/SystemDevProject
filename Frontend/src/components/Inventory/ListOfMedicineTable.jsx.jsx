@@ -164,19 +164,18 @@ export default function ReactVirtualizedTable(props) {
         )} `,
       }));
       setAllMedicines(modifiedData);
-    } 
-    // else {
-    //   axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
-    //     const modifiedData = res.data.map((item) => ({
-    //       ...item,
-    //       medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(
-    //         5,
-    //         "0"
-    //       )} `,
-    //     }));
-    //     setAllMedicines(modifiedData);
-    //   });
-    // }
+    } else {
+      axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
+        const modifiedData = res.data.map((item) => ({
+          ...item,
+          medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(
+            5,
+            "0"
+          )} `,
+        }));
+        setAllMedicines(modifiedData);
+      });
+    }
   }, [medicineArray]);
 
   useEffect(() => {

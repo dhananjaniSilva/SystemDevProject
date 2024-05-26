@@ -2,13 +2,17 @@ import React from "react";
 import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
 import "../stylings/pages/inventoryListOfMedicine.css";
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import MedicineCategoryTable from '../components/Inventory/MedicineCategoryTable'
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import MedicineCategoryTable from "../components/Inventory/MedicineCategoryTable";
 import FormTextExample from "../components/Inventory/TextField";
 import ButtonComponent from "../components/ButtonComponent";
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { PopupContext } from "../contexts/MainContexts";
+import { useContext } from "react";
 
 function MedicineGroups() {
+  const { boolValue, setBoolValue } = useContext(PopupContext);
+  const handleAddMedicineCategory = () => [setBoolValue(true)];
   return (
     <div className="body">
       <div className="outer-div">
@@ -27,6 +31,7 @@ function MedicineGroups() {
               text="Add Medicine"
               className="cat1"
               icon={AddOutlinedIcon}
+              onClick={handleAddMedicineCategory}
             />
             {/* <Form.Select id="select">
               <option>-Select Group-</option>
@@ -38,10 +43,8 @@ function MedicineGroups() {
         {/* table part */}
         <div className="table-div">
           {/* <TableComponent/> */}
-            <MedicineCategoryTable/>
-
+          <MedicineCategoryTable />
         </div>
-        
       </div>
     </div>
   );

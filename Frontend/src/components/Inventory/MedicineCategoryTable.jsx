@@ -10,6 +10,10 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { TableVirtuoso } from 'react-virtuoso';
 import axios from 'axios';
+import MedicineCategoryForm from './MedicineCategoryForm';
+import OverlayDialogBox from '../OverlayDialogBox'
+import { PopupContext } from '../../contexts/MainContexts';
+import { useContext } from 'react';
 
 const columns = [
   {
@@ -93,11 +97,13 @@ function rowContent(_index, row, handleDelete) {
 
 export default function ReactVirtualizedTable() {
   const [rows, setRows] = useState([]);
+  const { boolValue, setBoolValue } = useContext(PopupContext);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/fetchListOfMedicineCategoryCode');
+        const response = await axios.get('http://localhost:8080/fetchListOfMedicineCategory');
         setRows(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -124,6 +130,10 @@ export default function ReactVirtualizedTable() {
         fixedHeaderContent={fixedHeaderContent}
         itemContent={(index, row) => rowContent(index, row, handleDelete)}
       />
+      
+      <OverlayDialogBox>
+        <MedicineCategoryForm/>
+      </OverlayDialogBox>
     </Paper>
   );
 }
