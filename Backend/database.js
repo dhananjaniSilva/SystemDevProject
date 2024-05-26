@@ -56,12 +56,10 @@ export async function fetchListofMedicineCategory() {
   return listofMedicineCategories;
 }
 export async function deleteMedicineCategoryById(medicineCategoryId) {
-  console.log("type",typeof(medicineCategoryId))
-
+  console.log("type", typeof medicineCategoryId);
 
   try {
-
-    const result = await pool.query(
+    const [result] = await pool.query(
       `
       DELETE FROM medicine WHERE medicine_id = ?
     `,
@@ -108,10 +106,32 @@ WHERE
     medicinecategory.mdct_code LIKE CONCAT('%', ?, '%');
 
   `,
-    [searchvalue, searchvalue, searchvalue,searchvalue]
+    [searchvalue, searchvalue, searchvalue, searchvalue]
   );
   console.log(listofMedicine);
   return listofMedicine;
+}
+export async function createMedicineCategory(categoryName, categoryCode) {
+  try {
+    const [response] = await pool.query(
+      "INSERT INTO medicinecategory (mdct_name, mdct_code) VALUES (?, ?)",
+      [categoryName, categoryCode]
+    );
+    if (response.affectedRows > 0) {
+      return {
+        success: true,
+        message: "Medicine category created successfully.",
+      };
+    } else {
+      return { success: false, message: "Failed to create medicine category." };
+    }
+  } catch (error) {
+    console.error("Error creating medicine category:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating medicine category.",
+    };
+  }
 }
 
 export async function fetchMedicineCategoryCode() {

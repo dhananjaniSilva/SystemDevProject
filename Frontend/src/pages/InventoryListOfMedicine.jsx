@@ -65,7 +65,7 @@ function InventoryListOfMedicine() {
               <option value={0}>-Select Group-</option>
               {listOfMedicineCategoryArray.map((item, index) => (
                 <option key={index} value={item.mdct_code}>
-                  {item.mdct_name}
+                  {item.mdct_code}
                 </option>
               ))}
             </Form.Select>
@@ -73,7 +73,7 @@ function InventoryListOfMedicine() {
           <div className="right">
             <ButtonComponent
               variant="danger"
-              text="Add New Items"
+              text="+ Add New Items"
               className="cat1"
               onClick={() => setBoolValue(true)}
             />

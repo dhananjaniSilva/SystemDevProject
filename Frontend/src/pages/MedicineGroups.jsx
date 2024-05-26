@@ -9,21 +9,25 @@ import ButtonComponent from "../components/ButtonComponent";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { PopupContext } from "../contexts/MainContexts";
 import { useContext } from "react";
+import MedicineCategoryForm from "../components/Inventory/MedicineCategoryForm";
+import OverlayDialogBox from "../components/OverlayDialogBox";
 
 function MedicineGroups() {
-  const { boolValue, setBoolValue } = useContext(PopupContext);
-  const handleAddMedicineCategory = () => [setBoolValue(true)];
+  const { boolValue, setBoolValue, medicineCategoryId, setMedicineCategoryId } = useContext(PopupContext);
+
+  const handleAddMedicineCategory = () => {
+    setMedicineCategoryId(0);
+    setBoolValue(true);
+  };
+
   return (
     <div className="body">
       <div className="outer-div">
-        {/* //top row */}
+        {/* top row */}
         <div className="top">
           <div className="left">
             <IconBreadcrumbs />
-            <FormTextExample
-              placeholderValue="Search Medicine Inventory"
-              type="text"
-            />
+            <FormTextExample placeholderValue="Search Medicine Inventory" type="text" />
           </div>
           <div className="right">
             <ButtonComponent
@@ -33,19 +37,18 @@ function MedicineGroups() {
               icon={AddOutlinedIcon}
               onClick={handleAddMedicineCategory}
             />
-            {/* <Form.Select id="select">
-              <option>-Select Group-</option>
-              <option></option>
-              <option>Motti</option>
-            </Form.Select> */}
           </div>
         </div>
         {/* table part */}
         <div className="table-div">
-          {/* <TableComponent/> */}
           <MedicineCategoryTable />
         </div>
       </div>
+      {boolValue && medicineCategoryId === 0 && (
+        <OverlayDialogBox>
+          <MedicineCategoryForm />
+        </OverlayDialogBox>
+      )}
     </div>
   );
 }
