@@ -159,6 +159,7 @@ function rowContent(_index, row) {
             >
               <Button
                 color="error"
+                variant="outlined"
                 onClick={() => handleDelete(row.medicine_id)}
               >
                 <DeleteOutlinedIcon />

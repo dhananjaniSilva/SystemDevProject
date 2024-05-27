@@ -16,7 +16,7 @@ import MedicineCategoryForm, {
 import OverlayDialogBox from "../OverlayDialogBox";
 import { PopupContext } from "../../contexts/MainContexts";
 import { useContext } from "react";
-
+import EditNoteIcon from '@mui/icons-material/EditNote';
 const columns = [
   {
     width: 100,
@@ -31,11 +31,6 @@ const columns = [
   {
     width: 200,
     label: "Code",
-    dataKey: "mdct_code",
-  },
-  {
-    width: 200,
-    label: "Brand name Quantity",
     dataKey: "mdct_code",
   },
   {
@@ -96,7 +91,7 @@ function rowContent(_index, row, handleUpdate) {
               color="secondary"
               onClick={() => handleUpdate(row.mdct_id)}
             >
-              Update
+              <EditNoteIcon/>
             </Button>
           ) : (
             row[column.dataKey]

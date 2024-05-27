@@ -52,7 +52,8 @@ export async function fetchListofMedicineCategory() {
   const [listofMedicineCategories] = await pool.query(`
   SELECT *
   FROM medicinecategory
-  `);
+  `)
+
   return listofMedicineCategories;
 }
 
