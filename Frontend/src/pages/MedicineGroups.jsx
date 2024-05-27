@@ -27,7 +27,7 @@ function MedicineGroups() {
         <div className="top">
           <div className="left">
             <IconBreadcrumbs />
-            <FormTextExample placeholderValue="Search Medicine Inventory" type="text" />
+            
           </div>
           <div className="right">
             <ButtonComponent

@@ -190,27 +190,27 @@ export function MedicineCategoryUpdateForm({ medicineCategoryId }) {
       }
     }, [medicineCategoryId]);
   
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            "http://localhost:8080/fetchListOfMedicineCategory"
-          );
-          const mdctCodes = response.data.map((item) => item.mdct_code);
+    // useEffect(() => {
+    //   const fetchData = async () => {
+    //     try {
+    //       const response = await axios.get(
+    //         "http://localhost:8080/fetchListOfMedicineCategory"
+    //       );
+    //       const mdctCodes = response.data.map((item) => item.mdct_code);
   
-          if (mdctCodes.includes(formData.categoryCode.trim())) {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              categoryCode: "Category Code already exists",
-            }));
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-  
-      fetchData();
-    }, [formData.categoryCode]);
+    //       if (mdctCodes.includes(formData.categoryCode.trim())) {
+    //         setErrors((prevErrors) => ({
+    //           ...prevErrors,
+    //           categoryCode: "Category Code already exists",
+    //         }));
+    //       }
+    //     } catch (error) {
+    //       console.error("Error fetching data:", error);
+    //     }
+    
+    //   };
+    //   fetchData();
+    // }, [formData.categoryCode]);
   
     const handleChange = (e) => {
       const { name, value } = e.target;
@@ -260,6 +260,7 @@ export function MedicineCategoryUpdateForm({ medicineCategoryId }) {
               mdct_code: categoryCode,
             }
           );
+          console.log(response.data);
           console.log(response);
           setFormData({
             categoryName: "",
@@ -284,7 +285,7 @@ export function MedicineCategoryUpdateForm({ medicineCategoryId }) {
       <Box sx={{ m: 2 }}>
         <form onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="categoryName">
-            <Form.Label>Medicine Category Name</Form.Label>
+            <Form.Label>Medicine Category Name{medicineCategoryId}</Form.Label>
             <Form.Control
               type="text"
               name="categoryName"

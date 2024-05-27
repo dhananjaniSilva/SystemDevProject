@@ -76,7 +76,7 @@ function Sidebar() {
           {isVisibleinv && (
             <div className="button-group">
               <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/inventoryListofmedicine')}/>
-              <SidebarBtn text={"Medicine Groups"} onClick={()=>handleNavigate('/medicineGroups')}/>
+              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/medicineGroups')}/>
             </div>
           )}
 

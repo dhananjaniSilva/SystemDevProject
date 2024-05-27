@@ -89,12 +89,13 @@ function fixedHeaderContent({
       ))}
       <TableCell align="center">
         <Form.Select value={selectedUnitName} onChange={handleUnitNameChange}>
-          <option value="">All Units</option>
+          <option value="">All Unit Names</option>
           <option value="Tablet">Tablet</option>
           <option value="Capsule">Capsule</option>
           <option value="Bottle">Bottle</option>
           <option value="Repository">Repository</option>
-          <option value="Catridge">Catridge</option>
+          <option value="Cartridge">Cartridge</option>
+          <option value="Unit">Unit</option>
         </Form.Select>
       </TableCell>
     </TableRow>

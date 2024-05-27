@@ -125,7 +125,7 @@ export default function ReactVirtualizedTable() {
   };
 
   return (
-    <Paper style={{ height: 400, width: "100%" }}>
+    <Paper style={{ height: "100%", width: "100%" }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

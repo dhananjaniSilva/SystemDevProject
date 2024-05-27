@@ -55,6 +55,26 @@ export async function fetchListofMedicineCategory() {
   `);
   return listofMedicineCategories;
 }
+
+export async function fetchListofMedicineUnit() {
+  const [listofMedicineCategories] = await pool.query(`
+  SELECT *
+  FROM unit
+  `);
+  return listofMedicineCategories;
+}
+export async function fetchListofMedicineCategorybyId(medicineCategoryId) {
+  const [listofMedicineCategories] = await pool.query(
+    `
+  SELECT *
+  FROM medicinecategory
+  WHERE mdct_id=?
+  `,
+    [medicineCategoryId]
+  )
+  return listofMedicineCategories;
+}
+
 export async function deleteMedicineCategoryById(medicineCategoryId) {
   console.log("type", typeof medicineCategoryId);
 
@@ -133,6 +153,32 @@ export async function createMedicineCategory(categoryName, categoryCode) {
     };
   }
 }
+
+export async function updateMedicineCategory(medicineCategoryId, { mdct_name, mdct_code }) {
+  try {
+    const [response] = await pool.query(
+      "UPDATE medicinecategory SET mdct_name = ?, mdct_code = ? WHERE mdct_id = ?",
+      [mdct_name, mdct_code, medicineCategoryId]
+    );
+    
+    if (response.affectedRows > 0) {
+      return {
+        success: true,
+        message: "Medicine category updated successfully.",
+      };
+    } else {
+      return { success: false, message: "Failed to update medicine category." };
+    }
+  } catch (error) {
+    console.error("Error updating medicine category:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating medicine category.",
+    };
+  }
+}
+
+
 
 export async function fetchMedicineCategoryCode() {
   const [listofMedicineCategoryCode] = await pool.query(`

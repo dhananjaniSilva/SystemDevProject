@@ -7,8 +7,11 @@ import {
   fetchListofMedicine,
   fetchListofMedicineBySearch,
   fetchListofMedicineCategory,
+  fetchListofMedicineCategorybyId,
+  fetchListofMedicineUnit,
   fetchMedicineCategoryCode,
   loginValidate,
+  updateMedicineCategory,
 } from "./database.js";
 
 const app = express();
@@ -51,6 +54,26 @@ app.get("/fetchListOfMedicineCategory", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+app.get("/fetchListOfMedicineUnit", async (req, res) => {
+  try {
+    // console.log("express app ",req.query.username)
+
+    const response = await fetchListofMedicineUnit();
+    return res.json(response);
+  } catch (error) {
+    console.log("Error in loginValidate", error);
+  }
+});
+app.get("/fetchMedicineCategoryById/:medicineCategoryId", async (req, res) => {
+  try {
+    // console.log("express app ",req.params.medicineCategoryId)
+
+    const [response] = await fetchListofMedicineCategorybyId(req.params.medicineCategoryId);
+    return res.json(response);
+  } catch (error) {
+    console.log("Error in loginValidate", error);
+  }
+});
 app.post("/createMedicineCategory", async (req, res) => {
   try {
     const { categoryName, categoryCode } = req.body;
@@ -62,7 +85,21 @@ app.post("/createMedicineCategory", async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
-app.delete("/deleteMedicineCategoryById/:medicineCategoryId",async (req,res)=>{
+app.put("/updateMedicineCategory/:medicineCategoryId", async (req, res) => {
+  try {
+    const { medicineCategoryId } = req.params;
+    const { mdct_name, mdct_code } = req.body;
+
+    // Assuming `updateMedicineCategory` is a function that takes the ID and the new data to update the category
+    const response = await updateMedicineCategory(medicineCategoryId, { mdct_name, mdct_code });
+    
+    console.log(response);
+    return res.json(response);
+  } catch (error) {
+    console.error("Error updating medicine category:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});delete("/deleteMedicineCategoryById/:medicineCategoryId",async (req,res)=>{
   try{
     console.log(req.params.medicineCategoryId)
     const response = await deleteMedicineCategoryById(req.params.medicineCategoryId);
