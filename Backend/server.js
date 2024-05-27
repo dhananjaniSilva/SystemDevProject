@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import {
+  createMedicine,
   createMedicineCategory,
   deleteMedicineById,
   deleteMedicineCategoryById,
@@ -44,6 +45,20 @@ app.get("/fetchListOfMedicine", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+app.post("/createMedicine", async (req, res) => {
+  try {
+    const response = await createMedicine(req.body);
+    console.log(response)
+    return res.json(response);
+  } catch (error) {
+    console.error("Error creating medicine category:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+
 app.get("/fetchListOfMedicineCategory", async (req, res) => {
   try {
     // console.log("express app ",req.query.username)
@@ -54,6 +69,10 @@ app.get("/fetchListOfMedicineCategory", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+
+
+
+
 app.get("/fetchListOfMedicineUnit", async (req, res) => {
   try {
     // console.log("express app ",req.query.username)

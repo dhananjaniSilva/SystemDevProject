@@ -2,6 +2,7 @@ import { Box, Button, FormLabel, Stack } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import Swal from "sweetalert2";
 
 function MedicineEnterForm() {
   const [medicineCategoryCodesArray, setMedicineCategoryCodesArray] = useState(
@@ -49,35 +50,41 @@ function MedicineEnterForm() {
 
   const validateForm = () => {
     const newErrors = {};
-  
+
     if (!formData.medicine_brandname.trim()) {
       newErrors.medicine_brandname = "Brand Name is required";
     }
-  
+
     if (!formData.medicine_genericname.trim()) {
       newErrors.medicine_genericname = "Generic Name is required";
     }
-  
+
     if (!formData.unit_id) {
       newErrors.unit_id = "Unit Name is required";
     }
-  
+
     if (!formData.mdct_id) {
       newErrors.mdct_id = "Category Code is required";
     }
-  
+
     if (!formData.medicine_packsize) {
       newErrors.medicine_packsize = "Pack Size is required";
     }
-  
-    if (newErrors.medicine_brandname || newErrors.medicine_genericname || newErrors.unit_id || newErrors.mdct_id || newErrors.medicine_packsize) {
+
+    if (
+      newErrors.medicine_brandname ||
+      newErrors.medicine_genericname ||
+      newErrors.unit_id ||
+      newErrors.mdct_id ||
+      newErrors.medicine_packsize
+    ) {
       setErrors(newErrors);
       return false;
     }
-  
+
     return true;
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -86,8 +93,29 @@ function MedicineEnterForm() {
     }
 
     try {
-      // Your form submission logic goes here
+      const response = await axios.post(
+        "http://localhost:8080/createMedicine",
+        formData
+      );
       console.log("Form submitted:", formData);
+      console.log("API response:", response.data);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your medicine has been saved",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      // Optionally, you can reset the form data here
+      setFormData({
+        medicine_brandname: "",
+        medicine_genericname: "",
+        unit_id: 0,
+        mdct_id: 0,
+        medicine_packsize: 0,
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -95,10 +123,13 @@ function MedicineEnterForm() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     // Convert to integer if applicable
-    const intValue = name === "medicine_packsize" || name === "unit_id" || name === "mdct_id" ? parseInt(value) : value;
-  
+    const intValue =
+      name === "medicine_packsize" || name === "unit_id" || name === "mdct_id"
+        ? parseInt(value)
+        : value;
+
     setFormData({
       ...formData,
       [name]: intValue,
@@ -108,7 +139,6 @@ function MedicineEnterForm() {
       [name]: "",
     });
   };
-  
 
   return (
     <Box sx={{ m: 2 }}>

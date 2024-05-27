@@ -34,6 +34,11 @@ const columns = [
     dataKey: "mdct_code",
   },
   {
+    width: 200,
+    label: "Brand name Quantity",
+    dataKey: "mdct_code",
+  },
+  {
     width: 100,
     label: "Actions",
     dataKey: "actions",

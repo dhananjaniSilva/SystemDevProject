@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
 import { Button } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-
+import Swal from "sweetalert2";
 const columns = [
   { width: 300, label: "Medicine Id", dataKey: "medicine_info" },
   { width: 200, label: "Brand Name", dataKey: "medicine_brandname" },
@@ -105,8 +105,42 @@ function fixedHeaderContent({
 function rowContent(_index, row) {
   const isHighQuantity = row.medicine_inhandquantity < 50;
 
-  const handleDelete = (medicineId) => {
-    axios.delete(`http://localhost:8080/deleteMedicineById/${medicineId}`);
+  const handleDelete = async (medicineId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          axios.delete(
+            `http://localhost:8080/deleteMedicineById/${medicineId}`
+          );
+          console.log("Medicine deleted successfully.");
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
+          window.location.reload()
+          // Optionally, you can update your UI or perform other actions upon successful deletion.
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            footer: '<a href="#">Why do I have this issue?</a>',
+          });
+          console.error("Error deleting medicine:", error);
+
+          // Optionally, you can handle the error or display a message to the user.
+        }
+      }
+    });
   };
 
   const rowStyle = {

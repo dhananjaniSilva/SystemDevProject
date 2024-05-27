@@ -71,9 +71,35 @@ export async function fetchListofMedicineCategorybyId(medicineCategoryId) {
   WHERE mdct_id=?
   `,
     [medicineCategoryId]
-  )
+  );
   return listofMedicineCategories;
 }
+export async function createMedicine(formData) {
+  try {
+    const { medicine_brandname, medicine_genericname, mdct_id, unit_id, medicine_packsize } = formData;
+
+    const [response] = await pool.query(
+      "INSERT INTO medicine (medicine_brandname, medicine_genericname, medicine_categoryid, medicine_unitid, medicine_packsize) VALUES (?, ?, ?, ?, ?)",
+      [medicine_brandname, medicine_genericname, mdct_id, unit_id, medicine_packsize]
+    );
+
+    if (response.affectedRows > 0) {
+      return {
+        success: true,
+        message: "Medicine created successfully.",
+      };
+    } else {
+      return { success: false, message: "Failed to create medicine." };
+    }
+  } catch (error) {
+    console.error("Error creating medicine:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating medicine.",
+    };
+  }
+}
+
 
 export async function deleteMedicineCategoryById(medicineCategoryId) {
   console.log("type", typeof medicineCategoryId);
@@ -154,13 +180,16 @@ export async function createMedicineCategory(categoryName, categoryCode) {
   }
 }
 
-export async function updateMedicineCategory(medicineCategoryId, { mdct_name, mdct_code }) {
+export async function updateMedicineCategory(
+  medicineCategoryId,
+  { mdct_name, mdct_code }
+) {
   try {
     const [response] = await pool.query(
       "UPDATE medicinecategory SET mdct_name = ?, mdct_code = ? WHERE mdct_id = ?",
       [mdct_name, mdct_code, medicineCategoryId]
     );
-    
+
     if (response.affectedRows > 0) {
       return {
         success: true,
@@ -177,8 +206,6 @@ export async function updateMedicineCategory(medicineCategoryId, { mdct_name, md
     };
   }
 }
-
-
 
 export async function fetchMedicineCategoryCode() {
   const [listofMedicineCategoryCode] = await pool.query(`
