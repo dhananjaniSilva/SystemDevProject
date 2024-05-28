@@ -15,6 +15,7 @@ import {
   faGear,
   faEllipsisVertical,
   faIceCream,
+  faNewspaper,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
@@ -88,7 +89,10 @@ function Sidebar() {
             </div>
           )}
           <SidebarBtn icon={faBell} text={"Notifications"} />
+          <SidebarBtn icon={faNewspaper} text={"Invoice Bill"} onClick={()=>handleNavigate('/invoicebill')}/>
           <SidebarBtn icon={faGear} text={"Application Settings"} />
+
+          
         </Offcanvas.Body>
       </Offcanvas>
     </>

@@ -11,64 +11,76 @@ import InventoryListOfMedicine from "./pages/InventoryListOfMedicine";
 import MedicineGroups from "./pages/MedicineGroups";
 import NavBar from "./components/NavBar";
 import Invoices from "./pages/Invoices";
+import InvoiceBill from "./pages/InvoiceBill";
+import AuthContextProvider from "./contexts/AuthContextProvider";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route
-            path="/dashboard"
-            element={
-              <>
-              
-                <Dashboard />
-                <Sidebar />
-              </>
-            }
-          />
-          <Route path="/authorize" element={<AuthorizedPage />} />
-          <Route path="/unauthorized" element={<UnAuthorizedPage />} />
-          <Route
-            path="/inventoryListofmedicine"
-            element={
-              <>
-                <InventoryListOfMedicine />
-                <Sidebar />
-              </>
-            }
-          />
-           <Route
-            path="/invoice"
-            element={
-              <>
-                <Invoices />
-                <Sidebar />
-              </>
-            }
-          />
-          <Route
-            path="/medicinegroups"
-            element={
-              <>
-                <MedicineGroups />
-                <Sidebar />
-              </>
-            }
-          />
-          <Route
-            path="/nav"
-            element={
-              <>
-               <NavBar/>
-              </>
-            }
-          />
-        </Routes>
-      </Router>
+        <Router>
+      <AuthContextProvider>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <>
+                  <Dashboard />
+                  <Sidebar />
+                </>
+              }
+            />
+            <Route path="/authorize" element={<AuthorizedPage />} />
+            <Route path="/unauthorized" element={<UnAuthorizedPage />} />
+            <Route
+              path="/inventoryListofmedicine"
+              element={
+                <>
+                  <InventoryListOfMedicine />
+                  <Sidebar />
+                </>
+              }
+            />
+            <Route
+              path="/invoice"
+              element={
+                <>
+                  <Invoices />
+                  <Sidebar />
+                </>
+              }
+            />
+            <Route
+              path="/medicinegroups"
+              element={
+                <>
+                  <MedicineGroups />
+                  <Sidebar />
+                </>
+              }
+            />
+            <Route
+              path="/nav"
+              element={
+                <>
+                  <NavBar />
+                </>
+              }
+            />
+            <Route
+              path="/invoicebill"
+              element={
+                <>
+                  <Sidebar />
+                  <InvoiceBill />
+                </>
+              }
+            />
+          </Routes>
+      </AuthContextProvider>
+        </Router>
     </>
   );
 }

@@ -9,24 +9,41 @@ const pool = mysql
   })
   .promise();
 
-export async function loginValidate(userObject) {
-  // console.log(userObject.username)
-  const [user] = await pool.query(
-    "SELECT user_username FROM user WHERE user_username = ? AND user_password = ?",
-    [userObject.username, userObject.password]
-  );
-  console.log(user);
-  if (user.length > 0) {
-    // User exists, return true
-    console.log("this is the selected user :", user);
-    return true;
-  } else {
-    // User does not exist, return false
-    console.log("User does not exist:", user);
-    return false;
+  export async function loginValidate(userObject) {
+    try {
+      // Execute the query to check the user's credentials
+      const [user] = await pool.query(
+        "SELECT user_username, user_role_id FROM user WHERE user_username = ? AND user_password = ?",
+        [userObject.username, userObject.password]
+      );
+  
+      // Check if the user exists
+      if (user.length > 0) {
+        // User exists, return an object with the user details and a success flag
+        return {
+          success: true,
+          username: user[0].user_username,
+          role: user[0].user_role_id
+        };
+      } else {
+        // User does not exist, return an object with the success flag set to false
+        return {
+          success: false,
+          username: null,
+          role: null
+        };
+      }
+    } catch (error) {
+      console.error("Error validating user:", error);
+      return {
+        success: false,
+        username: null,
+        role: null,
+        error: error.message
+      };
+    }
   }
-}
-
+  
 export async function fetchListofMedicine() {
   const [listofMedicine] = await pool.query(`
     SELECT 

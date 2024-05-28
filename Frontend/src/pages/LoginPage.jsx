@@ -30,8 +30,9 @@ function LoginPage() {
         params: requestUserObjects,
       });
       console.log("This is the response", res.data);
-      if (res.data.response === true) {
-        console.log("Dashboard");
+      if (res.data.auth === true) {
+        localStorage.setItem("token",res.data.token)
+        localStorage.setItem("username",res.data.username)
         navigate("/dashboard"); //3
       } else {
         console.log("Unauthorized");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../stylings/pages/dashboard.css";
 import Stack from "react-bootstrap/Stack";
 import DashbaordCardComponent from "../components/DashbaordCardComponent";
@@ -6,8 +6,12 @@ import HealthAndSafetyOutlinedIcon from '@mui/icons-material/HealthAndSafetyOutl
 import AddCardOutlinedIcon from '@mui/icons-material/AddCardOutlined';
 import MedicalServicesOutlinedIcon from '@mui/icons-material/MedicalServicesOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Dashboard() {
+  const navigate=useNavigate();
+  
   return (
     <div className="body">
       <div className="outer-div">
