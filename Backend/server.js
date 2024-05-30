@@ -2,11 +2,13 @@ import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import {
+  createInvoiceAndRetrieveId,
   createMedicine,
   createMedicineCategory,
   deleteMedicineById,
   deleteMedicineCategoryById,
   fetchListofMedicine,
+  fetchListofMedicineByMedicineId,
   fetchListofMedicineBySearch,
   fetchListofMedicineCategory,
   fetchListofMedicineCategorybyId,
@@ -189,6 +191,7 @@ async (req, res) => {
   }
 });
 app.get("/searchMedicine", async (req, res) => {
+  console.log("object");
   try {
     // console.log("express app ",req.query.username)
     console.log("query", req.query.searchVal);
@@ -198,6 +201,31 @@ app.get("/searchMedicine", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
+
+app.get("/searchMedicinebyId/:medicineId", async (req, res) => {
+  try {
+    const medicineIdWithCode = req.params.medicineId;
+
+    const regex = /^([A-Z]{2,3})(\d+)$/;
+    const match = medicineIdWithCode.match(regex);
+
+    if (!match) {
+      return res.status(400).json({ error: "Invalid Medicine ID format" });
+    }
+
+    const categoryCode = match[1];
+    const medicineId = parseInt(match[2], 10);
+    const [response] = await fetchListofMedicineByMedicineId(
+      categoryCode,
+      medicineId
+    );
+    return res.json(response);
+  } catch (error) {
+    console.log("Error in searchMedicinebyId", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.delete("/deleteMedicineById/:medicineId", async (req, res) => {
   try {
     const response = await deleteMedicineById(req.params.medicineId);
@@ -212,9 +240,19 @@ app.get("/fetchListOfMedicineCategoryCode", async (req, res) => {
     // console.log("express app ",req.query.username)
 
     const response = await fetchMedicineCategoryCode();
+    console.log("This is the response",response)
     return res.json(response);
   } catch (error) {
     console.log("Error in loginValidate", error);
+  }
+});
+
+app.get("/createNewInvoice", async (req, res) => {
+  try {
+    const response = await createInvoiceAndRetrieveId();
+    return response;
+  } catch (error) {
+    console.log("Error when creating the invoice", error);
   }
 });
 const port = 8080;

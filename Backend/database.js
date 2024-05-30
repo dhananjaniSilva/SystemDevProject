@@ -1,5 +1,10 @@
 import mysql from "mysql2";
 
+// host: "srv1327.hstgr.io",
+// user: "u323893650_umesha",
+// password: "Umesha123##11",
+// database: "u323893650_phamacy",
+
 const pool = mysql
   .createPool({
     host: "localhost",
@@ -16,7 +21,7 @@ const pool = mysql
         "SELECT user_username, user_role_id FROM user WHERE user_username = ? AND user_password = ?",
         [userObject.username, userObject.password]
       );
-  
+
       // Check if the user exists
       if (user.length > 0) {
         // User exists, return an object with the user details and a success flag
@@ -43,7 +48,7 @@ const pool = mysql
       };
     }
   }
-  
+
 export async function fetchListofMedicine() {
   const [listofMedicine] = await pool.query(`
     SELECT 
@@ -65,6 +70,34 @@ export async function fetchListofMedicine() {
   return listofMedicine;
 }
 
+
+export async function fetchListofMedicineByMedicineId(categoryCode, medicineId) {
+  const query = `
+    SELECT 
+      medicine.*, 
+      medicinecategory.mdct_code
+    FROM 
+      medicine 
+    JOIN
+      medicinecategory
+    ON
+      medicine.medicine_categoryid = medicinecategory.mdct_id
+    WHERE 
+      medicine.medicine_id LIKE ? AND medicinecategory.mdct_code = ?
+  `;
+  
+  // Adding '%' wildcards for LIKE clause
+  const likeMedicineId = `%${medicineId}%`;
+
+  const [listofMedicine] = await pool.query(query, [likeMedicineId, categoryCode]);
+  
+  console.log("ff", likeMedicineId, categoryCode);
+  console.log(listofMedicine);
+  
+  return listofMedicine;
+}
+
+  
 export async function fetchListofMedicineCategory() {
   const [listofMedicineCategories] = await pool.query(`
   SELECT *
@@ -261,6 +294,38 @@ export async function deleteMedicineById(medicineId) {
     return result; // Return the result if needed
   } catch (error) {
     console.error("Error deleting medicine:", error);
+    throw error; // Rethrow the error to handle it in the caller function
+  }
+}
+export async function createInvoiceAndRetrieveId() {
+  try {
+    let invoiceId;
+
+    // Check if there are any incomplete invoices
+    const [incompleteInvoices] = await pool.query(
+      `SELECT inv_id FROM invoice WHERE inv_updatestatus = 0 LIMIT 1`
+    );
+
+    if (incompleteInvoices.length > 0) {
+      // If incomplete invoices found, return the ID of the first incomplete invoice
+     
+      invoiceId = incompleteInvoices[0].inv_id;
+    } else {
+      // If no incomplete invoices found, create a new invoice
+      const newInvoice = await pool.query(
+        `INSERT INTO invoice ( inv_datetime, inv_total, inv_padiamount, inv_updatestatus) VALUES ( NOW(), ?, ?, 0)`,
+        [ 0, 0]
+      );
+
+
+      // Get the ID of the newly created invoice
+      invoiceId = newInvoice.insertId;
+      console.log("New invoice inserted id",newInvoice.insertId)
+    }
+    console.log("inv",invoiceId)
+    return invoiceId;
+  } catch (error) {
+    console.error("Error creating or retrieving invoice ID:", error);
     throw error; // Rethrow the error to handle it in the caller function
   }
 }

@@ -13,7 +13,8 @@ import MedicineCategoryForm from "../components/Inventory/MedicineCategoryForm";
 import OverlayDialogBox from "../components/OverlayDialogBox";
 
 function MedicineGroups() {
-  const { boolValue, setBoolValue, medicineCategoryId, setMedicineCategoryId } = useContext(PopupContext);
+  const { boolValue, setBoolValue, medicineCategoryId, setMedicineCategoryId } =
+    useContext(PopupContext);
 
   const handleAddMedicineCategory = () => {
     setMedicineCategoryId(0);
@@ -27,12 +28,11 @@ function MedicineGroups() {
         <div className="top">
           <div className="left">
             <IconBreadcrumbs />
-            
           </div>
           <div className="right">
             <ButtonComponent
               variant="danger"
-              text="Add Medicine"
+              text="Add New Category"
               className="cat1"
               icon={AddOutlinedIcon}
               onClick={handleAddMedicineCategory}

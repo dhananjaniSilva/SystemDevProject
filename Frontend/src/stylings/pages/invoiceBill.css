@@ -1,0 +1,47 @@
+.outer-div{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+.top{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 200px;
+}
+.top .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50%;
+}
+.top .right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50%;
+    align-items: end;
+    
+}
+#select{
+    width: 17vw;
+    
+}
+.bodypart-div{
+    display: flex;
+    height: 100%;
+    justify-content: space-evenly;
+    
+
+}
+.bodypart-left{
+    width: 30%;
+    
+
+}
+.bodypart-right{
+    width: 60%;
+    
+
+}
