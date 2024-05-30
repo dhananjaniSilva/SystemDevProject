@@ -88,6 +88,7 @@ function InvoiceForm({ addMedicineData }) {
           `http://localhost:8080/searchMedicinebyId/${medicineId}`
         );
         setMedicineData({
+          medicineId: res.data.medicine_id,
           medicineBrandName: res.data.medicine_brandname,
           medicineGenericName: res.data.medicine_genericname,
           medicineUnitPrice: res.data.medicine_unitprice,
@@ -164,9 +165,7 @@ function InvoiceForm({ addMedicineData }) {
           Submit
         </Button>
         {formErrors.medicine && (
-          <div className="invalid-feedback d-block">
-            {formErrors.medicine}
-          </div>
+          <div className="invalid-feedback d-block">{formErrors.medicine}</div>
         )}
       </form>
     </div>

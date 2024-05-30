@@ -7,6 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
+import axios from "axios";
 
 function ccyFormat(num) {
   return `${num.toFixed(2)}`;
@@ -16,7 +18,7 @@ function subtotal(items) {
   return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
 }
 
-export default function InvoiceTable({ medicineData }) {
+export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
   const [payment, setPayment] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
@@ -31,11 +33,46 @@ export default function InvoiceTable({ medicineData }) {
       setPaymentError("");
     }
   };
-  useEffect(()=>{
-    console.log(medicineData)
-  },[medicineData])
 
-  const rows = medicineData.map((medicine, index) => ({
+
+
+
+
+  const handlePayInvoice = async () => {
+    // Get the current datetime in the format "YYYY-MM-DD HH:MM:SS"
+    const currentDateTime = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+  
+    // Create the updated invoiceObject with paidAmount, invoiceDate, and userId
+    const updatedInvoiceObject = {
+      ...invoiceObject,
+      paidAmount: parseFloat(payment),
+      invoiceDate: currentDateTime,
+      userId: localStorage.getItem("userId"),
+    };
+  
+    try {
+      // Send the updated invoiceObject to the backend to complete the invoice
+      const response = await axios.post(
+        "http://localhost:8080/completeInvoice",
+        updatedInvoiceObject
+      );
+      console.log("This is the response",response)
+      // Handle the response if needed
+      // console.log("Invoice completed successfully:", response.data);
+    } catch (error) {
+      // Handle error response
+      console.error("Error completing the invoice:", error);
+    }
+  };
+
+
+
+
+
+  const rows = invoiceObject.medicineData.map((medicine, index) => ({
     desc: ` ${medicine.medicineBrandName}`,
     qty: parseInt(medicine.medicineQuantity),
     unit: parseFloat(medicine.medicineUnitPrice),
@@ -51,7 +88,6 @@ export default function InvoiceTable({ medicineData }) {
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
-          
           <TableRow>
             <TableCell>Index</TableCell>
             <TableCell>Desc</TableCell>
@@ -90,6 +126,14 @@ export default function InvoiceTable({ medicineData }) {
           <TableRow>
             <TableCell colSpan={3}>Balance</TableCell>
             <TableCell align="right">{ccyFormat(balance)}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={4} />
+            <TableCell align="right">
+              <Button variant="contained" onClick={handlePayInvoice}>
+                Pay Invoice
+              </Button>
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>

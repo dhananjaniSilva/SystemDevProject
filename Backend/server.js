@@ -1,7 +1,8 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import {
+  completeInvoice,
   createInvoiceAndRetrieveId,
   createMedicine,
   createMedicineCategory,
@@ -240,7 +241,7 @@ app.get("/fetchListOfMedicineCategoryCode", async (req, res) => {
     // console.log("express app ",req.query.username)
 
     const response = await fetchMedicineCategoryCode();
-    console.log("This is the response",response)
+    console.log("This is the response", response);
     return res.json(response);
   } catch (error) {
     console.log("Error in loginValidate", error);
@@ -250,11 +251,27 @@ app.get("/fetchListOfMedicineCategoryCode", async (req, res) => {
 app.get("/createNewInvoice", async (req, res) => {
   try {
     const response = await createInvoiceAndRetrieveId();
-    return response;
+    res.status(200).send(response.toString());
   } catch (error) {
     console.log("Error when creating the invoice", error);
+    res.status(500).send("Error creating the invoice");
   }
 });
+app.post("/completeInvoice", async (req, res) => {
+  try {
+    const updatedInvoiceObject = req.body;
+    // Process the updatedInvoiceObject as needed
+    const response = completeInvoice(req.body);
+
+    // Assuming you want to return some response after processing
+    return response;
+  } catch (error) {
+    console.log("Error completing the invoice", error);
+    return { createdStatus: false, message: "Error creating the invoice" };
+    res.status(500).send("Error completing the invoice");
+  }
+});
+
 const port = 8080;
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);

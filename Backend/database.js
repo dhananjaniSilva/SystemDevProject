@@ -14,40 +14,40 @@ const pool = mysql
   })
   .promise();
 
-  export async function loginValidate(userObject) {
-    try {
-      // Execute the query to check the user's credentials
-      const [user] = await pool.query(
-        "SELECT user_username, user_role_id FROM user WHERE user_username = ? AND user_password = ?",
-        [userObject.username, userObject.password]
-      );
+export async function loginValidate(userObject) {
+  try {
+    // Execute the query to check the user's credentials
+    const [user] = await pool.query(
+      "SELECT user_username, user_role_id FROM user WHERE user_username = ? AND user_password = ?",
+      [userObject.username, userObject.password]
+    );
 
-      // Check if the user exists
-      if (user.length > 0) {
-        // User exists, return an object with the user details and a success flag
-        return {
-          success: true,
-          username: user[0].user_username,
-          role: user[0].user_role_id
-        };
-      } else {
-        // User does not exist, return an object with the success flag set to false
-        return {
-          success: false,
-          username: null,
-          role: null
-        };
-      }
-    } catch (error) {
-      console.error("Error validating user:", error);
+    // Check if the user exists
+    if (user.length > 0) {
+      // User exists, return an object with the user details and a success flag
+      return {
+        success: true,
+        username: user[0].user_username,
+        role: user[0].user_role_id,
+      };
+    } else {
+      // User does not exist, return an object with the success flag set to false
       return {
         success: false,
         username: null,
         role: null,
-        error: error.message
       };
     }
+  } catch (error) {
+    console.error("Error validating user:", error);
+    return {
+      success: false,
+      username: null,
+      role: null,
+      error: error.message,
+    };
   }
+}
 
 export async function fetchListofMedicine() {
   const [listofMedicine] = await pool.query(`
@@ -70,8 +70,10 @@ export async function fetchListofMedicine() {
   return listofMedicine;
 }
 
-
-export async function fetchListofMedicineByMedicineId(categoryCode, medicineId) {
+export async function fetchListofMedicineByMedicineId(
+  categoryCode,
+  medicineId
+) {
   const query = `
     SELECT 
       medicine.*, 
@@ -85,24 +87,26 @@ export async function fetchListofMedicineByMedicineId(categoryCode, medicineId) 
     WHERE 
       medicine.medicine_id LIKE ? AND medicinecategory.mdct_code = ?
   `;
-  
+
   // Adding '%' wildcards for LIKE clause
   const likeMedicineId = `%${medicineId}%`;
 
-  const [listofMedicine] = await pool.query(query, [likeMedicineId, categoryCode]);
-  
+  const [listofMedicine] = await pool.query(query, [
+    likeMedicineId,
+    categoryCode,
+  ]);
+
   console.log("ff", likeMedicineId, categoryCode);
   console.log(listofMedicine);
-  
+
   return listofMedicine;
 }
 
-  
 export async function fetchListofMedicineCategory() {
   const [listofMedicineCategories] = await pool.query(`
   SELECT *
   FROM medicinecategory
-  `)
+  `);
 
   return listofMedicineCategories;
 }
@@ -127,11 +131,23 @@ export async function fetchListofMedicineCategorybyId(medicineCategoryId) {
 }
 export async function createMedicine(formData) {
   try {
-    const { medicine_brandname, medicine_genericname, mdct_id, unit_id, medicine_packsize } = formData;
+    const {
+      medicine_brandname,
+      medicine_genericname,
+      mdct_id,
+      unit_id,
+      medicine_packsize,
+    } = formData;
 
     const [response] = await pool.query(
       "INSERT INTO medicine (medicine_brandname, medicine_genericname, medicine_categoryid, medicine_unitid, medicine_packsize) VALUES (?, ?, ?, ?, ?)",
-      [medicine_brandname, medicine_genericname, mdct_id, unit_id, medicine_packsize]
+      [
+        medicine_brandname,
+        medicine_genericname,
+        mdct_id,
+        unit_id,
+        medicine_packsize,
+      ]
     );
 
     if (response.affectedRows > 0) {
@@ -150,7 +166,6 @@ export async function createMedicine(formData) {
     };
   }
 }
-
 
 export async function deleteMedicineCategoryById(medicineCategoryId) {
   console.log("type", typeof medicineCategoryId);
@@ -308,24 +323,61 @@ export async function createInvoiceAndRetrieveId() {
 
     if (incompleteInvoices.length > 0) {
       // If incomplete invoices found, return the ID of the first incomplete invoice
-     
+
       invoiceId = incompleteInvoices[0].inv_id;
     } else {
       // If no incomplete invoices found, create a new invoice
       const newInvoice = await pool.query(
-        `INSERT INTO invoice ( inv_datetime, inv_total, inv_padiamount, inv_updatestatus) VALUES ( NOW(), ?, ?, 0)`,
-        [ 0, 0]
+        `INSERT INTO invoice ( inv_datetime, inv_padiamount, inv_updatestatus) VALUES ( NOW(), ?, 0)`,
+        [0]
       );
-
 
       // Get the ID of the newly created invoice
       invoiceId = newInvoice.insertId;
-      console.log("New invoice inserted id",newInvoice.insertId)
+      console.log("New invoice inserted id", newInvoice.insertId);
     }
-    console.log("inv",invoiceId)
+    console.log("inv", invoiceId);
     return invoiceId;
   } catch (error) {
     console.error("Error creating or retrieving invoice ID:", error);
+    throw error; // Rethrow the error to handle it in the caller function
+  }
+}
+
+export async function completeInvoice(invoiceObject) {
+  try {
+    // Update invoice data in the invoice table based on conditions
+    await pool.query(
+      `UPDATE invoice 
+       SET inv_userid = ?, inv_datetime = ?, inv_padiamount = ?, inv_updatestatus = ?
+       WHERE inv_id = ? AND inv_updatestatus = 0`,
+      [
+        invoiceObject.userId,
+        invoiceObject.invoiceDate,
+        invoiceObject.paidAmount,
+        1, // Assuming 1 represents the status for a completed invoice
+        invoiceObject.invoiceId
+      ]
+    );
+
+    // Insert medicine data into the invoicemedicine table
+    for (const medicine of invoiceObject.medicineData) {
+      await pool.query(
+        `INSERT INTO invoicemedicine (invmd_invid, invmd_mdid, invmd_quantity) VALUES (?, ?, ?)`,
+        [
+          invoiceObject.invoiceId,
+          medicine.medicineId,
+          medicine.medicineQuantity,
+        ]
+      );
+    }
+
+    console.log("Invoice and medicine data inserted successfully");
+    return { createdStatus: true, message: "Successfully created" };
+  } catch (error) {
+    console.error("Error completing invoice:", error);
+    return { createdStatus: false, message: "Error creating the invoice" };
+
     throw error; // Rethrow the error to handle it in the caller function
   }
 }
