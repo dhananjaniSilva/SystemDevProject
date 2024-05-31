@@ -11,11 +11,20 @@ import { Button } from "@mui/material";
 import axios from "axios";
 
 function ccyFormat(num) {
-  return `${num.toFixed(2)}`;
+  const number = parseFloat(num);
+  if (isNaN(number)) {
+    return "0.00";
+  }
+  return `${number.toFixed(2)}`;
 }
 
 function subtotal(items) {
-  return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+  return items.map(({ price }) => parseFloat(price) || 0).reduce((sum, i) => sum + i, 0);
+}
+
+// Helper function to safely parse payment
+function parsePayment(payment) {
+  return payment.trim() === "" ? 0 : parseFloat(payment);
 }
 
 export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
@@ -34,62 +43,48 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
     }
   };
 
-
-
-
-
   const handlePayInvoice = async () => {
-    // Get the current datetime in the format "YYYY-MM-DD HH:MM:SS"
-    const currentDateTime = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-  
-    // Create the updated invoiceObject with paidAmount, invoiceDate, and userId
+    const currentDateTime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
     const updatedInvoiceObject = {
       ...invoiceObject,
       paidAmount: parseFloat(payment),
       invoiceDate: currentDateTime,
       userId: localStorage.getItem("userId"),
     };
-  
+
     try {
-      // Send the updated invoiceObject to the backend to complete the invoice
-      const response = await axios.post(
-        "http://localhost:8080/completeInvoice",
-        updatedInvoiceObject
-      );
-      console.log("This is the response",response)
-      // Handle the response if needed
-      // console.log("Invoice completed successfully:", response.data);
+      const response = await axios.post("http://localhost:8080/completeInvoice", updatedInvoiceObject);
+      console.log("This is the response", response);
     } catch (error) {
-      // Handle error response
       console.error("Error completing the invoice:", error);
     }
   };
 
-
-
-
-
   const rows = invoiceObject.medicineData.map((medicine, index) => ({
     desc: ` ${medicine.medicineBrandName}`,
-    qty: parseInt(medicine.medicineQuantity),
-    unit: parseFloat(medicine.medicineUnitPrice),
-    price:
-      parseInt(medicine.medicineQuantity) *
-      parseFloat(medicine.medicineUnitPrice),
+    qty: parseInt(medicine.medicineQuantity) || 0,
+    unit: parseFloat(medicine.medicineUnitPrice) || 0,
+    price: (parseInt(medicine.medicineQuantity) || 0) * (parseFloat(medicine.medicineUnitPrice) || 0),
+  }));
+
+  const emptyRowsCount = Math.max(4 - rows.length, 0);
+  const emptyRows = Array.from({ length: emptyRowsCount }, (_, index) => ({
+    desc: "",
+    qty: "",
+    unit: "",
+    price: "",
   }));
 
   const invoiceSubtotal = subtotal(rows);
-  const balance = invoiceSubtotal - parseFloat(payment);
+  const balance = invoiceSubtotal - parsePayment(payment);
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 3 }}>
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
           <TableRow>
-            <TableCell>Index</TableCell>
+            <TableCell>Item no.</TableCell>
             <TableCell>Desc</TableCell>
             <TableCell align="right">Qty.</TableCell>
             <TableCell align="right">Unit Price</TableCell>
@@ -97,7 +92,7 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
+          {rows.concat(emptyRows).map((row, index) => (
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{row.desc}</TableCell>

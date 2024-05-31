@@ -328,7 +328,7 @@ export async function createInvoiceAndRetrieveId() {
     } else {
       // If no incomplete invoices found, create a new invoice
       const newInvoice = await pool.query(
-        `INSERT INTO invoice ( inv_datetime, inv_padiamount, inv_updatestatus) VALUES ( NOW(), ?, 0)`,
+        `INSERT INTO invoice ( inv_datetime, inv_paidamount, inv_updatestatus) VALUES ( NOW(), ?, 0)`,
         [0]
       );
 
@@ -343,20 +343,19 @@ export async function createInvoiceAndRetrieveId() {
     throw error; // Rethrow the error to handle it in the caller function
   }
 }
-
 export async function completeInvoice(invoiceObject) {
   try {
     // Update invoice data in the invoice table based on conditions
     await pool.query(
       `UPDATE invoice 
-       SET inv_userid = ?, inv_datetime = ?, inv_padiamount = ?, inv_updatestatus = ?
+       SET inv_userid = ?, inv_datetime = ?, inv_paidamount = ?, inv_updatestatus = ?
        WHERE inv_id = ? AND inv_updatestatus = 0`,
       [
-        invoiceObject.userId,
+        1,
         invoiceObject.invoiceDate,
         invoiceObject.paidAmount,
         1, // Assuming 1 represents the status for a completed invoice
-        invoiceObject.invoiceId
+        invoiceObject.invoiceId,
       ]
     );
 
@@ -369,6 +368,28 @@ export async function completeInvoice(invoiceObject) {
           medicine.medicineId,
           medicine.medicineQuantity,
         ]
+      );
+
+      const [rows] = await pool.query(
+        `SELECT medicine_inhandquantity FROM medicine WHERE medicine_id=?`,
+        [medicine.medicineId]
+      );
+
+      if (rows.length === 0) {
+        throw new Error(`Medicine with ID ${medicine.medicineId} not found`);
+      }
+
+      const currentQuantity = rows[0].medicine_inhandquantity;
+      const newQuantity = currentQuantity - medicine.medicineQuantity;
+
+      if (newQuantity < 0) {
+        throw new Error(`Not enough quantity for medicine with ID ${medicine.medicineId}`);
+      }
+
+      await pool.query(
+        `UPDATE medicine SET medicine_inhandquantity = ? 
+        WHERE medicine_id=?`,
+        [newQuantity, medicine.medicineId]
       );
     }
 

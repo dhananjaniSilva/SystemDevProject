@@ -9,12 +9,26 @@ export default function InvoiceBill() {
   const [invoiceObject, setInvoiceObject] = useState({
     medicineData: [],
     invoiceId: "", // Initialize invoiceId as empty string
-    paidAmount: 0 // Initialize paidAmount as 0
+    paidAmount: 0, // Initialize paidAmount as 0
   });
 
-  useEffect(()=>{
-    console.log(invoiceObject)
-  },[invoiceObject])
+  useEffect(() => {
+    const createNewInvoice = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/createNewInvoice");
+        const newInvoiceId = response.data;
+        console.log(newInvoiceId);
+        setInvoiceObject((prev) => ({
+          ...prev,
+          invoiceId: newInvoiceId,
+        }));
+      } catch (error) {
+        console.error("Error creating new invoice:", error);
+      }
+    };
+    createNewInvoice();
+  }, [setInvoiceObject]);
+
   // Function to add medicine data to the list
   const addMedicineData = (newMedicine) => {
     setInvoiceObject({
@@ -31,7 +45,6 @@ export default function InvoiceBill() {
         `http://localhost:8080/createNewInvoice`
       );
       const newInvoiceId = response.data;
-      console.log("New Invoice ID:", newInvoiceId);
       setInvoiceObject({
         ...invoiceObject,
         invoiceId: newInvoiceId, // Set the retrieved invoice ID in the invoiceObject
@@ -53,7 +66,7 @@ export default function InvoiceBill() {
                 Invoice Id: {invoiceObject.invoiceId && invoiceObject.invoiceId}
               </h5>{" "}
               {/* Display the invoiceId */}
-              <Button onClick={handleCreateNew}>Create new +</Button>
+              <Button onClick={handleCreateNew}>+ Create New</Button>
             </div>
           </div>
           <div className="bodypart-div">
@@ -61,7 +74,10 @@ export default function InvoiceBill() {
               <InvoiceForm addMedicineData={addMedicineData} />
             </div>
             <div className="bodypart-right">
-              <InvoiceTable invoiceObject={invoiceObject} setInvoiceObject={setInvoiceObject} />
+              <InvoiceTable
+                invoiceObject={invoiceObject}
+                setInvoiceObject={setInvoiceObject}
+              />
             </div>
           </div>
         </div>

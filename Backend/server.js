@@ -79,18 +79,25 @@ app.get("/loginValidate", async (req, res) => {
 
     const response = await loginValidate(req.query);
     console.log("This is the role ", response);
-    const role = response.role;
-    const username = response.username;
-    const token = jwt.sign({ role }, "jwtSecret", {
-      expiresIn: 3600,
-    });
 
-    return res.json({
-      auth: true,
-      token: token,
-      role: role,
-      username: username,
-    });
+    if (response.success == true) {
+      const role = response.role;
+      const username = response.username;
+      const token = jwt.sign({ role }, "jwtSecret", {
+        expiresIn: 3600,
+      });
+
+      return res.json({
+        auth: true,
+        token: token,
+        role: role,
+        username: username,
+      });
+    } else {
+      return res.json({
+        auth: false,
+      });
+    }
   } catch (error) {
     console.log("Error in loginValidate", error);
   }
