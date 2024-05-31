@@ -13,14 +13,15 @@ import NavBar from "./components/NavBar";
 import Invoices from "./pages/Invoices";
 import InvoiceBill from "./pages/InvoiceBill";
 import AuthContextProvider from "./contexts/AuthContextProvider";
+import GRN from "./pages/GRN";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-        <Router>
-      <AuthContextProvider>
+      <Router>
+        <AuthContextProvider>
           <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route
@@ -39,6 +40,16 @@ function App() {
               element={
                 <>
                   <InventoryListOfMedicine />
+                  <Sidebar />
+                </>
+              }
+            />
+
+            <Route
+              path="/grn"
+              element={
+                <>
+                  <GRN />
                   <Sidebar />
                 </>
               }
@@ -79,8 +90,8 @@ function App() {
               }
             />
           </Routes>
-      </AuthContextProvider>
-        </Router>
+        </AuthContextProvider>
+      </Router>
     </>
   );
 }

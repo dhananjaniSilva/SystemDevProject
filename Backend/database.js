@@ -383,7 +383,9 @@ export async function completeInvoice(invoiceObject) {
       const newQuantity = currentQuantity - medicine.medicineQuantity;
 
       if (newQuantity < 0) {
-        throw new Error(`Not enough quantity for medicine with ID ${medicine.medicineId}`);
+        throw new Error(
+          `Not enough quantity for medicine with ID ${medicine.medicineId}`
+        );
       }
 
       await pool.query(
@@ -400,5 +402,65 @@ export async function completeInvoice(invoiceObject) {
     return { createdStatus: false, message: "Error creating the invoice" };
 
     throw error; // Rethrow the error to handle it in the caller function
+  }
+}
+export async function fetchSupplyInformation() {
+  try {
+    const [listofSupplyInformation] = await pool.query(`
+      SELECT medicine.*, supply.*, supplier.*
+      FROM supply
+      JOIN supplier ON supply.sply_spid = supplier.sp_id
+      JOIN medicine ON supply.sply_mdid = medicine.medicine_id
+    `);
+    return listofSupplyInformation;
+  } catch (error) {
+    console.error("Error fetching supply information:", error);
+    throw error; // Re-throw the error if you want it to be handled further up the call stack
+  }
+}
+export async function fetchSupplierByCompanyName(companyName) {
+  const connection = await pool.getConnection();
+  try {
+    const [rows] = await connection.query(
+      "SELECT * FROM supplier WHERE sp_companyname LIKE ?",
+      [`%${companyName}%`]
+    );
+    return [rows];
+  } finally {
+    connection.release();
+  }
+}
+export async function insertSupplyDetails(supplyDetails) {
+  try {
+    // Extract the supply details from the object
+    const {
+      supplierId,
+      medicineId,
+      sply_quantity,
+      sply_datetime,
+      sply_expiredate,
+      sply_unit_buying_price,
+    } = supplyDetails;
+
+    // Insert the supply details into the database
+    const query = `
+      INSERT INTO supply (sply_spid, sply_mdid, sply_quantity, sply_datetime, sply_expiredate, sply_unit_buying_price)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    await pool.query(query, [
+      supplierId,
+      medicineId,
+      sply_quantity,
+      sply_datetime,
+      sply_expiredate,
+      sply_unit_buying_price,
+    ]);
+
+    // Return success message or any other necessary data
+    return { success: true, message: "Supply details inserted successfully" };
+  } catch (error) {
+    // Handle errors
+    console.error("Error inserting supply details:", error);
+    throw error; // Rethrow the error to be caught by the caller
   }
 }

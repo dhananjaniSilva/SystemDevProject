@@ -1,0 +1,39 @@
+.outer-div{
+    position: absolute;
+    top: 10%;
+    margin-left: 20vw;
+    height:90vh;
+    width: 78vw;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+.top{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 200px;
+}
+.top .left{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50%;
+}
+.top .right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 50%;
+    align-items: end;
+    
+}
+#select{
+    width: 17vw;
+    
+}
+.table-div{
+    height: 100%;
+    
+
+}

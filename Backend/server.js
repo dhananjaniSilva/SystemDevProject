@@ -15,6 +15,9 @@ import {
   fetchListofMedicineCategorybyId,
   fetchListofMedicineUnit,
   fetchMedicineCategoryCode,
+  fetchSupplierByCompanyName,
+  fetchSupplyInformation,
+  insertSupplyDetails,
   loginValidate,
   updateMedicineCategory,
 } from "./database.js";
@@ -233,6 +236,18 @@ app.get("/searchMedicinebyId/:medicineId", async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get("/searchSupplierbyCompanyname/:companyName", async (req, res) => {
+  try {
+    const companyName = req.params.companyName;
+
+    const [response] = await fetchSupplierByCompanyName(companyName);
+    return res.json(response);
+  } catch (error) {
+    console.log("Error in searchSupplierbyCompanyname", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 app.delete("/deleteMedicineById/:medicineId", async (req, res) => {
   try {
@@ -254,7 +269,6 @@ app.get("/fetchListOfMedicineCategoryCode", async (req, res) => {
     console.log("Error in loginValidate", error);
   }
 });
-
 app.get("/createNewInvoice", async (req, res) => {
   try {
     const response = await createInvoiceAndRetrieveId();
@@ -278,6 +292,48 @@ app.post("/completeInvoice", async (req, res) => {
     res.status(500).send("Error completing the invoice");
   }
 });
+app.post("/supplyDetailsCreate", async (req, res) => {
+  try {
+    const stockObject = req.body;
+
+    // Insert supply details into the database
+    const response = await insertSupplyDetails(stockObject);
+
+    // Send a success response with the inserted supply details
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error creating the invoice", error);
+    // Send an error response
+    res.status(500).json({ createdStatus: false, message: "Error creating the invoice" });
+  }
+});
+
+
+app.post("/completeInvoice", async (req, res) => {
+  try {
+    const updatedInvoiceObject = req.body;
+    // Process the updatedInvoiceObject as needed
+    const response = completeInvoice(req.body);
+
+    // Assuming you want to return some response after processing
+    return response;
+  } catch (error) {
+    console.log("Error completing the invoice", error);
+    return { createdStatus: false, message: "Error creating the invoice" };
+    res.status(500).send("Error completing the invoice");
+  }
+});
+
+app.get('/fetchSupplyData', async (req, res) => {
+  try {
+    const listofSupplyInformation = await fetchSupplyInformation();
+    res.json(listofSupplyInformation);
+  } catch (error) {
+    console.error("Error fetching supply data:", error);
+    res.status(500).send("Error fetching supply data");
+  }
+});
+
 
 const port = 8080;
 app.listen(port, () => {

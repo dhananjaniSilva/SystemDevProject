@@ -16,6 +16,7 @@ import {
   faEllipsisVertical,
   faIceCream,
   faNewspaper,
+  faNoteSticky,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
@@ -67,7 +68,7 @@ function Sidebar() {
             </div>
           </div>
           <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashboard')}/>
-          <SidebarBtn icon={faIceCream} text="Invoice" onClick={()=>handleNavigate('/invoice')}/>
+          <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/grn')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
