@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function createData(data) {
   return {
@@ -34,18 +35,29 @@ function createData(data) {
 }
 
 function formatDateTime(dateTime) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
   return new Date(dateTime).toLocaleDateString(undefined, options);
 }
 
 function formatDate(date) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString(undefined, options);
 }
 
 function Row(props) {
-  const { row } = props;
+  const { row, onDelete } = props;
   const [open, setOpen] = useState(false);
+
+  const handleDelete = () => {
+    // Implement delete functionality here
+    onDelete(row.medicine_id); // Pass the medicine_id to identify the row to delete
+  };
 
   return (
     <React.Fragment>
@@ -67,9 +79,14 @@ function Row(props) {
         <TableCell align="right">{row.sply_quantity}</TableCell>
         <TableCell align="right">{formatDateTime(row.sply_datetime)}</TableCell>
         <TableCell align="right">{formatDate(row.sply_expiredate)}</TableCell>
+        <TableCell align="right">
+          <IconButton aria-label="delete" onClick={handleDelete}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
@@ -87,9 +104,7 @@ function Row(props) {
                   <TableRow>
                     <TableCell>{row.sp_companyname}</TableCell>
                     <TableCell>{row.sp_pno}</TableCell>
-                    <TableCell>
-                      {`${row.sp_fname} ${row.sp_lname}`}
-                    </TableCell>
+                    <TableCell>{`${row.sp_fname} ${row.sp_lname}`}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -121,6 +136,7 @@ Row.propTypes = {
       })
     ).isRequired,
   }).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default function CollapsibleTable() {
@@ -139,6 +155,22 @@ export default function CollapsibleTable() {
       });
   }, []);
 
+  const handleDelete = (sply_stockid) => {
+    // Implement delete functionality here
+    axios
+      .delete(`http://localhost:8080/deleteSupply/${sply_stockid}`)
+      .then(() => {
+        // Remove the deleted row from the state
+        setRows((prevRows) =>
+          prevRows.filter((row) => row.sply_stockid !== sply_stockid)
+        );
+        console.log("Supply deleted successfully!");
+      })
+      .catch((error) => {
+        console.error("Error deleting supply!", error);
+      });
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -151,11 +183,16 @@ export default function CollapsibleTable() {
             <TableCell align="right">Supplied Quantity</TableCell>
             <TableCell align="right">Stock Entered Date</TableCell>
             <TableCell align="right">Stock Expire Date</TableCell>
+            <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <Row key={row.medicine_id} row={row} />
+            <Row
+              key={row.medicine_id}
+              row={row}
+              onDelete={() => handleDelete(row.sply_stockid)}
+            />
           ))}
         </TableBody>
       </Table>

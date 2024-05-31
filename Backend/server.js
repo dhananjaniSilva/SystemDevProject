@@ -8,6 +8,7 @@ import {
   createMedicineCategory,
   deleteMedicineById,
   deleteMedicineCategoryById,
+  deleteStockByStockId,
   fetchListofMedicine,
   fetchListofMedicineByMedicineId,
   fetchListofMedicineBySearch,
@@ -331,6 +332,17 @@ app.get('/fetchSupplyData', async (req, res) => {
   } catch (error) {
     console.error("Error fetching supply data:", error);
     res.status(500).send("Error fetching supply data");
+  }
+});
+
+app.delete("/deleteSupply/:sply_stockid", async (req, res) => {
+  try {
+    const { sply_stockid } = req.params;
+    await deleteStockByStockId(sply_stockid); // Await the function call
+    res.json({ success: true, message: "Stock item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting stock item:", error);
+    res.status(500).json({ success: false, message: "Failed to delete stock item" });
   }
 });
 

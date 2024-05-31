@@ -464,3 +464,28 @@ export async function insertSupplyDetails(supplyDetails) {
     throw error; // Rethrow the error to be caught by the caller
   }
 }
+export async function deleteStockByStockId(sply_stockid) {
+  try {
+    // Execute the DELETE query to remove the row with the specified stock id
+    const result = await pool.query(
+      `
+      DELETE FROM supply WHERE sply_stockid = ?
+    `,
+      [sply_stockid]
+    );
+
+    // Check if any rows were affected by the delete operation
+    if (result.affectedRows > 0) {
+      console.log(`Stock with ID ${sply_stockid} deleted successfully.`);
+    } else {
+      console.log(`No stock found with ID ${sply_stockid}.`);
+    }
+
+    // Return the result if needed
+    return result;
+  } catch (error) {
+    // Log and rethrow any errors that occur during the delete operation
+    console.error("Error deleting stock:", error);
+    throw error;
+  }
+}
