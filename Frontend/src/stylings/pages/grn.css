@@ -1,13 +1,4 @@
-.outer-div{
-    position: absolute;
-    top: 10%;
-    margin-left: 20vw;
-    height:90vh;
-    width: 78vw;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-}
+
 .top{
     display: flex;
     flex-direction: row;
@@ -36,4 +27,4 @@
     height: 100%;
     
 
-}
+} 

@@ -21,6 +21,7 @@ import {
   insertSupplyDetails,
   loginValidate,
   updateMedicineCategory,
+  updateMedicinePrice,
 } from "./database.js";
 
 const app = express();
@@ -147,6 +148,25 @@ app.get("/fetchListOfMedicineUnit", async (req, res) => {
     return res.json(response);
   } catch (error) {
     console.log("Error in loginValidate", error);
+  }
+});
+app.post("/updateMedicinePrice", async (req, res) => {
+  const { medicine_id, medicine_unitprice } = req.body;
+
+  try {
+    const response = await updateMedicinePrice(medicine_id, medicine_unitprice);
+
+    if (response.success) {
+      return res.status(200).json(response);
+    } else {
+      return res.status(400).json(response);
+    }
+  } catch (error) {
+    console.error("Error in /updateMedicinePrice route:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An internal server error occurred.",
+    });
   }
 });
 app.get("/fetchMedicineCategoryById/:medicineCategoryId", async (req, res) => {

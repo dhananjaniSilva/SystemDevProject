@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import "../stylings/pages/dashboard.css";
 import IconBreadcrumbs from "../components/IconBreadcrumbs";
-import "../stylings/pages/inventoryListOfMedicine.css";
 import Form from "react-bootstrap/Form";
 import ButtonComponent from "../components/ButtonComponent";
 import ListOfMedicineTable from "../components/Inventory/ListOfMedicineTable.jsx";

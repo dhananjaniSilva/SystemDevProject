@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 import InputArea from "./components/InputArea";
 import LoginPage from "./pages/LoginPage";
 import AuthorizedPage from "./pages/AuthorizedPage";
@@ -14,6 +13,8 @@ import Invoices from "./pages/Invoices";
 import InvoiceBill from "./pages/InvoiceBill";
 import AuthContextProvider from "./contexts/AuthContextProvider";
 import GRN from "./pages/GRN";
+import "./App.css";
+import RequestOrder from "./pages/RequestOrder";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -86,6 +87,15 @@ function App() {
                 <>
                   <Sidebar />
                   <InvoiceBill />
+                </>
+              }
+            />
+            <Route
+              path="/requestOrder"
+              element={
+                <>
+                  <Sidebar />
+                  <RequestOrder />
                 </>
               }
             />

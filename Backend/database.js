@@ -1,4 +1,5 @@
 import mysql from "mysql2";
+import { response } from "express";
 
 // host: "srv1327.hstgr.io",
 // user: "u323893650_umesha",
@@ -166,7 +167,29 @@ export async function createMedicine(formData) {
     };
   }
 }
+export async function updateMedicinePrice(medicine_id, medicine_unitprice) {
+  try {
+    const query = `
+      UPDATE medicine 
+      SET medicine_unitprice = ? 
+      WHERE medicine_id = ?
+    `;
 
+    const response = await pool.query(query, [medicine_unitprice, medicine_id]);
+
+    if (response.affectedRows === 0) {
+      // No rows were affected, indicating the medicine_id does not exist
+      console.log(`No medicine found with id: ${medicine_id}`);
+      return { success: false, message: "No medicine found with the given id." };
+    }
+
+    console.log(`Medicine with id ${medicine_id} updated successfully.`);
+    return { success: true, message: "Medicine updated successfully." };
+  } catch (error) {
+    console.error(`Error updating medicine with id ${medicine_id}:`, error);
+    return { success: false, message: "Error updating medicine." };
+  }
+}
 export async function deleteMedicineCategoryById(medicineCategoryId) {
   console.log("type", typeof medicineCategoryId);
 

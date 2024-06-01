@@ -17,6 +17,8 @@ import {
   faIceCream,
   faNewspaper,
   faNoteSticky,
+  faCodePullRequest,
+  faFileInvoice,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
@@ -91,6 +93,7 @@ function Sidebar() {
           )}
           <SidebarBtn icon={faBell} text={"Notifications"} />
           <SidebarBtn icon={faNewspaper} text={"Invoice Bill"} onClick={()=>handleNavigate('/invoicebill')}/>
+          <SidebarBtn icon={faFileInvoice} text={"Request Order"} onClick={()=>handleNavigate('/requestOrder')}/>
           <SidebarBtn icon={faGear} text={"Application Settings"} />
 
           

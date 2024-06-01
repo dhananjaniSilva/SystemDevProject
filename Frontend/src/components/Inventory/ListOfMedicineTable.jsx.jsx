@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,11 +8,12 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { TableVirtuoso } from "react-virtuoso";
 import axios from "axios";
-import { useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Swal from "sweetalert2";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+
 const columns = [
   { width: 300, label: "Medicine Id", dataKey: "medicine_info" },
   { width: 200, label: "Brand Name", dataKey: "medicine_brandname" },
@@ -102,46 +103,16 @@ function fixedHeaderContent({
   );
 }
 
-function rowContent(_index, row) {
+function rowContent(
+  _index,
+  row,
+  editableRowId,
+  setEditableRowId,
+  handleUnitPriceChange,
+  handleDelete,
+  handleEditToggle
+) {
   const isHighQuantity = row.medicine_inhandquantity < 50;
-
-  const handleDelete = async (medicineId) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        try {
-          axios.delete(
-            `http://localhost:8080/deleteMedicineById/${medicineId}`
-          );
-          console.log("Medicine deleted successfully.");
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          });
-          window.location.reload()
-          // Optionally, you can update your UI or perform other actions upon successful deletion.
-        } catch (error) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-            footer: '<a href="#">Why do I have this issue?</a>',
-          });
-          console.error("Error deleting medicine:", error);
-
-          // Optionally, you can handle the error or display a message to the user.
-        }
-      }
-    });
-  };
 
   const rowStyle = {
     backgroundColor: isHighQuantity ? "#e3707b" : "inherit",
@@ -155,7 +126,10 @@ function rowContent(_index, row) {
             <TableCell
               key={column.dataKey}
               align={column.numeric ? "center" : "center"}
-              sx={{ backgroundColor: rowStyle.backgroundColor }}
+              sx={{
+                backgroundColor: rowStyle.backgroundColor,
+                display: "flex",
+              }}
             >
               <Button
                 color="error"
@@ -164,6 +138,31 @@ function rowContent(_index, row) {
               >
                 <DeleteOutlinedIcon />
               </Button>
+              <Button
+                color="info"
+                variant="outlined"
+                onClick={() => handleEditToggle(row.medicine_id, row.medicine_unitprice)}
+              >
+                <EditNoteIcon />
+              </Button>
+            </TableCell>
+          );
+        } else if (column.dataKey === "medicine_unitprice") {
+          return (
+            <TableCell
+              key={column.dataKey}
+              align={column.numeric ? "center" : "center"}
+              sx={{ backgroundColor: rowStyle.backgroundColor }}
+            >
+              <TextField
+                disabled={editableRowId !== row.medicine_id}
+                type="number"
+                value={row.medicine_unitprice}
+                onChange={(e) =>
+                  handleUnitPriceChange(row.medicine_id, e.target.value)
+                }
+                inputProps={{ style: { textAlign: "center" } }}
+              />
             </TableCell>
           );
         } else {
@@ -189,6 +188,8 @@ export default function ReactVirtualizedTable(props) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectedUnitName, setSelectedUnitName] = useState("");
+  const [unitPrices, setUnitPrices] = useState({});
+  const [editableRowId, setEditableRowId] = useState(null);
 
   useEffect(() => {
     if (medicineArray.length > 0) {
@@ -221,14 +222,6 @@ export default function ReactVirtualizedTable(props) {
       filteredData = filteredData.filter((item) => item.mdct_code == mdct_code);
     }
 
-    // if (searchValue) {
-    //   filteredData = filteredData.filter(item =>
-    //     item.medicine_brandname.toLowerCase().includes(searchValue.toLowerCase()) ||
-    //     item.medicine_genericname.toLowerCase().includes(searchValue.toLowerCase()) ||
-    //     String(item.medicine_id).toLowerCase().includes(searchValue.toLowerCase())
-    //   );
-    // }
-
     if (selectedUnitName) {
       filteredData = filteredData.filter(
         (item) => item.unit_name === selectedUnitName
@@ -255,6 +248,91 @@ export default function ReactVirtualizedTable(props) {
     setSelectedUnitName(event.target.value);
   };
 
+  const handleUnitPriceChange = (medicineId, newPrice) => {
+    setUnitPrices((prevPrices) => ({
+      ...prevPrices,
+      [medicineId]: newPrice,
+    }));
+  };
+
+  useEffect(() => {
+    setFilteredMedicines((prevMedicines) =>
+      prevMedicines.map((medicine) => ({
+        ...medicine,
+        medicine_unitprice: unitPrices[medicine.medicine_id] || medicine.medicine_unitprice,
+      }))
+    );
+  }, [unitPrices]);
+
+  const handleDelete = async (medicineId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `http://localhost:8080/deleteMedicineById/${medicineId}`
+          );
+          console.log("Medicine deleted successfully.");
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
+          // Remove the deleted medicine from the state
+          setFilteredMedicines((prevMedicines) =>
+            prevMedicines.filter((medicine) => medicine.medicine_id !== medicineId)
+          );
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            footer: '<a href="#">Why do I have this issue?</a>',
+          });
+          console.error("Error deleting medicine:", error);
+        }
+      }
+    });
+  };
+
+  const handleEditToggle = (medicineId, currentUnitPrice) => {
+    if (editableRowId === medicineId) {
+      // Save the updated unit price
+      axios
+        .post(`http://localhost:8080/updateMedicinePrice`, {
+          medicine_id: medicineId,
+          medicine_unitprice: unitPrices[medicineId] || currentUnitPrice,
+        })
+        .then((response) => {
+          console.log("Unit price updated successfully:", response.data);
+          Swal.fire({
+            title: "Updated!",
+            text: "Unit price has been updated.",
+            icon: "success",
+          });
+        })
+        .catch((error) => {
+          console.error("Error updating unit price:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            footer: '<a href="#">Why do I have this issue?</a>',
+          });
+        });
+      setEditableRowId(null); // Disable edit mode
+    } else {
+      setEditableRowId(medicineId); // Enable edit mode
+    }
+  };
+
   return (
     <Paper style={{ height: "100%", width: "100%" }}>
       <TableVirtuoso
@@ -269,7 +347,17 @@ export default function ReactVirtualizedTable(props) {
             handleUnitNameChange,
           })
         }
-        itemContent={rowContent}
+        itemContent={(index, row) =>
+          rowContent(
+            index,
+            row,
+            editableRowId,
+            setEditableRowId,
+            handleUnitPriceChange,
+            handleDelete,
+            handleEditToggle
+          )
+        }
       />
     </Paper>
   );
