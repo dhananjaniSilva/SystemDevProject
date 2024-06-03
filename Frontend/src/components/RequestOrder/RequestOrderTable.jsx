@@ -121,41 +121,6 @@ function SupplierDetails({ supplier }) {
       <Typography variant="body1">
         <strong>Phone Number:</strong> {supplier.sp_pno}
       </Typography>
-      
-    </Box>
-  );
-}
-
-function SelectedMedicinesTable({ selectedMedicines }) {
-  return (
-    <Box sx={{ marginTop: 2, padding: 2, border: "1px solid #ddd" }}>
-      <Typography variant="h6">Selected Medicines</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Medicine Id</TableCell>
-              <TableCell align="center">Brand Name</TableCell>
-              <TableCell align="center">Generic Name</TableCell>
-              <TableCell align="center">Pack Size</TableCell>
-              <TableCell align="center">Unit Price</TableCell>
-              <TableCell align="center">Order Quantity</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {selectedMedicines.map((medicine, index) => (
-              <TableRow key={index}>
-                <TableCell align="center">{medicine.medicine_id}</TableCell>
-                <TableCell align="center">{medicine.medicine_brandname}</TableCell>
-                <TableCell align="center">{medicine.medicine_genericname}</TableCell>
-                <TableCell align="center">{medicine.medicine_packsize}</TableCell>
-                <TableCell align="center">{medicine.medicine_unitprice}</TableCell>
-                <TableCell align="center">{medicine.medicineOrderQuantity}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </Box>
   );
 }
@@ -165,7 +130,7 @@ export default function RequestOrderTable({ medicineArray }) {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [supplier, setSupplier] = useState(null);
-  const [selectedMedicines, setSelectedMedicines] = useState([]);
+  const [passedMedicines, setPassedMedicines] = useState([]);
 
   useEffect(() => {
     setFilteredMedicines(medicineArray);
@@ -198,7 +163,10 @@ export default function RequestOrderTable({ medicineArray }) {
 
     if (quantity) {
       row.medicineOrderQuantity = quantity;
-      setSelectedMedicines((prevSelected) => [...prevSelected, row]);
+      console.log(row);
+      setPassedMedicines([...passedMedicines, row]); // Add the passed medicine to the array
+      // Optionally, update the state to reflect changes in the UI
+      setFilteredMedicines([...filteredMedicines]);
     }
   };
 
@@ -219,13 +187,14 @@ export default function RequestOrderTable({ medicineArray }) {
         sp_companyname: filteredData[0].sp_companyname,
         sp_fname: filteredData[0].sp_fname,
         sp_lname: filteredData[0].sp_lname,
-        sp_pno: filteredData[0].sp_pno,
+        sp_pno: filteredData[0].sp_pno
       });
     } else {
       setFilteredMedicines([]);
       setSupplier(null);
     }
   };
+
   return (
     <Paper style={{ height: "100%", width: "100%", padding: "20px" }}>
       <input
@@ -247,6 +216,39 @@ export default function RequestOrderTable({ medicineArray }) {
         itemContent={(index, row) => rowContent(index, row, handlePass)}
       />
       {supplier && <SupplierDetails supplier={supplier} />}
+      {passedMedicines.length > 0 && (
+        <div>
+          <Typography variant="h6">Passed Medicines</Typography>
+          {passedMedicines.map((medicine, index) => (
+            <div key={index}>
+              <Typography variant="body1">
+                <strong>Medicine Id:</strong> {medicine.medicine_id}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Brand Name:</strong> {medicine.medicine_brandname}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Generic Name:</strong> {medicine.medicine_genericname}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Unit Price:</strong> {medicine.medicine_unitprice}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Pack Size:</strong> {medicine.medicine_packsize}
+              </Typography>
+              <Typography variant="body1">
+                <strong>In-hand Quantity:</strong>{" "}
+                {medicine.medicine_inhandquantity}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Order Quantity:</strong>{" "}
+                {medicine.medicineOrderQuantity}
+              </Typography>
+              {/* Add any additional fields as needed */}
+            </div>
+          ))}
+        </div>
+      )}
     </Paper>
   );
 }

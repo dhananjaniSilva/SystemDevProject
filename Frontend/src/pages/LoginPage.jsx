@@ -81,11 +81,7 @@ function LoginPage() {
             <Box sx={{ width: "100%", height: "20%" }}>
               <h1>Login</h1>
             </Box>
-            {loginError && (
-              <Typography color="error" variant="body2">
-                {loginError}
-              </Typography>
-            )}
+     
             <Box
               sx={{
                 display: "flex",
@@ -121,8 +117,9 @@ function LoginPage() {
                 label=""
                 inputProps={{ ...register("password") }}
                 error={!!errors.password}
-                helperText={errors.password?.message}
+                helperText={(!!loginError) ? <Typography color={"error"} variant="caption">{loginError}</Typography>:errors.password?.message }
                 variant="outlined"
+                onChange={()=>{setLoginError('')}}
               />
               <FormLabel>Forgot password?</FormLabel>
             </Box>

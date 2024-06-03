@@ -430,10 +430,12 @@ export async function completeInvoice(invoiceObject) {
 export async function fetchSupplyInformation() {
   try {
     const [listofSupplyInformation] = await pool.query(`
-      SELECT medicine.*, supply.*, supplier.*
-      FROM supply
-      JOIN supplier ON supply.sply_spid = supplier.sp_id
-      JOIN medicine ON supply.sply_mdid = medicine.medicine_id
+    SELECT medicine.*, supply.*, supplier.*
+    FROM supply
+    JOIN supplier ON supply.sply_spid = supplier.sp_id
+    JOIN medicine ON supply.sply_mdid = medicine.medicine_id
+    GROUP BY medicine.medicine_id;
+    
     `);
     return listofSupplyInformation;
   } catch (error) {
