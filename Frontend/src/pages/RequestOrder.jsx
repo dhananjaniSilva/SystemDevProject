@@ -13,11 +13,8 @@ import MedicineEnterForm from "../components/MedicineEnterForm.jsx";
 
 function RequestOrder() {
   const { boolValue, setBoolValue } = useContext(PopupContext);
-  const [listOfMedicineCategoryArray, setListOfMedicineCategoryArray] =
-    useState([]);
-  const [selectedMdctCode, setSelectedMdctCode] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
   const [medicineArray, setMedicineArray] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
   const [supplierInfo, setSupplierInfo] = useState(null);
   const [tableData, setTableData] = useState([]);
 
@@ -25,45 +22,28 @@ function RequestOrder() {
     axios
       .get("http://localhost:8080/fetchSupplyData")
       .then((res) => {
-        console.log(res.data);
-        setListOfMedicineCategoryArray(res.data);
+        console.log("supply", res.data);
+        setMedicineArray(res.data);
       });
   }, []);
 
-  const handleOnChange = (categoryCode) => {
-    setSelectedMdctCode(categoryCode);
-  };
-
-  const handleSearch = async (searchVal) => {
-    setSearchValue(searchVal);
+  const handleSearch = async (searchValue) => {
     try {
-      const res = await axios.get("http://localhost:8080/fetchSupplyData", {
-        params: { searchVal },
-      });
-      setMedicineArray(res.data);
-      console.log("supplier", res.data);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-    }
+      const response = await axios.get(`http://localhost:8080/searchSupplierbyCompanyname/${searchValue}`);
+      const supplierData = response.data;
 
-    // Fetch supplier info based on the search value
-    const fetchSupplierInfo = async () => {
-      try {
-        const res = await axios.get("http://localhost:8080/fetchSupplierData", {
-          params: { companyName: searchVal },
-        });
-        setSupplierInfo(res.data);
-      } catch (error) {
-        console.error("Error fetching supplier info:", error);
+      if (supplierData.length > 0) {
+        const supplierIds = supplierData.map(supplier => supplier.sp_id);
+        const filteredData = medicineArray.filter(medicine => supplierIds.includes(medicine.sp_id));
+        setTableData(filteredData);
+        setSupplierInfo(supplierData[0]); // Assuming you want to display the first supplier's info
+      } else {
+        setTableData([]);
+        setSupplierInfo(null);
       }
-    };
-
-    fetchSupplierInfo();
-  };
-
-  const handleRowClick = (row) => {
-    // handle row click here, you can set selected row data to state
-    // for example, setTableData(row);
+    } catch (error) {
+      console.error("Error fetching supplier data:", error);
+    }
   };
 
   return (
@@ -75,22 +55,14 @@ function RequestOrder() {
             <Form.Control
               placeholder="Search here ..."
               style={{ width: "309px" }}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+                handleSearch(e.target.value);
+              }}
               type="text"
               id="inputPassword5"
               aria-describedby="passwordHelpBlock"
             />
-            <Form.Select
-              id="select"
-              onChange={(e) => handleOnChange(e.target.value)}
-            >
-              <option value={0}>-Select Group-</option>
-              {listOfMedicineCategoryArray.map((item, index) => (
-                <option key={index} value={item.mdct_code}>
-                  {item.mdct_code}
-                </option>
-              ))}
-            </Form.Select>
           </div>
           <div className="right">
             <ButtonComponent
@@ -101,33 +73,16 @@ function RequestOrder() {
             />
           </div>
         </div>
-        <div style={{ display: "flex", height: "100%" }}>
-          <div style={{ width: "50%", height: "100%" }}>
+        <div style={{ display: "flex", height: "100%" ,width:"100%"}}>
+          <div style={{ width: "100%", height: "100%" }}>
             <RequestOrderTable
               data={tableData}
               searchValue={searchValue}
-              onRowClick={handleRowClick}
+              medicineArray={medicineArray}
+              setMedicineArray={setMedicineArray}
             />
           </div>
-          <div style={{ width: "50%", height: "100%" }}>
-            <Paper sx={{ p: 2 }}>
-              <Stack>
-                <Box>
-                  <Typography>
-                    Supplier Company:{" "}
-                    {supplierInfo && supplierInfo.sp_companyname}
-                  </Typography>
-                  <Typography>
-                    Agent Name: {supplierInfo && supplierInfo.agentName}
-                  </Typography>
-                  <Typography>
-                    Supplier Phone number:{" "}
-                    {supplierInfo && supplierInfo.phoneNumber}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Paper>
-          </div>
+         
         </div>
       </div>
       <OverlayDialogBox>

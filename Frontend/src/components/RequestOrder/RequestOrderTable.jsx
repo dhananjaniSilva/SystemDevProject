@@ -1,5 +1,5 @@
-// RequestOrderTable.jsx
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,18 +7,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
 import { TableVirtuoso } from "react-virtuoso";
-import axios from "axios";
-import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
+import { Box, Typography } from "@mui/material";
 
 const columns = [
-  { width: 300, label: "Medicine Id", dataKey: "medicine_id" },
+  { width: 150, label: "Medicine Id", dataKey: "medicine_id" },
   { width: 200, label: "Brand Name", dataKey: "medicine_brandname" },
   { width: 200, label: "Generic Name", dataKey: "medicine_genericname" },
   { width: 150, label: "Unit Price", dataKey: "medicine_unitprice" },
   { width: 150, label: "Pack Size", dataKey: "medicine_packsize" },
   { width: 150, label: "In-hand Quantity", dataKey: "medicine_inhandquantity" },
+  { width: 150, label: "Actions", dataKey: "actions" }, // New column for actions
 ];
 
 const VirtuosoTableComponents = {
@@ -35,7 +36,7 @@ const VirtuosoTableComponents = {
     <TableHead
       {...props}
       sx={{
-        backgroundColor: "white", // Set the background color to white
+        backgroundColor: "#f5f5f5", // Light grey background for header
       }}
     />
   ),
@@ -45,11 +46,7 @@ const VirtuosoTableComponents = {
   )),
 };
 
-function fixedHeaderContent({
-  sortColumn,
-  sortDirection,
-  onSort,
-}) {
+function fixedHeaderContent({ sortColumn, sortDirection, onSort }) {
   return (
     <TableRow>
       {columns.map((column) => (
@@ -57,7 +54,13 @@ function fixedHeaderContent({
           key={column.dataKey}
           align="center"
           onClick={column.sortable ? () => onSort(column.dataKey) : null}
-          style={{ cursor: column.sortable ? "pointer" : "default" }}
+          style={{
+            cursor: column.sortable ? "pointer" : "default",
+            width: column.width,
+            padding: "10px",
+            fontWeight: "bold",
+            borderBottom: "2px solid #ddd", // Add bottom border
+          }}
         >
           {column.label}
           {column.sortable && sortColumn === column.dataKey && (
@@ -69,35 +72,104 @@ function fixedHeaderContent({
   );
 }
 
-function rowContent(
-  _index,
-  row,
-  onClickRow
-) {
+function rowContent(_index, row, handlePass) {
   return (
-    <TableRow onClick={() => onClickRow(row)}>
+    <TableRow>
       {columns.map((column) => (
-        <TableCell key={column.dataKey} align="center">
-          {row[column.dataKey]}
+        <TableCell
+          key={column.dataKey}
+          align="center"
+          style={{
+            width: column.width,
+            padding: "10px",
+            borderBottom: "1px solid #eee", // Add bottom border
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {column.dataKey === "actions" ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handlePass(row)}
+            >
+              Pass
+            </Button>
+          ) : (
+            row[column.dataKey]
+          )}
         </TableCell>
       ))}
     </TableRow>
   );
 }
 
-export default function RequestOrderTable({ data, searchValue, onRowClick }) {
-  const [filteredMedicines, setFilteredMedicines] = useState(data);
+function SupplierDetails({ supplier }) {
+  return (
+    <Box sx={{ marginTop: 2, padding: 2, border: "1px solid #ddd" }}>
+      <Typography variant="h6">Supplier Details</Typography>
+      <Typography variant="body1">
+        <strong>Company Name:</strong> {supplier.sp_companyname}
+      </Typography>
+      <Typography variant="body1">
+        <strong>First Name:</strong> {supplier.sp_fname}
+      </Typography>
+      <Typography variant="body1">
+        <strong>Last Name:</strong> {supplier.sp_lname}
+      </Typography>
+      <Typography variant="body1">
+        <strong>Phone Number:</strong> {supplier.sp_pno}
+      </Typography>
+      
+    </Box>
+  );
+}
+
+function SelectedMedicinesTable({ selectedMedicines }) {
+  return (
+    <Box sx={{ marginTop: 2, padding: 2, border: "1px solid #ddd" }}>
+      <Typography variant="h6">Selected Medicines</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">Medicine Id</TableCell>
+              <TableCell align="center">Brand Name</TableCell>
+              <TableCell align="center">Generic Name</TableCell>
+              <TableCell align="center">Pack Size</TableCell>
+              <TableCell align="center">Unit Price</TableCell>
+              <TableCell align="center">Order Quantity</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {selectedMedicines.map((medicine, index) => (
+              <TableRow key={index}>
+                <TableCell align="center">{medicine.medicine_id}</TableCell>
+                <TableCell align="center">{medicine.medicine_brandname}</TableCell>
+                <TableCell align="center">{medicine.medicine_genericname}</TableCell>
+                <TableCell align="center">{medicine.medicine_packsize}</TableCell>
+                <TableCell align="center">{medicine.medicine_unitprice}</TableCell>
+                <TableCell align="center">{medicine.medicineOrderQuantity}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+}
+
+export default function RequestOrderTable({ medicineArray }) {
+  const [filteredMedicines, setFilteredMedicines] = useState(medicineArray);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
+  const [supplier, setSupplier] = useState(null);
+  const [selectedMedicines, setSelectedMedicines] = useState([]);
 
   useEffect(() => {
-    // Filter the table based on the search value
-    const filteredData = data.filter(
-      (item) =>
-        item.sp_companyname.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setFilteredMedicines(filteredData);
-  }, [searchValue]);
+    setFilteredMedicines(medicineArray);
+  }, [medicineArray]);
 
   const handleSort = (column) => {
     const newSortDirection =
@@ -112,8 +184,56 @@ export default function RequestOrderTable({ data, searchValue, onRowClick }) {
     setFilteredMedicines(sortedData);
   };
 
+  const handlePass = async (row) => {
+    const { value: quantity } = await Swal.fire({
+      title: "Enter the quantity you wish to purchase",
+      input: "number",
+      inputAttributes: {
+        autocapitalize: "off",
+        min: 1,
+      },
+      showCancelButton: true,
+      confirmButtonText: "Submit",
+    });
+
+    if (quantity) {
+      row.medicineOrderQuantity = quantity;
+      setSelectedMedicines((prevSelected) => [...prevSelected, row]);
+    }
+  };
+
+  const handleSearch = async (searchValue) => {
+    if (searchValue === "") {
+      setFilteredMedicines(medicineArray);
+      setSupplier(null);
+      return;
+    }
+
+    const filteredData = medicineArray.filter((medicine) =>
+      medicine.sp_companyname.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    if (filteredData.length > 0) {
+      setFilteredMedicines(filteredData);
+      setSupplier({
+        sp_companyname: filteredData[0].sp_companyname,
+        sp_fname: filteredData[0].sp_fname,
+        sp_lname: filteredData[0].sp_lname,
+        sp_pno: filteredData[0].sp_pno,
+      });
+    } else {
+      setFilteredMedicines([]);
+      setSupplier(null);
+    }
+  };
   return (
-    <Paper style={{ height: "100%", width: "100%" }}>
+    <Paper style={{ height: "100%", width: "100%", padding: "20px" }}>
+      <input
+        type="text"
+        placeholder="Search here..."
+        onChange={(e) => handleSearch(e.target.value)}
+        style={{ marginBottom: "20px", padding: "10px", width: "100%" }}
+      />
       <TableVirtuoso
         data={filteredMedicines}
         components={VirtuosoTableComponents}
@@ -124,10 +244,9 @@ export default function RequestOrderTable({ data, searchValue, onRowClick }) {
             onSort: handleSort,
           })
         }
-        itemContent={(index, row) =>
-          rowContent(index, row, onRowClick)
-        }
+        itemContent={(index, row) => rowContent(index, row, handlePass)}
       />
+      {supplier && <SupplierDetails supplier={supplier} />}
     </Paper>
   );
 }

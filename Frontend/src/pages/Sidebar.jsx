@@ -70,7 +70,6 @@ function Sidebar() {
             </div>
           </div>
           <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashboard')}/>
-          <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/grn')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
@@ -83,12 +82,12 @@ function Sidebar() {
               <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/medicineGroups')}/>
             </div>
           )}
-
+          <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/grn')}/>
           <SidebarBtn icon={faArrowTrendUp} text={"Reports"} onClick={handleVisibilityreports}/>
           {isVisiblereports && (
             <div className="button-group">
               <SidebarBtn text={"Sales reports"} />
-              <SidebarBtn text={"Payment reports"} />
+              <SidebarBtn text={"Demand reports"} />
             </div>
           )}
           <SidebarBtn icon={faBell} text={"Notifications"} />

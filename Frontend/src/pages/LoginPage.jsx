@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Box, FormLabel, Paper, TextField, Button } from "@mui/material";
+import { Box, FormLabel, Paper, TextField, Button, Typography } from "@mui/material";
 import logo from "../assets/logo.png";
 import logotext from "../assets/logotext.png";
 import axios from "axios";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link, useNavigate } from "react-router-dom"; //1
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const schema = yup.object().shape({
@@ -18,10 +18,12 @@ function LoginPage() {
     resolver: yupResolver(schema),
   });
 
-  const navigate = useNavigate(); //2
+  const [loginError, setLoginError] = useState("");
+
+  const navigate = useNavigate();
 
   const submitForm = async (data) => {
-    console.log("This is the submited data ",data)
+    console.log("This is the submitted data ", data);
     const { username, password } = data;
     const requestUserObjects = { username, password };
 
@@ -31,15 +33,15 @@ function LoginPage() {
       });
       console.log("This is the response", res.data);
       if (res.data.auth === true) {
-        localStorage.setItem("token",res.data.token)
-        localStorage.setItem("username",res.data.username)
-        navigate("/dashboard"); //3
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("username", res.data.username);
+        navigate("/dashboard");
       } else {
-        console.log("Unauthorized");
-        navigate("/unauthorized");
+        setLoginError("Invalid username or password. Please try again.");
       }
     } catch (error) {
       console.error("Login frontend error", error);
+      setLoginError("An error occurred. Please try again later.");
     }
   };
 
@@ -62,31 +64,34 @@ function LoginPage() {
           backgroundColor: "#283342",
         }}
       >
-                  <form noValidate onSubmit={handleSubmit(submitForm)}>
-
-        <Paper
-          elevation={10}
-          sx={{
-            height: "550px",
-            width: "450px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-evenly",
-            p: 8,
-            borderRadius: 5,
-            gap: 3,
-          }}
-        >
-          <Box sx={{ width: "100%", height: "20%" }}>
-            <h1>Login</h1>
-          </Box>
+        <form noValidate onSubmit={handleSubmit(submitForm)}>
+          <Paper
+            elevation={10}
+            sx={{
+              height: "550px",
+              width: "450px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-evenly",
+              p: 8,
+              borderRadius: 5,
+              gap: 3,
+            }}
+          >
+            <Box sx={{ width: "100%", height: "20%" }}>
+              <h1>Login</h1>
+            </Box>
+            {loginError && (
+              <Typography color="error" variant="body2">
+                {loginError}
+              </Typography>
+            )}
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
                 height: "20%",
-                
               }}
             >
               <FormLabel>Username</FormLabel>
@@ -94,11 +99,11 @@ function LoginPage() {
                 fullWidth
                 id="outlined-basic"
                 label=""
-                inputProps={{...register("username")}}
+                inputProps={{ ...register("username") }}
                 error={!!errors.username}
                 helperText={errors.username?.message}
                 variant="outlined"
-                sx={{mb:0}}
+                sx={{ mb: 0 }}
               />
             </Box>
             <Box
@@ -106,7 +111,7 @@ function LoginPage() {
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
-                height: "20%"
+                height: "20%",
               }}
             >
               <FormLabel>Password</FormLabel>
@@ -114,12 +119,12 @@ function LoginPage() {
                 fullWidth
                 id="outlined-basic"
                 label=""
-                inputProps={{...register("password")}}
+                inputProps={{ ...register("password") }}
                 error={!!errors.password}
                 helperText={errors.password?.message}
                 variant="outlined"
               />
-              <FormLabel>Forgot password ?</FormLabel>
+              <FormLabel>Forgot password?</FormLabel>
             </Box>
             <Box sx={{ width: "100%", height: "20%", pt: 7 }}>
               <Button
@@ -131,8 +136,8 @@ function LoginPage() {
                 Login
               </Button>
             </Box>
-        </Paper>
-          </form>
+          </Paper>
+        </form>
       </Box>
       <Box
         sx={{
