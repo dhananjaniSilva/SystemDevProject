@@ -96,6 +96,7 @@ function fixedHeaderContent({
           <option value="Bottle">Bottle</option>
           <option value="Repository">Repository</option>
           <option value="Cartridge">Cartridge</option>
+          <option value="Tube">Tube</option>
           <option value="Unit">Unit</option>
         </Form.Select>
       </TableCell>
