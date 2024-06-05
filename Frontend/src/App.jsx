@@ -15,6 +15,7 @@ import AuthContextProvider from "./contexts/AuthContextProvider";
 import GRN from "./pages/GRN";
 import "./App.css";
 import RequestOrder from "./pages/RequestOrder";
+import Users from "./pages/Users";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -96,6 +97,15 @@ function App() {
                 <>
                   <Sidebar />
                   <RequestOrder />
+                </>
+              }
+            />
+             <Route
+              path="/userManagement"
+              element={
+                <>
+                  <Sidebar />
+                  <Users />
                 </>
               }
             />

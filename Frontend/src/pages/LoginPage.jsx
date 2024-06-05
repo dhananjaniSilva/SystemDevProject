@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 function LoginPage() {
   const schema = yup.object().shape({
     username: yup.string().required().min(3).max(12),
-    password: yup.string().min(3).max(12).required(),
+    password: yup.string().min(3).max(20).required(),
   });
 
   const { register, handleSubmit, formState: { errors } } = useForm({

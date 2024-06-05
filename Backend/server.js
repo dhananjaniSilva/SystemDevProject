@@ -18,8 +18,10 @@ import {
   fetchMedicineCategoryCode,
   fetchSupplierByCompanyName,
   fetchSupplyInformation,
+  getUsers,
   insertSupplyDetails,
   loginValidate,
+  newUserAdd,
   updateMedicineCategory,
   updateMedicinePrice,
 } from "./database.js";
@@ -269,7 +271,6 @@ app.get("/searchSupplierbyCompanyname/:companyName", async (req, res) => {
   }
 });
 
-
 app.delete("/deleteMedicineById/:medicineId", async (req, res) => {
   try {
     const response = await deleteMedicineById(req.params.medicineId);
@@ -325,10 +326,11 @@ app.post("/supplyDetailsCreate", async (req, res) => {
   } catch (error) {
     console.error("Error creating the invoice", error);
     // Send an error response
-    res.status(500).json({ createdStatus: false, message: "Error creating the invoice" });
+    res
+      .status(500)
+      .json({ createdStatus: false, message: "Error creating the invoice" });
   }
 });
-
 
 app.post("/completeInvoice", async (req, res) => {
   try {
@@ -345,7 +347,7 @@ app.post("/completeInvoice", async (req, res) => {
   }
 });
 
-app.get('/fetchSupplyData', async (req, res) => {
+app.get("/fetchSupplyData", async (req, res) => {
   try {
     const listofSupplyInformation = await fetchSupplyInformation();
     res.json(listofSupplyInformation);
@@ -362,10 +364,30 @@ app.delete("/deleteSupply/:sply_stockid", async (req, res) => {
     res.json({ success: true, message: "Stock item deleted successfully" });
   } catch (error) {
     console.error("Error deleting stock item:", error);
-    res.status(500).json({ success: false, message: "Failed to delete stock item" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete stock item" });
   }
 });
 
+app.post("/createUser", async (req, res) => {
+  try {
+    const response = await newUserAdd(req.body);
+    res.json({ success: true, message: "User added successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to add user" });
+  }
+});
+
+app.get("/getUsers", async (req, res) => {
+  try{
+    const response = await getUsers();
+    console.log(response)
+    return res.json(response)
+  }catch(error){
+    res.status(500).json({ success: false, message: "Failed te retrieve users" });
+  }
+});
 
 const port = 8080;
 app.listen(port, () => {

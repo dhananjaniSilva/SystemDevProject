@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function ccyFormat(num) {
   const number = parseFloat(num);
@@ -19,7 +20,9 @@ function ccyFormat(num) {
 }
 
 function subtotal(items) {
-  return items.map(({ price }) => parseFloat(price) || 0).reduce((sum, i) => sum + i, 0);
+  return items
+    .map(({ price }) => parseFloat(price) || 0)
+    .reduce((sum, i) => sum + i, 0);
 }
 
 // Helper function to safely parse payment
@@ -44,28 +47,55 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
   };
 
   const handlePayInvoice = async () => {
+    // Check if payment is a valid number
+    const parsedPayment = parsePayment(payment);
+    if (isNaN(parsedPayment)) {
+      setPaymentError("Payment amount must be a number.");
+      return;
+    }
+  
+    // Check if payment is greater than net amount
+    if (parsedPayment <= invoiceSubtotal) {
+      setPaymentError("Payment amount must be greater than the net amount.");
+      return;
+    }
+  
+    // Proceed with paying the invoice
     const currentDateTime = new Date().toISOString().slice(0, 19).replace("T", " ");
-
+  
     const updatedInvoiceObject = {
       ...invoiceObject,
       paidAmount: parseFloat(payment),
       invoiceDate: currentDateTime,
       userId: localStorage.getItem("userId"),
     };
-
+  
     try {
-      const response = await axios.post("http://localhost:8080/completeInvoice", updatedInvoiceObject);
+      const response = await axios.post(
+        "http://localhost:8080/completeInvoice",
+        updatedInvoiceObject
+      );
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500
+      });
       console.log("This is the response", response);
     } catch (error) {
       console.error("Error completing the invoice:", error);
     }
   };
-
+  
+  // Define rows by mapping over invoiceObject.medicineData
   const rows = invoiceObject.medicineData.map((medicine, index) => ({
     desc: ` ${medicine.medicineBrandName}`,
     qty: parseInt(medicine.medicineQuantity) || 0,
     unit: parseFloat(medicine.medicineUnitPrice) || 0,
-    price: (parseInt(medicine.medicineQuantity) || 0) * (parseFloat(medicine.medicineUnitPrice) || 0),
+    price:
+      (parseInt(medicine.medicineQuantity) || 0) *
+      (parseFloat(medicine.medicineUnitPrice) || 0),
   }));
 
   const emptyRowsCount = Math.max(4 - rows.length, 0);
@@ -77,7 +107,7 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
   }));
 
   const invoiceSubtotal = subtotal(rows);
-  const balance = invoiceSubtotal - parsePayment(payment);
+  const balance = parsePayment(payment)- invoiceSubtotal ;
 
   return (
     <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 3 }}>

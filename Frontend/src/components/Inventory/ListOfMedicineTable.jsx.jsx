@@ -74,33 +74,42 @@ function fixedHeaderContent({
   handleUnitNameChange,
 }) {
   return (
-    <TableRow>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric ? "center" : "center"}
-          onClick={column.sortable ? () => onSort(column.dataKey) : null}
-          style={{ cursor: column.sortable ? "pointer" : "default" }}
-        >
-          {column.label}
-          {column.sortable && sortColumn === column.dataKey && (
-            <span>{sortDirection === "asc" ? " 🔼" : " 🔽"}</span>
-          )}
+    <>
+      <TableRow sx={{ backgroundColor: "white" }}>
+        <TableCell colSpan={9}>
+          {" "}
+          <Form.Select
+            value={selectedUnitName}
+            onChange={handleUnitNameChange}
+            sx={{ width: "100px" }}
+          >
+            <option value="">All Unit Names</option>
+            <option value="Tablet">Tablet</option>
+            <option value="Capsule">Capsule</option>
+            <option value="Bottle">Bottle</option>
+            <option value="Repository">Repository</option>
+            <option value="Cartridge">Cartridge</option>
+            <option value="Tube">Tube</option>
+            <option value="Unit">Unit</option>
+          </Form.Select>
         </TableCell>
-      ))}
-      <TableCell align="center">
-        <Form.Select value={selectedUnitName} onChange={handleUnitNameChange}>
-          <option value="">All Unit Names</option>
-          <option value="Tablet">Tablet</option>
-          <option value="Capsule">Capsule</option>
-          <option value="Bottle">Bottle</option>
-          <option value="Repository">Repository</option>
-          <option value="Cartridge">Cartridge</option>
-          <option value="Tube">Tube</option>
-          <option value="Unit">Unit</option>
-        </Form.Select>
-      </TableCell>
-    </TableRow>
+      </TableRow>
+      <TableRow>
+        {columns.map((column) => (
+          <TableCell
+            key={column.dataKey}
+            align={column.numeric ? "center" : "center"}
+            onClick={column.sortable ? () => onSort(column.dataKey) : null}
+            style={{ cursor: column.sortable ? "pointer" : "default" }}
+          >
+            {column.label}
+            {column.sortable && sortColumn === column.dataKey && (
+              <span>{sortDirection === "asc" ? " 🔼" : " 🔽"}</span>
+            )}
+          </TableCell>
+        ))}
+      </TableRow>
+    </>
   );
 }
 
@@ -113,11 +122,30 @@ function rowContent(
   handleDelete,
   handleEditToggle
 ) {
-  const isHighQuantity = row.medicine_inhandquantity < 50;
+  const isBottle = row.unit_name == "Bottle" && row.medicine_inhandquantity < 5;
+  const isTablet =
+    row.unit_name == "Tablet" && row.medicine_inhandquantity <= 100;
+  const isCapsule =
+    row.unit_name == "Capsule" && row.medicine_inhandquantity < 5;
+  const isRepostory =
+    row.unit_name == "Repostory" && row.medicine_inhandquantity <= 100;
 
-  const rowStyle = {
-    backgroundColor: isHighQuantity ? "#e3707b" : "inherit",
-  };
+  const isTube = row.unit_name == "Tube" && row.medicine_inhandquantity < 5;
+  const isCartridge =
+    row.unit_name == "Cartridge" && row.medicine_inhandquantity <= 100;
+
+  let rowStyle = {};
+
+  if (
+    isBottle ||
+    isTablet ||
+    isCapsule ||
+    isRepostory ||
+    isTube ||
+    isCartridge
+  ) {
+    rowStyle.backgroundColor = "#ffb90080"; // Adjust color for low bottle quantity
+  }
 
   return (
     <React.Fragment>
@@ -129,7 +157,6 @@ function rowContent(
               align={column.numeric ? "center" : "center"}
               sx={{
                 backgroundColor: rowStyle.backgroundColor,
-                display: "flex",
               }}
             >
               <Button
@@ -142,7 +169,9 @@ function rowContent(
               <Button
                 color="info"
                 variant="outlined"
-                onClick={() => handleEditToggle(row.medicine_id, row.medicine_unitprice)}
+                onClick={() =>
+                  handleEditToggle(row.medicine_id, row.medicine_unitprice)
+                }
               >
                 <EditNoteIcon />
               </Button>
@@ -260,7 +289,8 @@ export default function ReactVirtualizedTable(props) {
     setFilteredMedicines((prevMedicines) =>
       prevMedicines.map((medicine) => ({
         ...medicine,
-        medicine_unitprice: unitPrices[medicine.medicine_id] || medicine.medicine_unitprice,
+        medicine_unitprice:
+          unitPrices[medicine.medicine_id] || medicine.medicine_unitprice,
       }))
     );
   }, [unitPrices]);
@@ -288,7 +318,9 @@ export default function ReactVirtualizedTable(props) {
           });
           // Remove the deleted medicine from the state
           setFilteredMedicines((prevMedicines) =>
-            prevMedicines.filter((medicine) => medicine.medicine_id !== medicineId)
+            prevMedicines.filter(
+              (medicine) => medicine.medicine_id !== medicineId
+            )
           );
         } catch (error) {
           Swal.fire({

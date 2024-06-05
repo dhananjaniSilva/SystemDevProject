@@ -19,9 +19,13 @@ function GRN() {
             </Button>
           </div>
         </div>
-        <div className="table">
-          <GrnTable />
-          <GrnForm />
+        <div className="table" style={{display:"flex",justifyContent:"space-evenly"}}>
+          <div style={{width:"65%"}}>
+            <GrnTable />
+          </div>
+          <div style={{width:"30%"}}>
+            <GrnForm />
+          </div>
         </div>
       </div>
     </div>

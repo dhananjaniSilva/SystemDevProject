@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Typography, Grid } from "@mui/material";
+import { Box, Button, TextField, Typography, Grid, Paper } from "@mui/material";
 
 const SupplyForm = () => {
   const [companyName, setCompanyName] = useState("");
@@ -74,17 +74,17 @@ const SupplyForm = () => {
   };
 
   return (
-    <Box sx={{ mt: 3 }}>
+    <Box sx={{p:2,borderRadius:3}} component={Paper} >
       <Typography variant="h4" gutterBottom>
         Enter Supply Details
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Company Name"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            fullWidth
+            sx={{width:"200px"}}
           />
           <Button variant="contained" onClick={handleSearchSupplier} sx={{ mt: 2 }}>
             Search Supplier
@@ -102,7 +102,7 @@ const SupplyForm = () => {
             label="Medicine ID"
             value={medicineId}
             onChange={(e) => setMedicineId(e.target.value)}
-            fullWidth
+            sx={{width:"200px"}}
           />
           <Button variant="contained" onClick={handleSearchMedicine} sx={{ mt: 2 }}>
             Search Medicine

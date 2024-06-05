@@ -7,6 +7,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgb(244, 244, 244);
+    padding: 30px;
+    border-radius: 10px;
 }
 .outer-div{
     display: flex;

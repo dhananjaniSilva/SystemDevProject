@@ -172,7 +172,7 @@ export default function CollapsibleTable() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{borderRadius:3}}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>

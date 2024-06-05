@@ -180,7 +180,10 @@ export async function updateMedicinePrice(medicine_id, medicine_unitprice) {
     if (response.affectedRows === 0) {
       // No rows were affected, indicating the medicine_id does not exist
       console.log(`No medicine found with id: ${medicine_id}`);
-      return { success: false, message: "No medicine found with the given id." };
+      return {
+        success: false,
+        message: "No medicine found with the given id.",
+      };
     }
 
     console.log(`Medicine with id ${medicine_id} updated successfully.`);
@@ -512,5 +515,45 @@ export async function deleteStockByStockId(sply_stockid) {
     // Log and rethrow any errors that occur during the delete operation
     console.error("Error deleting stock:", error);
     throw error;
+  }
+}
+export async function newUserAdd(user) {
+  try {
+    console.log(user);
+    const {
+      user_fname,
+      user_lname,
+      user_role_id,
+      user_nic,
+      user_pno,
+      user_password,
+      user_username,
+    } = user;
+    const result = await pool.query(
+      `INSERT INTO user (user_fname, user_lname, user_role_id, user_nic, user_pno, user_password, user_username) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        user_fname,
+        user_lname,
+        user_role_id,
+        user_nic,
+        user_pno,
+        user_password,
+        user_username,
+      ]
+    );
+    return result;
+  } catch (error) {
+    console.log("Backend user add error:", error);
+    throw error;
+  }
+}
+export async function getUsers() {
+  try {
+    const [response] = await pool.query(
+      `SELECT user.user_fname,user.user_lname,user.user_pno,user.user_nic,user.user_username,role.role_name FROM user JOIN role ON user.user_role_id=role.role_id`
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 }
