@@ -9,7 +9,8 @@ import Paper from "@mui/material/Paper";
 import Swal from "sweetalert2";
 import { Box, Button, ButtonGroup, Typography } from "@mui/material";
 import Form from 'react-bootstrap/Form';
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const columns = [
   { label: "Medicine Id", dataKey: "medicine_id" },
@@ -30,11 +31,17 @@ export default function RequestOrderTable({ medicineArray }) {
     sp_pno: " ",
   });
   const [passedMedicines, setPassedMedicines] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     setFilteredMedicines(medicineArray);
   }, [medicineArray]);
-
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   const handlePass = async (row) => {
     const { value: quantity } = await Swal.fire({
       title: "Enter the quantity you wish to purchase",
@@ -74,6 +81,7 @@ export default function RequestOrderTable({ medicineArray }) {
       }
     }
   };
+
   const handleSearch = async (searchValue) => {
     if (searchValue === "") {
       setFilteredMedicines(medicineArray);
@@ -108,11 +116,25 @@ export default function RequestOrderTable({ medicineArray }) {
       }); // Initialize supplier with empty strings
     }
   };
+
   const getFormattedDate = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString();
     const formattedTime = currentDate.toLocaleTimeString();
     return `${formattedDate} ${formattedTime}`;
+  };
+
+  const handleDownload = () => {
+    const capture = document.querySelector(`.orderInvoice`);
+
+    html2canvas(capture, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const doc = new jsPDF("p", "mm", "a4");
+      const componentWidth = doc.internal.pageSize.getWidth();
+      const componentHeight = (canvas.height * componentWidth) / canvas.width;
+      doc.addImage(imgData, "PNG", 0, 0, componentWidth, componentHeight);
+      doc.save(`${supplier.sp_companyname}-OrderRecipt.pdf`);
+    });
   };
 
   return (
@@ -130,10 +152,11 @@ export default function RequestOrderTable({ medicineArray }) {
           display={"flex"}
           justifyContent={"space-between"}
           alignItems={"center"}
+          sx={{backgroundColor:""}}
         >
           <Form.Control
             type="text"
-            placeholder="Search Supplier Company..."
+            placeholder="Enter Supplier Name"
             onChange={(e) => setSearchValue(e.target.value)}
             style={{ marginBottom: "20px", width: "60%", borderRadius: 10 }}
           />
@@ -190,7 +213,7 @@ export default function RequestOrderTable({ medicineArray }) {
                   sx={{
                     cursor: "pointer",
                     "&:hover": {
-                      backgroundColor: "#f5f5f5",
+                      backgroundColor: "#B0A4FE",
                     },
                   }}
                 >
@@ -207,7 +230,9 @@ export default function RequestOrderTable({ medicineArray }) {
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {row[column.dataKey]}
+                      {column.dataKey === "medicine_id"
+                        ? `${row.mdct_code}${row[column.dataKey].toString().padStart(5, "0")}`
+                        : row[column.dataKey]}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -216,10 +241,11 @@ export default function RequestOrderTable({ medicineArray }) {
           </Table>
         </TableContainer>
       </Paper>
-      <Box
+      <div
+        className="orderInvoice"
         component={Paper}
         elevation={10}
-        sx={{ width: "35%", p: 3 }}
+        style={{ width: "35%", padding: "20px", backgroundColor: "white", borderRadius: "12px" }}
         borderRadius={3}
       >
         <Box sx={{ height: "200px" }}>
@@ -245,9 +271,11 @@ export default function RequestOrderTable({ medicineArray }) {
               <TableBody>
                 {passedMedicines.map((medicine, index) => (
                   <TableRow key={index}>
-                    <TableCell>{medicine.medicine_id}</TableCell>
+                    <TableCell>
+                      {medicine.mdct_code}
+                      {medicine.medicine_id.toString().padStart(5, "0")}
+                    </TableCell>
                     <TableCell>{medicine.medicine_brandname}</TableCell>
-
                     <TableCell>{medicine.medicineOrderQuantity}</TableCell>
                   </TableRow>
                 ))}
@@ -255,7 +283,8 @@ export default function RequestOrderTable({ medicineArray }) {
             </Table>
           </TableContainer>
         )}
-      </Box>
+        <Button onClick={handleDownload}>Download</Button>
+      </div>
     </>
   );
 }
@@ -267,7 +296,7 @@ function SupplierDetails({ supplier }) {
         <strong>Supplier Details</strong>
       </Typography>
       <Typography variant="body2">
-        Company Name : {supplier.sp_companyname}
+        Supplier Name : {supplier.sp_companyname}
       </Typography>
       <Typography variant="body2">
         Agent Name : {supplier.sp_fname} {supplier.sp_lname}

@@ -11,7 +11,7 @@ const SupplyForm = () => {
     sply_quantity: "",
     sply_datetime: "",
     sply_expiredate: "",
-    sply_unit_buying_price: ""
+    sply_unit_buying_price: "",
   });
   const [stockObject, setStockObject] = useState({});
 
@@ -20,12 +20,20 @@ const SupplyForm = () => {
       const response = await axios.get(
         `http://localhost:8080/searchSupplierbyCompanyname/${companyName}`
       );
-      const supplier = response.data[0];
-      setSupplierInfo(supplier);
-      setStockObject(prevState => ({
-        ...prevState,
-        supplierId: supplier.sp_id
-      }));
+
+      const suppliers = response.data;
+
+      if (Array.isArray(suppliers) && suppliers.length > 0) {
+        const supplierInfo = suppliers[0];
+
+        setSupplierInfo(supplierInfo);
+        setStockObject((prevState) => ({
+          ...prevState,
+          supplierId: supplierInfo.sp_id,
+        }));
+      } else {
+        console.log("No suppliers found.");
+      }
     } catch (error) {
       console.error("There was an error fetching the supplier data!", error);
     }
@@ -33,12 +41,14 @@ const SupplyForm = () => {
 
   const handleSearchMedicine = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/searchMedicinebyId/${medicineId}`);
+      const response = await axios.get(
+        `http://localhost:8080/searchMedicinebyId/${medicineId}`
+      );
       const medicine = response.data;
       setMedicineInfo(medicine);
-      setStockObject(prevState => ({
+      setStockObject((prevState) => ({
         ...prevState,
-        medicineId: medicine.medicine_id
+        medicineId: medicine.medicine_id,
       }));
     } catch (error) {
       console.error("There was an error fetching the medicine data!", error);
@@ -48,24 +58,34 @@ const SupplyForm = () => {
   const handleChange = (e) => {
     setSupplyDetails({
       ...supplyDetails,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    setStockObject(prevState => ({
+    setStockObject((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Add validation logic here
-    if (!companyName || !medicineId || !supplyDetails.sply_quantity || !supplyDetails.sply_datetime || !supplyDetails.sply_expiredate || !supplyDetails.sply_unit_buying_price) {
+    if (
+      !companyName ||
+      !medicineId ||
+      !supplyDetails.sply_quantity ||
+      !supplyDetails.sply_datetime ||
+      !supplyDetails.sply_expiredate ||
+      !supplyDetails.sply_unit_buying_price
+    ) {
       alert("Please fill in all fields");
       return;
     }
     console.log("Stock Object:", stockObject);
     try {
-      const response = await axios.post("http://localhost:8080/supplyDetailsCreate", stockObject);
+      const response = await axios.post(
+        "http://localhost:8080/supplyDetailsCreate",
+        stockObject
+      );
       console.log(response.data);
       alert("Supply details submitted successfully!");
     } catch (error) {
@@ -74,26 +94,34 @@ const SupplyForm = () => {
   };
 
   return (
-    <Box sx={{p:2,borderRadius:3}} component={Paper} >
+    <Box sx={{ p: 2, borderRadius: 3 }} component={Paper}>
       <Typography variant="h4" gutterBottom>
         Enter Supply Details
       </Typography>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <TextField
-            label="Company Name"
+            label="Supplier Name"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            sx={{width:"200px"}}
+            sx={{ width: "200px" }}
           />
-          <Button variant="contained" onClick={handleSearchSupplier} sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleSearchSupplier}
+            sx={{ mt: 2 }}
+          >
             Search Supplier
           </Button>
           {supplierInfo && (
             <Box sx={{ mt: 2 }}>
-              <Typography>Company Name: {supplierInfo.sp_companyname}</Typography>
+              <Typography>
+                Supplier Name: {supplierInfo.sp_companyname}
+              </Typography>
               <Typography>Phone Number: {supplierInfo.sp_pno}</Typography>
-              <Typography>Agent Name: {supplierInfo.sp_fname} {supplierInfo.sp_lname}</Typography>
+              <Typography>
+                Agent Name: {supplierInfo.sp_fname} {supplierInfo.sp_lname}
+              </Typography>
             </Box>
           )}
         </Grid>
@@ -102,17 +130,29 @@ const SupplyForm = () => {
             label="Medicine ID"
             value={medicineId}
             onChange={(e) => setMedicineId(e.target.value)}
-            sx={{width:"200px"}}
+            sx={{ width: "200px" }}
           />
-          <Button variant="contained" onClick={handleSearchMedicine} sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handleSearchMedicine}
+            sx={{ mt: 2 }}
+          >
             Search Medicine
           </Button>
           {medicineInfo && (
             <Box sx={{ mt: 2 }}>
-              <Typography>Brand Name: {medicineInfo.medicine_brandname}</Typography>
-              <Typography>Generic Name: {medicineInfo.medicine_genericname}</Typography>
-              <Typography>Unit Price: {medicineInfo.medicine_unitprice}</Typography>
-              <Typography>Pack Size: {medicineInfo.medicine_packsize}</Typography>
+              <Typography>
+                Brand Name: {medicineInfo.medicine_brandname}
+              </Typography>
+              <Typography>
+                Generic Name: {medicineInfo.medicine_genericname}
+              </Typography>
+              <Typography>
+                Unit Price: {medicineInfo.medicine_unitprice}
+              </Typography>
+              <Typography>
+                Pack Size: {medicineInfo.medicine_packsize}
+              </Typography>
             </Box>
           )}
         </Grid>
@@ -121,7 +161,7 @@ const SupplyForm = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              label="Supply Quantity"
+              label="Received Quantity"
               name="sply_quantity"
               value={supplyDetails.sply_quantity}
               onChange={handleChange}
@@ -131,7 +171,7 @@ const SupplyForm = () => {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              label="Supply Date and Time"
+              label="Received Date and Time"
               name="sply_datetime"
               type="datetime-local"
               value={supplyDetails.sply_datetime}

@@ -87,7 +87,7 @@ function Sidebar() {
           <SidebarBtn icon={faArrowTrendUp} text={"Reports"} onClick={handleVisibilityreports}/>
           {isVisiblereports && (
             <div className="button-group">
-              <SidebarBtn text={"Sales reports"} />
+              <SidebarBtn text={"Sales reports"} onClick={()=>handleNavigate('/salesReport')}/>
               <SidebarBtn text={"Demand reports"} />
             </div>
           )}

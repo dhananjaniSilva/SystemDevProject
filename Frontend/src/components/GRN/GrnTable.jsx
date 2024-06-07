@@ -95,7 +95,7 @@ function Row(props) {
               <Table size="small" aria-label="supplier-info">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Company Name</TableCell>
+                    <TableCell>Supplier Name</TableCell>
                     <TableCell>Phone Number</TableCell>
                     <TableCell>Agent Name</TableCell>
                   </TableRow>
@@ -180,16 +180,16 @@ export default function CollapsibleTable() {
             <TableCell>Brand Name</TableCell>
             <TableCell align="right">Generic Name</TableCell>
             <TableCell align="right">Buying Price</TableCell>
-            <TableCell align="right">Supplied Quantity</TableCell>
-            <TableCell align="right">Stock Entered Date</TableCell>
-            <TableCell align="right">Stock Expire Date</TableCell>
-            <TableCell align="right">Actions</TableCell>
+            <TableCell align="right">Received Qty.</TableCell>
+            <TableCell align="right">Received Date</TableCell>
+            <TableCell align="right">Expire Date</TableCell>
+            <TableCell align="right">Delete</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row,index) => (
             <Row
-              key={row.medicine_id}
+              key={row.index}
               row={row}
               onDelete={() => handleDelete(row.sply_stockid)}
             />

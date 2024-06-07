@@ -16,6 +16,7 @@ import GRN from "./pages/GRN";
 import "./App.css";
 import RequestOrder from "./pages/RequestOrder";
 import Users from "./pages/Users";
+import SalesReport from "./components/Reports/SalesReport";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -106,6 +107,15 @@ function App() {
                 <>
                   <Sidebar />
                   <Users />
+                </>
+              }
+            />
+            <Route
+              path="/salesReport"
+              element={
+                <>
+                  <Sidebar />
+                  <SalesReport />
                 </>
               }
             />

@@ -27,10 +27,10 @@ function Dashboard() {
         </div>
         <div className="middle">
          
-            <div className="upper-card"><DashbaordCardComponent bordercolor={"green"} headerbackgroundcolor={"green"} icon={HealthAndSafetyOutlinedIcon}/></div>
-            <div className="upper-card"><DashbaordCardComponent bordercolor={"yellow"} headerbackgroundcolor={"yellow"} icon={AddCardOutlinedIcon}/></div>
-            <div className="upper-card"><DashbaordCardComponent bordercolor={"lightblue"} headerbackgroundcolor={"lightblue"} icon={MedicalServicesOutlinedIcon}/></div>
-            <div className="upper-card"><DashbaordCardComponent bordercolor={"red"} headerbackgroundcolor={"red"} icon={WarningAmberOutlinedIcon}/></div>
+            <div className="upper-card"><DashbaordCardComponent bordercolor={"green"} headerbackgroundcolor={"#30ddae"} icon={HealthAndSafetyOutlinedIcon}/></div>
+            <div className="upper-card"><DashbaordCardComponent bordercolor={"yellow"} headerbackgroundcolor={"#c8d74a"} icon={AddCardOutlinedIcon}/></div>
+            <div className="upper-card"><DashbaordCardComponent bordercolor={"lightblue"} headerbackgroundcolor={"#B0A4FE"} icon={MedicalServicesOutlinedIcon}/></div>
+            <div className="upper-card"><DashbaordCardComponent bordercolor={"red"} headerbackgroundcolor={"#FEA4C5"} icon={WarningAmberOutlinedIcon}/></div>
          
         </div>
         {/* table part */}

@@ -144,7 +144,7 @@ function rowContent(
     isTube ||
     isCartridge
   ) {
-    rowStyle.backgroundColor = "#ffb90080"; // Adjust color for low bottle quantity
+    rowStyle.backgroundColor = "#F2FEA4"; // Adjust color for low bottle quantity
   }
 
   return (

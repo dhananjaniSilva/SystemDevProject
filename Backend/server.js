@@ -18,6 +18,7 @@ import {
   fetchMedicineCategoryCode,
   fetchSupplierByCompanyName,
   fetchSupplyInformation,
+  fetchSupplyInformationGroupByMDID,
   getUsers,
   insertSupplyDetails,
   loginValidate,
@@ -350,6 +351,15 @@ app.post("/completeInvoice", async (req, res) => {
 app.get("/fetchSupplyData", async (req, res) => {
   try {
     const listofSupplyInformation = await fetchSupplyInformation();
+    res.json(listofSupplyInformation);
+  } catch (error) {
+    console.error("Error fetching supply data:", error);
+    res.status(500).send("Error fetching supply data");
+  }
+});
+app.get("/fetchSupplyDataGroupByMDID", async (req, res) => {
+  try {
+    const listofSupplyInformation = await fetchSupplyInformationGroupByMDID();
     res.json(listofSupplyInformation);
   } catch (error) {
     console.error("Error fetching supply data:", error);

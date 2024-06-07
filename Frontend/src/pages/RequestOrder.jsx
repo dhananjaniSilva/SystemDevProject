@@ -19,7 +19,7 @@ function RequestOrder() {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/fetchSupplyData").then((res) => {
+    axios.get("http://localhost:8080/fetchSupplyDataGroupByMDID").then((res) => {
       console.log("supply", res.data);
       setMedicineArray(res.data);
     });

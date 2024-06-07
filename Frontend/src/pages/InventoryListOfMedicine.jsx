@@ -24,6 +24,21 @@ function InventoryListOfMedicine() {
       });
   }, []);
 
+  useEffect(() => {
+    if (searchValue === "") {
+      fetchAllMedicines();
+    }
+  }, [searchValue]);
+
+  const fetchAllMedicines = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/fetchAllMedicines");
+      setMedicineArray(res.data);
+    } catch (error) {
+      console.error("Error fetching all medicines:", error);
+    }
+  };
+
   const handleAddNew = (val) => {
     console.log("handleAdd new", val);
   };
@@ -34,14 +49,18 @@ function InventoryListOfMedicine() {
 
   const handleSearch = async (searchVal) => {
     setSearchValue(searchVal);
-    try {
-      const res = await axios.get("http://localhost:8080/searchMedicine", {
-        params: { searchVal },
-      });
-      setMedicineArray(res.data);
-      console.log(res.data)
-    } catch (error) {
-      console.error("Error fetching search results:", error);
+    if (searchVal === "") {
+      fetchAllMedicines();
+    } else {
+      try {
+        const res = await axios.get("http://localhost:8080/searchMedicine", {
+          params: { searchVal },
+        });
+        setMedicineArray(res.data);
+        console.log(res.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
     }
   };
 
@@ -72,6 +91,7 @@ function InventoryListOfMedicine() {
             <ButtonComponent
               variant="danger"
               text="+ Add New Items"
+              color={"#dd0b81"}
               className="cat1"
               onClick={() => setBoolValue(true)}
             />

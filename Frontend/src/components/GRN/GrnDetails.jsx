@@ -14,7 +14,7 @@ function GrnDetails() {
         </Stack>
         <Typography variant="h6">Supplier Details</Typography>
         <Stack>
-          <Typography variant="body">Supplier company name : </Typography>
+          <Typography variant="body">Supplier name : </Typography>
           <Typography variant="body">Supplier agent name : </Typography>
           <Typography variant="body">Supplier phone number : </Typography>
         </Stack>

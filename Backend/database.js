@@ -437,8 +437,24 @@ export async function fetchSupplyInformation() {
     FROM supply
     JOIN supplier ON supply.sply_spid = supplier.sp_id
     JOIN medicine ON supply.sply_mdid = medicine.medicine_id
-    GROUP BY medicine.medicine_id;
     
+    `);
+    return listofSupplyInformation;
+  } catch (error) {
+    console.error("Error fetching supply information:", error);
+    throw error; // Re-throw the error if you want it to be handled further up the call stack
+  }
+}
+export async function fetchSupplyInformationGroupByMDID() {
+  try {
+    const [listofSupplyInformation] = await pool.query(`
+    SELECT medicine.*, supply.*, supplier.*,medicineCategory.mdct_code
+    FROM supply
+    JOIN supplier ON supply.sply_spid = supplier.sp_id
+    JOIN medicine ON supply.sply_mdid = medicine.medicine_id
+    JOIN medicineCategory ON medicine.medicine_categoryid = medicineCategory.mdct_id
+    GROUP BY medicine.medicine_id;
+
     `);
     return listofSupplyInformation;
   } catch (error) {
