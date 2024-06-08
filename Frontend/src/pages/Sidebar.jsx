@@ -88,9 +88,10 @@ function Sidebar() {
           {isVisiblereports && (
             <div className="button-group">
               <SidebarBtn text={"Sales reports"} onClick={()=>handleNavigate('/salesReport')}/>
-              <SidebarBtn text={"Demand reports"} />
+              <SidebarBtn text={"Demand reports"} onClick={()=>handleNavigate('/fastmovingMedicineReport')} />
             </div>
           )}
+          
           <SidebarBtn icon={faBell} text={"Notifications"} />
           <SidebarBtn icon={faNewspaper} text={"Invoice Bill"} onClick={()=>handleNavigate('/invoicebill')}/>
           <SidebarBtn icon={faFileInvoice} text={"Request Order"} onClick={()=>handleNavigate('/requestOrder')}/>

@@ -19,6 +19,7 @@ import {
   fetchSupplierByCompanyName,
   fetchSupplyInformation,
   fetchSupplyInformationGroupByMDID,
+  getSalesReport,
   getUsers,
   insertSupplyDetails,
   loginValidate,
@@ -398,6 +399,37 @@ app.get("/getUsers", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed te retrieve users" });
   }
 });
+
+app.get('/api/sales-report', async (req, res) => {
+  try {
+      const salesReport = await getSalesReport();
+      res.json({ success: true, data: salesReport });
+  } catch (error) {
+      console.error("Error occurred in backend: ", error);
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
+app.get('/api/fastmoving-report', async (req, res) => {
+  try {
+      // Extract start and end dates from request query parameters
+      const { startDate, endDate } = req.query;
+
+      // Validate start and end dates
+      if (!startDate || !endDate) {
+          return res.status(400).json({ success: false, error: "Start date and end date are required" });
+      }
+
+      // Call getSalesReport function with start and end dates
+      const salesReport = await getSalesReport(startDate, endDate);
+
+      res.json({ success: true, data: salesReport });
+  } catch (error) {
+      console.error("Error occurred in backend: ", error);
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
+
 
 const port = 8080;
 app.listen(port, () => {

@@ -573,3 +573,58 @@ export async function getUsers() {
     console.log(error);
   }
 }
+
+export async function getSalesReport() {
+  try {
+    const [response] = await pool.query(`
+SELECT 
+    invoice.inv_id, 
+    invoice.inv_datetime, 
+    invoice.inv_paidamount, 
+    user.user_fname, 
+    user.user_lname,
+    SUM(medicine.medicine_unitprice * invoicemedicine.invmd_quantity) AS totalPrice
+FROM 
+    invoice
+INNER JOIN 
+    user ON invoice.inv_userid = user.user_id
+INNER JOIN 
+    invoicemedicine ON invoice.inv_id = invoicemedicine.invmd_invid
+INNER JOIN 
+    medicine ON invoicemedicine.invmd_mdid = medicine.medicine_id
+GROUP BY 
+    invoice.inv_id;
+
+`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log("error occured in backend ", error);
+  }
+}
+
+export async function getSalesReportFastMoving() {
+  try {
+    const [response] = await pool.query(`
+    SELECT 
+      medicine.medicine_id,
+      medicine.medicine_brandname,
+      medicine.medicine_genericname,
+      SUM(invoicemedicine.invmd_quantity) AS total_sales
+    FROM 
+      invoicemedicine
+    INNER JOIN 
+      medicine ON invoicemedicine.invmd_mdid = medicine.medicine_id
+    GROUP BY 
+      medicine.medicine_id,
+      medicine.medicine_brandname,
+      medicine.medicine_genericname
+    ORDER BY 
+      total_sales DESC;
+`);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log("error occured in backend ", error);
+  }
+}

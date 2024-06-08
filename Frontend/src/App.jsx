@@ -17,6 +17,7 @@ import "./App.css";
 import RequestOrder from "./pages/RequestOrder";
 import Users from "./pages/Users";
 import SalesReport from "./components/Reports/SalesReport";
+import FastMovingMedicineReport from "./components/Reports/FastMovingMedicineReport";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -116,6 +117,15 @@ function App() {
                 <>
                   <Sidebar />
                   <SalesReport />
+                </>
+              }
+            />
+              <Route
+              path="/fastmovingMedicineReport"
+              element={
+                <>
+                  <Sidebar />
+                  <FastMovingMedicineReport />
                 </>
               }
             />
