@@ -19,8 +19,7 @@ function Dashboard() {
         <div className="top">
           <div className="left">
             <div style={{paddingLeft:"20px",paddingRight:"20px"}}>
-              <h2>Dashboard</h2>
-              <h6>A quick data overview of the inventory</h6>
+              <h3>Dashboard</h3>
             </div>
           </div>
           <div className="right"></div>

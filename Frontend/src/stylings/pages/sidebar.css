@@ -1,7 +1,7 @@
 #sidebar {
   width: 18vw;
   border: solid 1px;
-  border-radius: 0px 10px 10px 0px;
+  /* border-radius: 0px 10px 10px 0px; */
 }
 
 .sidebar-header {
@@ -11,7 +11,7 @@
   position: relative;
   display: flex;
   overflow: hidden;
-  border-radius: 0px 10px 0px 0px;
+  /* border-radius: 0px 10px 0px 0px; */
 }
 .sidebar-body{
   display: flex;
@@ -19,7 +19,7 @@
   height: auto;
   gap: 0;
   background-color:#283342 ;
-  border-radius: 0px 0px 10px 0px;
+  /* border-radius: 0px 0px 10px 0px; */
 }
 .sidebar-body .top{
   display: flex;

@@ -117,6 +117,10 @@ function SalesReport() {
       <div className="outer-div">
         <div className="top">
           <div className="left">
+            {/* <IconBreadcrumbs /> */}
+            <div style={{ paddingRight: "20px"}}>
+              <h3><span style={{ color: "grey" }}>Reports</span> &gt; Sales Report</h3>
+            </div>
             <input
               type="datetime-local"
               value={startDate}

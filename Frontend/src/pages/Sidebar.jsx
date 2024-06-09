@@ -121,11 +121,11 @@ function Sidebar() {
           {isVisiblereports && (
             <div className="button-group">
               <SidebarBtn
-                text={"Sales reports"}
+                text={"Sales Report"}
                 onClick={() => handleNavigate("/salesReport")}
               />
               <SidebarBtn
-                text={"Demand reports"}
+                text={"Demand Analysing Report"}
                 onClick={() => handleNavigate("/fastmovingMedicineReport")}
               />
             </div>

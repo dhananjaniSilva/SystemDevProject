@@ -8,7 +8,12 @@ function GRN() {
     <div className="body">
       <div className="outer-div">
         <div className="top">
-          <div className="left"></div>
+          <div className="left">
+             {/* <IconBreadcrumbs /> */}
+             <div style={{ paddingRight: "20px"}}>
+              <h3>GRN</h3>
+            </div>
+          </div>
           <div className="right">
           
           </div>

@@ -60,7 +60,12 @@ export default function InvoiceBill() {
       <div className="body">
         <div className="outer-div">
           <div className="top">
-            <div className="left"></div>
+            <div className="left">
+               {/* <IconBreadcrumbs /> */}
+            <div style={{ paddingRight: "20px"}}>
+              <h3>Invoice Bill</h3>
+            </div>
+            </div>
             <div className="right">
               <h5>
                 Invoice Id: {invoiceObject.invoiceId && invoiceObject.invoiceId}

@@ -8,7 +8,12 @@ function Users() {
     <div className="body">
       <div className="outer-div">
         <div className="top">
-          <div className="left"></div>
+          <div className="left">
+             {/* <IconBreadcrumbs /> */}
+             <div style={{ paddingRight: "20px"}}>
+              <h3>User Management</h3>
+            </div>
+          </div>
           <div className="right"></div>
         </div>
         <div

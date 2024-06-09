@@ -36,7 +36,15 @@ function FastMovingReport() {
   return (
     <div className="body">
       <div className="outer-div">
-        <div style={{ height: "65vh", width: "100%", overflowY: "auto" }}>
+      <div className="top">
+      <div className="left">
+        {/* <IconBreadcrumbs /> */}
+          <div style={{ paddingRight: "20px"}}>
+              <h3><span style={{ color: "grey" }}>Reports</span> &gt; Demand Analysing Report</h3>
+            </div>
+      </div>
+      </div>
+        <div style={{ height: "100vh", width: "100%", overflowY: "auto" }}>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
