@@ -222,6 +222,8 @@ export default function ReactVirtualizedTable(props) {
   const [editableRowId, setEditableRowId] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("This is the token",token)
     if (medicineArray.length > 0) {
       const modifiedData = medicineArray.map((item) => ({
         ...item,
@@ -232,16 +234,21 @@ export default function ReactVirtualizedTable(props) {
       }));
       setAllMedicines(modifiedData);
     } else {
-      axios.get("http://localhost:8080/fetchListOfMedicine").then((res) => {
-        const modifiedData = res.data.map((item) => ({
-          ...item,
-          medicine_info: `${item.mdct_code}${String(item.medicine_id).padStart(
-            5,
-            "0"
-          )} `,
-        }));
-        setAllMedicines(modifiedData);
-      });
+      axios
+        .get("http://localhost:8080/fetchListOfMedicine", {
+          headers: {
+            "x-access-token": token,
+          },
+        })
+        .then((res) => {
+          const modifiedData = res.data.map((item) => ({
+            ...item,
+            medicine_info: `${item.mdct_code}${String(
+              item.medicine_id
+            ).padStart(5, "0")} `,
+          }));
+          setAllMedicines(modifiedData);
+        });
     }
   }, [medicineArray]);
 

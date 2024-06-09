@@ -47,6 +47,7 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
   };
 
   const handlePayInvoice = async () => {
+    
     // Check if payment is a valid number
     const parsedPayment = parsePayment(payment);
     if (isNaN(parsedPayment)) {

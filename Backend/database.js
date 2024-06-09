@@ -19,7 +19,7 @@ export async function loginValidate(userObject) {
   try {
     // Execute the query to check the user's credentials
     const [user] = await pool.query(
-      "SELECT user_username, user_role_id FROM user WHERE user_username = ? AND user_password = ?",
+      "SELECT user_username, user_role_id ,user_id FROM user WHERE user_username = ? AND user_password = ?",
       [userObject.username, userObject.password]
     );
 
@@ -30,12 +30,14 @@ export async function loginValidate(userObject) {
         success: true,
         username: user[0].user_username,
         role: user[0].user_role_id,
+        userId:user[0].user_id
       };
     } else {
       // User does not exist, return an object with the success flag set to false
       return {
         success: false,
         username: null,
+        userId:null,
         role: null,
       };
     }
@@ -45,6 +47,7 @@ export async function loginValidate(userObject) {
       success: false,
       username: null,
       role: null,
+      userId:null,
       error: error.message,
     };
   }
@@ -67,7 +70,6 @@ export async function fetchListofMedicine() {
     ON
       medicine.medicine_unitid = unit.unit_id
   `);
-  console.log(listofMedicine);
   return listofMedicine;
 }
 
@@ -377,7 +379,7 @@ export async function completeInvoice(invoiceObject) {
        SET inv_userid = ?, inv_datetime = ?, inv_paidamount = ?, inv_updatestatus = ?
        WHERE inv_id = ? AND inv_updatestatus = 0`,
       [
-        1,
+        invoiceObject.userId,
         invoiceObject.invoiceDate,
         invoiceObject.paidAmount,
         1, // Assuming 1 represents the status for a completed invoice

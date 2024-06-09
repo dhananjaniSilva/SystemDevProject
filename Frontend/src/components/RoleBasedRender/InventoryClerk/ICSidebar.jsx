@@ -23,6 +23,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function ICSidebar() {
+  const username = localStorage.getItem("username");
+  const role = localStorage.getItem("role");
   const [show, setShow] = useState(true);
   const [isVisibleinv, setIsVisibleinv] = useState(false);
   const [isVisiblereports, setIsVisiblereports] = useState(false);
@@ -61,8 +63,8 @@ function ICSidebar() {
         <Offcanvas.Body className="sidebar-body">
           <div className="top">
             <div>
-            <h5>Umesha</h5>
-            <p>Inventory Clerk</p>
+            <h5>{username}</h5>
+            <p>{role}</p>
             </div>
             <div style={{height:"40px" }}>
               <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px",width:"20px" }} onClick={()=>setShow(!show)}>

@@ -36,22 +36,37 @@ app.get("/", (req, res) => {
   return res.json("From backend side");
 });
 
-const verifyJWT = (req, res, next) => {
-  const token = req.headers["x-access-token"];
-  if (!token) {
-    res.json({ auth: false, message: "failed" });
-  } else {
-    jwt.verify(token, "jwtSecret", (err, decoded) => {
-      if (err) {
-        res.json({ auth: false, message: "U failed to authencticate" });
-      } else {
-        req.role = decoded.role;
-        console.log("veriy jwt else part ", req.role);
-        next();
-      }
-    });
-  }
+const verifyJWT = (allowedRoles) => {
+  return (req, res, next) => {
+    const token = req.headers["x-access-token"];
+    if (!token) {
+      console.log("No token provided");
+      return res.json({ auth: false, message: "No token provided" });
+    } else {
+      jwt.verify(token, "jwtSecret", (err, decoded) => {
+        if (err) {
+          console.log("Failed to authenticate token");
+          return res.json({ auth: false, message: "Failed to authenticate token" });
+        } else {
+          req.role = parseInt(decoded.role); // Convert decoded role to number
+          console.log("Decoded role type: ", typeof req.role);  // Log the type of decoded role
+          console.log("Allowed roles type: ", typeof allowedRoles[0]);  // Log the type of first element in allowed roles
+          console.log("Decoded role: ", req.role);
+          console.log("Allowed roles: ", allowedRoles);
+          if (allowedRoles.includes(req.role)) {
+            next();
+          } else {
+            console.log("Unauthorized access attempt with role: ", req.role);
+            return res.status(403).json({ auth: false, message: "Unauthorized" });
+          }
+        }
+      });
+    }
+  };
 };
+
+
+
 
 app.get("/isUserAuth", verifyJWT, (req, res) => {
   return res.json({ auth: true, message: "You have a valid token" });
@@ -92,8 +107,9 @@ app.get("/loginValidate", async (req, res) => {
     if (response.success == true) {
       const role = response.role;
       const username = response.username;
+      const userId = response.userId;
       const token = jwt.sign({ role }, "jwtSecret", {
-        expiresIn: 3600,
+        expiresIn: 60*60*24,
       });
 
       return res.json({
@@ -101,6 +117,7 @@ app.get("/loginValidate", async (req, res) => {
         token: token,
         role: role,
         username: username,
+        userId:userId
       });
     } else {
       return res.json({
@@ -114,14 +131,14 @@ app.get("/loginValidate", async (req, res) => {
 
 app.get("/fetchListOfMedicine", async (req, res) => {
   try {
-    // console.log("express app ",req.query.username)
-
     const response = await fetchListofMedicine();
     return res.json(response);
   } catch (error) {
-    console.log("Error in loginValidate", error);
+    console.log("Error in fetchListOfMedicine", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 app.post("/createMedicine", async (req, res) => {
   try {
     const response = await createMedicine(req.body);
@@ -391,45 +408,51 @@ app.post("/createUser", async (req, res) => {
 });
 
 app.get("/getUsers", async (req, res) => {
-  try{
+  try {
     const response = await getUsers();
-    console.log(response)
-    return res.json(response)
-  }catch(error){
-    res.status(500).json({ success: false, message: "Failed te retrieve users" });
-  }
-});
-
-app.get('/api/sales-report', async (req, res) => {
-  try {
-      const salesReport = await getSalesReport();
-      res.json({ success: true, data: salesReport });
+    console.log(response);
+    return res.json(response);
   } catch (error) {
-      console.error("Error occurred in backend: ", error);
-      res.status(500).json({ success: false, error: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed te retrieve users" });
   }
 });
 
-app.get('/api/fastmoving-report', async (req, res) => {
+app.get("/api/sales-report", async (req, res) => {
   try {
-      // Extract start and end dates from request query parameters
-      const { startDate, endDate } = req.query;
-
-      // Validate start and end dates
-      if (!startDate || !endDate) {
-          return res.status(400).json({ success: false, error: "Start date and end date are required" });
-      }
-
-      // Call getSalesReport function with start and end dates
-      const salesReport = await getSalesReport(startDate, endDate);
-
-      res.json({ success: true, data: salesReport });
+    const salesReport = await getSalesReport();
+    res.json({ success: true, data: salesReport });
   } catch (error) {
-      console.error("Error occurred in backend: ", error);
-      res.status(500).json({ success: false, error: "Internal Server Error" });
+    console.error("Error occurred in backend: ", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 });
 
+app.get("/api/fastmoving-report", async (req, res) => {
+  try {
+    // Extract start and end dates from request query parameters
+    const { startDate, endDate } = req.query;
+
+    // Validate start and end dates
+    if (!startDate || !endDate) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "Start date and end date are required",
+        });
+    }
+
+    // Call getSalesReport function with start and end dates
+    const salesReport = await getSalesReport(startDate, endDate);
+
+    res.json({ success: true, data: salesReport });
+  } catch (error) {
+    console.error("Error occurred in backend: ", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+  }
+});
 
 const port = 8080;
 app.listen(port, () => {

@@ -55,13 +55,31 @@ function Row(props) {
   const [open, setOpen] = useState(false);
 
   const handleDelete = () => {
-    // Implement delete functionality here
-    onDelete(row.medicine_id); // Pass the medicine_id to identify the row to delete
+    onDelete(row.sply_stockid);
   };
+
+  // Calculate the expiration date for 3 months, 6 months, and 1 year
+  const threeMonthsFromNow = new Date();
+  threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
+
+  const sixMonthsFromNow = new Date();
+  sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
+  const oneYearFromNow = new Date();
+  oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+
+  // Determine if the medicine will expire within the specified periods
+  const willExpireWithinThreeMonths = new Date(row.sply_expiredate) <= threeMonthsFromNow;
+  const willExpireWithinSixMonths = new Date(row.sply_expiredate) <= sixMonthsFromNow;
+  const willExpireWithinOneYear = new Date(row.sply_expiredate) <= oneYearFromNow;
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset", backgroundColor: 
+          willExpireWithinThreeMonths ? "lightyellow" :
+          willExpireWithinSixMonths ? "lightgreen" :
+          willExpireWithinOneYear ? "lightblue" : "inherit"
+      } }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -116,6 +134,8 @@ function Row(props) {
   );
 }
 
+
+
 Row.propTypes = {
   row: PropTypes.shape({
     medicine_brandname: PropTypes.string.isRequired,
@@ -141,26 +161,37 @@ Row.propTypes = {
 
 export default function CollapsibleTable() {
   const [rows, setRows] = useState([]);
+  const [selectedDateRange, setSelectedDateRange] = useState("3 months");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    fetchData(selectedDateRange);
+  }, [selectedDateRange]);
+
+  const fetchData = (dateRange) => {
+    const currentDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(
+      currentDate.getMonth() +
+        (dateRange === "3 months" ? 3 : dateRange === "6 months" ? 6 : 12)
+    );
     axios
-      .get("http://localhost:8080/fetchSupplyData")
+      .get(
+        `http://localhost:8080/fetchSupplyData?endDate=${endDate.toISOString()}`
+      )
       .then((response) => {
-        console.log(response.data);
         const fetchedData = response.data.map((item) => createData(item));
         setRows(fetchedData);
       })
       .catch((error) => {
         console.error("There was an error fetching the data!", error);
       });
-  }, []);
+  };
 
   const handleDelete = (sply_stockid) => {
-    // Implement delete functionality here
     axios
       .delete(`http://localhost:8080/deleteSupply/${sply_stockid}`)
       .then(() => {
-        // Remove the deleted row from the state
         setRows((prevRows) =>
           prevRows.filter((row) => row.sply_stockid !== sply_stockid)
         );
@@ -171,31 +202,65 @@ export default function CollapsibleTable() {
       });
   };
 
+  const handleDateRangeChange = (event) => {
+    setSelectedDateRange(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredRows = rows.filter(
+    (row) =>
+      row.medicine_brandname
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      row.medicine_genericname.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <TableContainer component={Paper} sx={{borderRadius:3,height:"80vh"}}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Brand Name</TableCell>
-            <TableCell align="right">Generic Name</TableCell>
-            <TableCell align="right">Buying Price</TableCell>
-            <TableCell align="right">Received Qty.</TableCell>
-            <TableCell align="right">Received Date</TableCell>
-            <TableCell align="right">Expire Date</TableCell>
-            <TableCell align="right">Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row,index) => (
-            <Row
-              key={row.index}
-              row={row}
-              onDelete={() => handleDelete(row.sply_stockid)}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <Box>
+        <select value={selectedDateRange} onChange={handleDateRangeChange}>
+          <option value="3 months">3 months</option>
+          <option value="6 months">6 months</option>
+          <option value="1 year">1 year</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Search by Brand or Generic Name"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </Box>
+      <TableContainer
+        component={Paper}
+        sx={{ borderRadius: 3, height: "80vh" }}
+      >
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Brand Name</TableCell>
+              <TableCell align="right">Generic Name</TableCell>
+              <TableCell align="right">Buying Price</TableCell>
+              <TableCell align="right">Received Qty.</TableCell>
+              <TableCell align="right">Received Date</TableCell>
+              <TableCell align="right">Expire Date</TableCell>
+              <TableCell align="right">Delete</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredRows.map((row) => (
+              <Row
+                key={row.sply_stockid}
+                row={row}
+                onDelete={() => handleDelete(row.sply_stockid)}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
