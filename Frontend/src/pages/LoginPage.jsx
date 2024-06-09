@@ -64,10 +64,10 @@ function LoginPage() {
         const payLoadRole = parseJwt(res.data.token).role;
         console.log("This is the role ", payLoadRole);
         if (payLoadRole == 1) navigate("dashboard");
-        else if (payLoadRole == 2) navigate("PC-dashboard");
+        else if (payLoadRole == 2) navigate("C-dashboard");
         else if (payLoadRole == 3) navigate("PC-dashboard");
-        else if (payLoadRole == 4) navigate("PC-dashboard");
-        else if (payLoadRole == 5) navigate("PC-dashboard");
+        else if (payLoadRole == 4) navigate("IC-dashboard");
+        else if (payLoadRole == 5) navigate("S-dashboard");
         localStorage.setItem("username", res.data.username);
         // navigate("/dashboard");
       } else {

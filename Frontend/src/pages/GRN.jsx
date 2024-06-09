@@ -2,12 +2,8 @@ import React from "react";
 import "../stylings/pages/grn.css";
 import GrnForm from "../components/GRN/GrnForm";
 import GrnTable from "../components/GRN/GrnTable";
-import { Button } from "@mui/material";
-import GrnDetails from "../components/GRN/GrnDetails";
+
 function GRN() {
-  const handleAddStock = () => {
-    console.log("pressed");
-  };
   return (
     <div className="body">
       <div className="outer-div">

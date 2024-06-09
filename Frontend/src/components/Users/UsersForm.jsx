@@ -164,13 +164,13 @@ function UsersForm() {
         <Form.Group className="mb-3" controlId="user_password">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            type="password"
+            type="text"
             placeholder="Enter password"
             {...register("user_password", {
               required: "Password is required",
               pattern: {
                 value:
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d!@#$%^&*_-]{8,}$/,
                 message:
                   "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
               },

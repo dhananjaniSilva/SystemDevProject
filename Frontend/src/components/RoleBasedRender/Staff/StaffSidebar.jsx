@@ -22,7 +22,7 @@ import {
   faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
 
-function ICSidebar() {
+function StaffSidebar() {
   const [show, setShow] = useState(true);
   const [isVisibleinv, setIsVisibleinv] = useState(false);
   const [isVisiblereports, setIsVisiblereports] = useState(false);
@@ -70,7 +70,7 @@ function ICSidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/IC-dashboard')}/>
+          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/S-dashboard')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
@@ -79,13 +79,13 @@ function ICSidebar() {
           
           {isVisibleinv && (
             <div className="button-group">
-              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/IC-inventoryListofmedicine')}/>
-              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/IC-medicineGroups')}/>
+              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/S-inventoryListofmedicine')}/>
+              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/S-medicineGroups')}/>
             </div>
           )}
          
           
-         <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/IC-grn')}/>
+         
         
           
           
@@ -95,4 +95,4 @@ function ICSidebar() {
   );
 }
 
-export default ICSidebar;
+export default StaffSidebar;

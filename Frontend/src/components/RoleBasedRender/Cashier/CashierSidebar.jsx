@@ -22,7 +22,7 @@ import {
   faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
 
-function ICSidebar() {
+function CashierSidebar() {
   const [show, setShow] = useState(true);
   const [isVisibleinv, setIsVisibleinv] = useState(false);
   const [isVisiblereports, setIsVisiblereports] = useState(false);
@@ -62,7 +62,7 @@ function ICSidebar() {
           <div className="top">
             <div>
             <h5>Umesha</h5>
-            <p>Inventory Clerk</p>
+            <p>Phamarmacy Manager</p>
             </div>
             <div style={{height:"40px" }}>
               <Button style={{backgroundColor:"transparent" , border:"transparent solid 1px",width:"20px" }} onClick={()=>setShow(!show)}>
@@ -70,7 +70,7 @@ function ICSidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/IC-dashboard')}/>
+          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/C-dashboard')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
@@ -79,13 +79,13 @@ function ICSidebar() {
           
           {isVisibleinv && (
             <div className="button-group">
-              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/IC-inventoryListofmedicine')}/>
-              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/IC-medicineGroups')}/>
+              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/C-inventoryListofmedicine')}/>
+              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/C-medicineGroups')}/>
             </div>
           )}
-         
+                   <SidebarBtn icon={faNewspaper} text={"Invoice Bill"} onClick={()=>handleNavigate('/C-invoicebill')}/>
+
           
-         <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/IC-grn')}/>
         
           
           
@@ -95,4 +95,4 @@ function ICSidebar() {
   );
 }
 
-export default ICSidebar;
+export default CashierSidebar;

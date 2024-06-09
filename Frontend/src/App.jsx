@@ -27,6 +27,10 @@ import PCSidebar from "./components/RoleBasedRender/PurchasingClerk/PCSidebar";
 import PCInventoryListOfMedicine from "./components/RoleBasedRender/PurchasingClerk/PCInventoryListofMedicine";
 import PCMedicineGroups from "./components/RoleBasedRender/PurchasingClerk/PCMedicineGroups";
 import ICSidebar from "./components/RoleBasedRender/InventoryClerk/ICSidebar";
+import CashierSidebar from "./components/RoleBasedRender/Cashier/CashierSidebar";
+import StaffSidebar from "./components/RoleBasedRender/Staff/StaffSidebar";
+import ICInventoryListOfMedicine from "./components/RoleBasedRender/InventoryClerk/ICInventoryListofMedicine";
+import ICMedicineGroups from "./components/RoleBasedRender/InventoryClerk/ICMedicineGroups";
 
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
@@ -162,6 +166,7 @@ export default function App() {
             path="/PC-dashboard"
             element={
               <AuthPC>
+                <Dashboard />
                 <PCSidebar />
               </AuthPC>
             }
@@ -194,14 +199,22 @@ export default function App() {
             }
           />
 
-          <Route path="/IC-dashboard" element={<ICSidebar />} />
+          <Route
+            path="/IC-dashboard"
+            element={
+              <>
+                <ICSidebar />
+                <Dashboard />
+              </>
+            }
+          />
 
           <Route
             path="/IC-inventorylistofmedicine"
             element={
               <>
                 <ICSidebar />
-                <PCInventoryListOfMedicine />
+                <ICInventoryListOfMedicine />
               </>
             }
           />
@@ -210,7 +223,7 @@ export default function App() {
             element={
               <>
                 <ICSidebar />
-                <PCMedicineGroups />
+                <ICMedicineGroups />
               </>
             }
           />
@@ -220,6 +233,70 @@ export default function App() {
               <>
                 <ICSidebar />
                 <GRN />
+              </>
+            }
+          />
+
+          <Route
+            path="/C-dashboard"
+            element={
+              <>
+                <CashierSidebar />
+                <Dashboard />
+              </>
+            }
+          />
+          <Route
+            path="/C-inventorylistofmedicine"
+            element={
+              <>
+                <CashierSidebar />
+                <PCInventoryListOfMedicine />
+              </>
+            }
+          />
+          <Route
+            path="/C-medicinegroups"
+            element={
+              <>
+                <CashierSidebar />
+                <PCMedicineGroups />
+              </>
+            }
+          />
+          <Route
+            path="/C-invoicebill"
+            element={
+              <>
+                <CashierSidebar />
+                <InvoiceBill />
+              </>
+            }
+          />
+
+          <Route
+            path="/S-dashboard"
+            element={
+              <>
+                <StaffSidebar />
+              </>
+            }
+          />
+          <Route
+            path="/S-inventorylistofmedicine"
+            element={
+              <>
+                <PCInventoryListOfMedicine />
+                <StaffSidebar />
+              </>
+            }
+          />
+          <Route
+            path="/S-medicinegroups"
+            element={
+              <>
+                <StaffSidebar />
+                <PCMedicineGroups />
               </>
             }
           />
