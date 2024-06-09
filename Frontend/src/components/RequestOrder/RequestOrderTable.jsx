@@ -11,14 +11,14 @@ import { Box, Button, ButtonGroup, Typography } from "@mui/material";
 import Form from 'react-bootstrap/Form';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 const columns = [
   { label: "Medicine Id", dataKey: "medicine_id" },
   { label: "Brand Name", dataKey: "medicine_brandname" },
   { label: "Generic Name", dataKey: "medicine_genericname" },
   { label: "Unit Price", dataKey: "medicine_unitprice" },
   { label: "Pack Size", dataKey: "medicine_packsize" },
-  { label: "In-hand Quantity", dataKey: "medicine_inhandquantity" },
+  { label: "In-hand Qty.", dataKey: "medicine_inhandquantity" },
 ];
 
 export default function RequestOrderTable({ medicineArray }) {
@@ -44,7 +44,7 @@ export default function RequestOrderTable({ medicineArray }) {
   }, []);
   const handlePass = async (row) => {
     const { value: quantity } = await Swal.fire({
-      title: "Enter the quantity you wish to purchase",
+      title: "Enter Order Qty.",
       input: "number",
       inputAttributes: {
         autocapitalize: "off",
@@ -52,6 +52,7 @@ export default function RequestOrderTable({ medicineArray }) {
       },
       showCancelButton: true,
       confirmButtonText: "Submit",
+      // validation
       inputValidator: (value) => {
         if (!value) {
           return "You need to enter a quantity";
@@ -139,6 +140,10 @@ export default function RequestOrderTable({ medicineArray }) {
 
   return (
     <>
+    
+    <Box display={"flex"}>
+    <Box display={"flex"} gap={3}>
+
       <Paper
         sx={{
           height: "100%",
@@ -166,7 +171,8 @@ export default function RequestOrderTable({ medicineArray }) {
             variant="outlined"
             aria-label="Disabled button group"
           >
-            <Button color="info" onClick={() => handleSearch(searchValue)}>
+            {/* search and clear buttons */}
+            <Button color="info" onClick={() => handleSearch(searchValue)}> 
               Search
             </Button>
             <Button color="error" onClick={() => handleSearch("")}>
@@ -175,7 +181,7 @@ export default function RequestOrderTable({ medicineArray }) {
           </ButtonGroup>
         </Box>
 
-        <TableContainer component={Paper} sx={{ width: "100%" }}>
+        <TableContainer component={Paper} sx={{ width: "100%",height:"58vh" }}>
           <Table
             sx={{
               minWidth: 650,
@@ -241,6 +247,7 @@ export default function RequestOrderTable({ medicineArray }) {
           </Table>
         </TableContainer>
       </Paper>
+      {/* order invoice */}
       <div
         className="orderInvoice"
         component={Paper}
@@ -283,8 +290,12 @@ export default function RequestOrderTable({ medicineArray }) {
             </Table>
           </TableContainer>
         )}
-        <Button onClick={handleDownload}>Download</Button>
+       
       </div>
+
+    </Box>
+      <Button sx={{backgroundColor:"purple"}} onClick={handleDownload}><BrowserUpdatedIcon sx={{color:"white"}}/></Button>
+    </Box>
     </>
   );
 }

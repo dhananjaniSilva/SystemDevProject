@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Box, FormLabel, Paper, TextField, Button, Typography } from "@mui/material";
+import {
+  Box,
+  FormLabel,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+} from "@mui/material";
 import logo from "../assets/logo.png";
 import logotext from "../assets/logotext.png";
 import axios from "axios";
@@ -8,13 +15,33 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
 function LoginPage() {
   const schema = yup.object().shape({
     username: yup.string().required().min(3).max(12),
     password: yup.string().min(3).max(20).required(),
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
@@ -34,8 +61,15 @@ function LoginPage() {
       console.log("This is the response", res.data);
       if (res.data.auth === true) {
         localStorage.setItem("token", res.data.token);
+        const payLoadRole = parseJwt(res.data.token).role;
+        console.log("This is the role ", payLoadRole);
+        if (payLoadRole == 1) navigate("dashboard");
+        else if (payLoadRole == 2) navigate("PC-dashboard");
+        else if (payLoadRole == 3) navigate("PC-dashboard");
+        else if (payLoadRole == 4) navigate("PC-dashboard");
+        else if (payLoadRole == 5) navigate("PC-dashboard");
         localStorage.setItem("username", res.data.username);
-        navigate("/dashboard");
+        // navigate("/dashboard");
       } else {
         setLoginError("Invalid username or password. Please try again.");
       }
@@ -81,7 +115,7 @@ function LoginPage() {
             <Box sx={{ width: "100%", height: "20%" }}>
               <h1>Login</h1>
             </Box>
-     
+
             <Box
               sx={{
                 display: "flex",
@@ -117,9 +151,19 @@ function LoginPage() {
                 label=""
                 inputProps={{ ...register("password") }}
                 error={!!errors.password}
-                helperText={(!!loginError) ? <Typography color={"error"} variant="caption">{loginError}</Typography>:errors.password?.message }
+                helperText={
+                  !!loginError ? (
+                    <Typography color={"error"} variant="caption">
+                      {loginError}
+                    </Typography>
+                  ) : (
+                    errors.password?.message
+                  )
+                }
                 variant="outlined"
-                onChange={()=>{setLoginError('')}}
+                onChange={() => {
+                  setLoginError("");
+                }}
               />
               <FormLabel>Forgot password?</FormLabel>
             </Box>

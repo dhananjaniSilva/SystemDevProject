@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import "../stylings/pages/sidebar.css";
-import logo from "../assets/logo.png";
-import logowithtext from "../assets/logotext.png";
-import SidebarBtn from "../components/SidebarBtn";
+import "../../../stylings/pages/sidebar.css";
+import logo from "../../../assets/logo.png";
+import logowithtext from "../../../assets/logotext.png";
+import SidebarBtn from "../../../components/SidebarBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,7 +22,7 @@ import {
   faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Sidebar() {
+function PCSidebar() {
   const [show, setShow] = useState(true);
   const [isVisibleinv, setIsVisibleinv] = useState(false);
   const [isVisiblereports, setIsVisiblereports] = useState(false);
@@ -70,7 +70,7 @@ function Sidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/dashboard')}/>
+          <SidebarBtn icon={faPager} text="Dashboard" onClick={()=>handleNavigate('/PC-dashboard')}/>
           <SidebarBtn
             icon={faList}
             text={"Inventory"}
@@ -79,23 +79,15 @@ function Sidebar() {
           
           {isVisibleinv && (
             <div className="button-group">
-              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/inventoryListofmedicine')}/>
-              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/medicineGroups')}/>
+              <SidebarBtn text={"List of Medicines"} onClick={()=>handleNavigate('/PC-inventoryListofmedicine')}/>
+              <SidebarBtn text={"Medicine Categories"} onClick={()=>handleNavigate('/PC-medicineGroups')}/>
             </div>
           )}
-          <SidebarBtn icon={faNoteSticky} text="GRN" onClick={()=>handleNavigate('/grn')}/>
-          <SidebarBtn icon={faArrowTrendUp} text={"Reports"} onClick={handleVisibilityreports}/>
-          {isVisiblereports && (
-            <div className="button-group">
-              <SidebarBtn text={"Sales reports"} onClick={()=>handleNavigate('/salesReport')}/>
-              <SidebarBtn text={"Demand reports"} onClick={()=>handleNavigate('/fastmovingMedicineReport')} />
-            </div>
-          )}
+         
           
-          <SidebarBtn icon={faNewspaper} text={"Invoice Bill"} onClick={()=>handleNavigate('/invoicebill')}/>
-          <SidebarBtn icon={faFileInvoice} text={"Request Order"} onClick={()=>handleNavigate('/requestOrder')}/>
-
-          <SidebarBtn icon={faUserAstronaut} text={"User management"} onClick={()=>handleNavigate('/userManagement')} />
+      
+          <SidebarBtn icon={faFileInvoice} text={"Request Order"} onClick={()=>handleNavigate('/PC-requestorder')}/>
+        
           
           
         </Offcanvas.Body>
@@ -104,4 +96,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default PCSidebar;

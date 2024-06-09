@@ -14,9 +14,7 @@ function GRN() {
         <div className="top">
           <div className="left"></div>
           <div className="right">
-            <Button variant="contained" onClick={handleAddStock}>
-              + Add stock
-            </Button>
+          
           </div>
         </div>
         <div className="table" style={{display:"flex",justifyContent:"space-evenly"}}>
