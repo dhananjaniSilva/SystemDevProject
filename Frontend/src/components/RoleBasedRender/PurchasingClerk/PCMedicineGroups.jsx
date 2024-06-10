@@ -25,6 +25,10 @@ function PCMedicineGroups() {
         {/* top row */}
         <div className="top">
           <div className="left">
+             {/* <IconBreadcrumbs /> */}
+             <div style={{ paddingRight: "20px"}}>
+              <h3><span style={{ color: "grey" }}>Inventory</span> &gt; Medicine Categories</h3>
+            </div>
           </div>
           <div className="right">
           

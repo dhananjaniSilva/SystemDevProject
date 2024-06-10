@@ -379,7 +379,7 @@ export async function completeInvoice(invoiceObject) {
        SET inv_userid = ?, inv_datetime = ?, inv_paidamount = ?, inv_updatestatus = ?
        WHERE inv_id = ? AND inv_updatestatus = 0`,
       [
-        invoiceObject.userId,
+        invoiceObject.roleId,
         invoiceObject.invoiceDate,
         invoiceObject.paidAmount,
         1, // Assuming 1 represents the status for a completed invoice

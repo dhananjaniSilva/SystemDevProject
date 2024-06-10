@@ -120,21 +120,24 @@ function SalesReport() {
             {/* <IconBreadcrumbs /> */}
             <div style={{ paddingRight: "20px"}}>
               <h3><span style={{ color: "grey" }}>Reports</span> &gt; Sales Report</h3>
-            </div>
+            </div>        
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "420px" }}>
             <input
               type="datetime-local"
               value={startDate}
               onChange={handleStartDateChange}
               placeholder="Start Date"
-              style={{ width: "200px", height: "50px" }}
+              style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
             />
+            <span style={{ margin: "0 10px", fontSize: "18px" }}>to</span>
             <input
               type="datetime-local"
               value={endDate}
               onChange={handleEndDateChange}
               placeholder="End Date"
-              style={{ width: "200px", height: "50px" }}
+              style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
             />
+          </div>
             <Button
               variant="contained"
               onClick={handleClearFilters}
@@ -181,7 +184,7 @@ function SalesReport() {
                 <TableHead>
                   <TableRow>
                     <TableCell>Invoice ID</TableCell>
-                    <TableCell align="right">Date Time</TableCell>
+                    <TableCell align="right">Date & Time</TableCell>
                     <TableCell align="right">Paid Amount</TableCell>
                     <TableCell align="right">User Name</TableCell>
                     <TableCell align="right">Total Price</TableCell>
@@ -217,6 +220,7 @@ function SalesReport() {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end",
+           
             }}
           >
             {/* Display Total Sales */}
@@ -226,11 +230,20 @@ function SalesReport() {
                 width: "400px",
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center", // Center the text within the div
               }}
             >
-              <Typography variant="h5" color={"#43434a"}>
-                <strong>Total Sales: {totalSales}</strong>
-              </Typography>
+              <div
+                style={{
+                  border: "2px solid #43434a", // Add border with desired color
+                  borderRadius: "5px", // Optional: add border radius
+                  padding: "10px", // Optional: add padding for better appearance
+                }}
+              >
+                <Typography variant="h5" color={"#43434a"}>
+                  <strong>Total Sales: {totalSales.toFixed(2)}</strong>
+                </Typography>
+              </div>
             </div>
           </div>
         </div>

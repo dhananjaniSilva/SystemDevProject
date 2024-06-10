@@ -68,6 +68,10 @@ function ICInventoryListOfMedicine() {
       <div className="outer-div">
         <div className="top">
           <div className="left">
+             {/* <IconBreadcrumbs /> */}
+             <div style={{ paddingRight: "20px"}}>
+              <h3><span style={{ color: "grey" }}>Inventory</span> &gt; List of Medicines</h3>
+            </div>
             <Form.Control
               placeholder="Search here ..."
               style={{ width: "309px" }}
