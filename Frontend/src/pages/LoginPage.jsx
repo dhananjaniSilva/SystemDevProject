@@ -66,19 +66,19 @@ function LoginPage() {
         localStorage.setItem("roleId", payLoadRole);
         console.log("This is the role ", payLoadRole);
         if (payLoadRole == 1) {
-          navigate("dashboard");
+          navigate("/dashboard");
           localStorage.setItem("role", "Pharmacy Manager");
         } else if (payLoadRole == 2) {
-          navigate("C-dashboard");
+          navigate("/C-dashboard");
           localStorage.setItem("role", "Chashier");
         } else if (payLoadRole == 3) {
-          navigate("PC-dashboard");
+          navigate("/PC-dashboard");
           localStorage.setItem("role", "Purchasing Clerk");
         } else if (payLoadRole == 4) {
-          navigate("IC-dashboard");
+          navigate("/IC-dashboard");
           localStorage.setItem("role", "Inventory Clerk");
         } else if (payLoadRole == 5) {
-          navigate("S-dashboard");
+          navigate("/S-dashboard");
           localStorage.setItem("role", "Staff");
         }
         localStorage.setItem("username", res.data.username);

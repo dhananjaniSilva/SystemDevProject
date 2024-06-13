@@ -71,10 +71,10 @@ export default function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <Dashboard />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route path="/authorize" element={<AuthorizedPage />} />
@@ -82,83 +82,83 @@ export default function App() {
           <Route
             path="/inventoryListofmedicine"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <InventoryListOfMedicine />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/grn"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <GRN />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/invoice"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <Invoices />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/medicinegroups"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <MedicineGroups />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route path="/nav" element={<NavBar />} />
           <Route
             path="/invoicebill"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <InvoiceBill />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/requestOrder"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <RequestOrder />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/userManagement"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <Users />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/salesReport"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <SalesReport />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
           <Route
             path="/fastmovingMedicineReport"
             element={
-              <ProtectedRoute>
+              <AuthAdmin>
                 <Sidebar />
                 <FastMovingMedicineReport />
-              </ProtectedRoute>
+              </AuthAdmin>
             }
           />
 
@@ -203,8 +203,10 @@ export default function App() {
             path="/IC-dashboard"
             element={
               <>
-                <ICSidebar />
-                <Dashboard />
+                <AuthIC>
+                  <ICSidebar />
+                  <Dashboard />
+                </AuthIC>
               </>
             }
           />
@@ -213,8 +215,10 @@ export default function App() {
             path="/IC-inventorylistofmedicine"
             element={
               <>
-                <ICSidebar />
-                <ICInventoryListOfMedicine />
+                <AuthIC>
+                  <ICSidebar />
+                  <ICInventoryListOfMedicine />
+                </AuthIC>
               </>
             }
           />
@@ -222,8 +226,10 @@ export default function App() {
             path="/IC-medicinegroups"
             element={
               <>
-                <ICSidebar />
-                <ICMedicineGroups />
+                <AuthIC>
+                  <ICSidebar />
+                  <ICMedicineGroups />
+                </AuthIC>
               </>
             }
           />
@@ -231,8 +237,10 @@ export default function App() {
             path="/IC-grn"
             element={
               <>
-                <ICSidebar />
-                <GRN />
+                <AuthIC>
+                  <ICSidebar />
+                  <GRN />
+                </AuthIC>
               </>
             }
           />
@@ -241,8 +249,10 @@ export default function App() {
             path="/C-dashboard"
             element={
               <>
-                <CashierSidebar />
-                <Dashboard />
+                <AuthCashier>
+                  <CashierSidebar />
+                  <Dashboard />
+                </AuthCashier>
               </>
             }
           />
@@ -250,8 +260,10 @@ export default function App() {
             path="/C-inventorylistofmedicine"
             element={
               <>
-                <CashierSidebar />
-                <PCInventoryListOfMedicine />
+                <AuthCashier>
+                  <CashierSidebar />
+                  <PCInventoryListOfMedicine />
+                </AuthCashier>
               </>
             }
           />
@@ -259,8 +271,10 @@ export default function App() {
             path="/C-medicinegroups"
             element={
               <>
-                <CashierSidebar />
-                <PCMedicineGroups />
+                <AuthCashier>
+                  <CashierSidebar />
+                  <PCMedicineGroups />
+                </AuthCashier>
               </>
             }
           />
@@ -268,8 +282,10 @@ export default function App() {
             path="/C-invoicebill"
             element={
               <>
-                <CashierSidebar />
-                <InvoiceBill />
+                <AuthCashier>
+                  <CashierSidebar />
+                  <InvoiceBill />
+                </AuthCashier>
               </>
             }
           />
@@ -278,7 +294,9 @@ export default function App() {
             path="/S-dashboard"
             element={
               <>
-                <StaffSidebar />
+                <AuthStaff>
+                  <StaffSidebar />
+                </AuthStaff>
               </>
             }
           />
@@ -286,8 +304,10 @@ export default function App() {
             path="/S-inventorylistofmedicine"
             element={
               <>
-                <PCInventoryListOfMedicine />
-                <StaffSidebar />
+                <AuthStaff>
+                  <PCInventoryListOfMedicine />
+                  <StaffSidebar />
+                </AuthStaff>
               </>
             }
           />
@@ -295,8 +315,10 @@ export default function App() {
             path="/S-medicinegroups"
             element={
               <>
-                <StaffSidebar />
-                <PCMedicineGroups />
+                <AuthStaff>
+                  <StaffSidebar />
+                  <PCMedicineGroups />
+                </AuthStaff>
               </>
             }
           />
@@ -320,7 +342,17 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/" />;
   }
 }
-
+function AuthAdmin({ children }) {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const decoded = parseJwt(token);
+    console.log("toke", decoded);
+    if (decoded.role == 1) {
+      return children;
+    }
+  }
+  return <Navigate to="/" />;
+}
 function AuthPC({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
@@ -330,38 +362,39 @@ function AuthPC({ children }) {
       return children;
     }
   }
-  return <Navigate to="/unauthorized" />;
+  return <Navigate to="/" />;
 }
 
 function AuthIC({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
-    if (decoded.userRole === "2") {
+    if (decoded.role == 4) {
       return children;
     }
   }
-  return <Navigate to="/unauthorized" />;
+  return <Navigate to="/" />;
 }
 
 function AuthCashier({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
-    if (decoded.userRole === "1") {
+    if (decoded.role == 2) {
+      // Ensure you check `userRole` instead of `role`
       return children;
     }
   }
-  return <Navigate to="/unauthorized" />;
+  return <Navigate to="/" />;
 }
 
 function AuthStaff({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
-    if (decoded.userRole === "4") {
+    if (decoded.role == 5) {
       return children;
     }
   }
-  return <Navigate to="/unauthorized" />;
+  return <Navigate to="/" />;
 }
