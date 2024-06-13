@@ -30,14 +30,14 @@ export async function loginValidate(userObject) {
         success: true,
         username: user[0].user_username,
         role: user[0].user_role_id,
-        userId:user[0].user_id
+        userId: user[0].user_id,
       };
     } else {
       // User does not exist, return an object with the success flag set to false
       return {
         success: false,
         username: null,
-        userId:null,
+        userId: null,
         role: null,
       };
     }
@@ -47,7 +47,7 @@ export async function loginValidate(userObject) {
       success: false,
       username: null,
       role: null,
-      userId:null,
+      userId: null,
       error: error.message,
     };
   }
@@ -568,14 +568,76 @@ export async function newUserAdd(user) {
 export async function getUsers() {
   try {
     const [response] = await pool.query(
-      `SELECT user.user_fname,user.user_lname,user.user_pno,user.user_nic,user.user_username,role.role_name FROM user JOIN role ON user.user_role_id=role.role_id`
+      `SELECT user.user_id, user.user_fname,user.user_lname,user.user_pno,user.user_nic,user.user_username,role.role_name 
+      FROM user JOIN role ON user.user_role_id=role.role_id
+      WHERE user.user_delete_status=0`
     );
     return response;
   } catch (error) {
     console.log(error);
   }
 }
+export async function editUser(user) {
+  const {
+    user_id,
+    user_fname,
+    user_lname,
+    user_role_id,
+    user_nic,
+    user_pno,
+    user_password,
+    user_username,
+  } = user;
 
+  try {
+    const query = `
+      UPDATE user
+      SET user_fname = ?, user_lname = ?, user_role_id = ?,
+          user_nic = ?, user_pno = ?, user_password = ?,
+          user_username = ?
+      WHERE user_id = ?
+    `;
+    const values = [
+      user_fname,
+      user_lname,
+      user_role_id,
+      user_nic,
+      user_pno,
+      user_password,
+      user_username,
+      user_id,
+    ];
+
+    const result = await pool.query(query, values);
+    console.log("UPDATE result:", result); // Log the result object for debugging
+
+    // Check if any rows were affected by the update
+    if (result.affectedRows > 0) {
+      return true; // Return the updated user object
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error in editUser:", error);
+    throw error; // Throw the error for handling in higher levels
+  }
+}
+export async function deleteUser(userId) {
+  try {
+    const query = `
+     UPDATE user
+     SET user_delete_status = 1
+     WHERE user_id=?
+    `;
+    const values = [userId];
+
+    const result = await pool.query(query, values);
+    return result.rowCount; // Number of rows deleted (should be 1 if successful)
+  } catch (error) {
+    console.error('Error in deleteUser:', error);
+    throw error;
+  }
+}
 export async function getSalesReport() {
   try {
     const [response] = await pool.query(`
@@ -630,3 +692,4 @@ export async function getSalesReportFastMoving() {
     console.log("error occured in backend ", error);
   }
 }
+

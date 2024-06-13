@@ -9,6 +9,8 @@ import {
   deleteMedicineById,
   deleteMedicineCategoryById,
   deleteStockByStockId,
+  deleteUser,
+  editUser,
   fetchListofMedicine,
   fetchListofMedicineByMedicineId,
   fetchListofMedicineBySearch,
@@ -454,6 +456,35 @@ app.get("/api/fastmoving-report", async (req, res) => {
   }
 });
 
+app.put('/updateUser/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  const userData = req.body; // Assuming you're sending user data in the request body
+
+  try {
+    const updatedUser = await editUser({
+      user_id: userId,
+      ...userData
+    });
+
+    res.status(200).json({ success: true, data: updatedUser });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ success: false, error: 'Failed to update user' });
+  }
+});
+
+app.delete('/deleteUser/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    await deleteUser(userId);
+    const users = await getUsers(); // Optionally fetch updated users after deletion
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
 const port = 8080;
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);

@@ -73,22 +73,22 @@ function InventoryListOfMedicine() {
             <div style={{ paddingRight: "20px"}}>
               <h3><span style={{ color: "grey" }}>Inventory</span> &gt; List of Medicines</h3>
             </div>
-            <Form.Control
-              placeholder="Search Medicine "
-              style={{ width: "309px" }}
-              onChange={(e) => handleSearch(e.target.value)}
-              type="text"
-              id="inputPassword5"
-              aria-describedby="passwordHelpBlock"
-            />
             <Form.Select id="select" onChange={(e) => handleOnChange(e.target.value)}>
-              <option value={0}>-Select Group-</option>
+              <option value={0}>- Select Medicine Category -</option>
               {listOfMedicineCategoryArray.map((item, index) => (
                 <option key={index} value={item.mdct_code}>
                   {item.mdct_code}
                 </option>
               ))}
             </Form.Select>
+            <Form.Control
+              placeholder="- Search Medicine - "
+              style={{ width: "365px", color: "black" }}
+              onChange={(e) => handleSearch(e.target.value)}
+              type="text"
+              id="inputPassword5"
+              aria-describedby="passwordHelpBlock"
+            />          
           </div>
           <div className="right">
             <ButtonComponent
