@@ -178,7 +178,6 @@ function LoginPage() {
                   setLoginError("");
                 }}
               />
-              <FormLabel>Forgot password?</FormLabel>
             </Box>
             <Box sx={{ width: "100%", height: "20%", pt: 7 }}>
               <Button

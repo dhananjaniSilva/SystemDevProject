@@ -20,7 +20,9 @@ import {
   faCodePullRequest,
   faFileInvoice,
   faUserAstronaut,
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 function CashierSidebar() {
   const username = localStorage.getItem("username");
@@ -85,34 +87,48 @@ function CashierSidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn
-            icon={faPager}
-            text="Dashboard"
-            onClick={() => handleNavigate("/C-dashboard")}
-          />
-          <SidebarBtn
-            icon={faList}
-            text={"Inventory"}
-            onClick={handleVisibilityinv}
-          />
 
-          {isVisibleinv && (
-            <div className="button-group">
-              <SidebarBtn
-                text={"List of Medicines"}
-                onClick={() => handleNavigate("/C-inventoryListofmedicine")}
-              />
-              <SidebarBtn
-                text={"Medicine Categories"}
-                onClick={() => handleNavigate("/C-medicineGroups")}
-              />
-            </div>
-          )}
-          <SidebarBtn
-            icon={faNewspaper}
-            text={"Invoice Bill"}
-            onClick={() => handleNavigate("/C-invoicebill")}
-          />
+          <Box height={"80%"}>
+            <SidebarBtn
+              icon={faPager}
+              text="Dashboard"
+              onClick={() => handleNavigate("/C-dashboard")}
+            />
+            <SidebarBtn
+              icon={faList}
+              text={"Inventory"}
+              onClick={handleVisibilityinv}
+            />
+
+            {isVisibleinv && (
+              <div className="button-group">
+                <SidebarBtn
+                  text={"List of Medicines"}
+                  onClick={() => handleNavigate("/C-inventoryListofmedicine")}
+                />
+                <SidebarBtn
+                  text={"Medicine Categories"}
+                  onClick={() => handleNavigate("/C-medicineGroups")}
+                />
+              </div>
+            )}
+            <SidebarBtn
+              icon={faNewspaper}
+              text={"Invoice Bill"}
+              onClick={() => handleNavigate("/C-invoicebill")}
+            />
+          </Box>
+          <Box flexGrow={1} />
+          <Box height={"10%"} width={"100%"}>
+            <SidebarBtn
+              icon={faDoorOpen}
+              text="Log out"
+              onClick={() => {
+                handleNavigate("/");
+                localStorage.setItem("token", "");
+              }}
+            />
+          </Box>
         </Offcanvas.Body>
       </Offcanvas>
     </>

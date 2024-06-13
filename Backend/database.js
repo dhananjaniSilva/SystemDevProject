@@ -668,7 +668,7 @@ GROUP BY
   }
 }
 
-export async function getSalesReportFastMoving() {
+export async function getSalesReportFastMoving(s,a) {
   try {
     const [response] = await pool.query(`
     SELECT 

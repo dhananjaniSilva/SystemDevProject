@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Button from "react-bootstrap/Button";
+
 import Offcanvas from "react-bootstrap/Offcanvas";
 import "../stylings/pages/sidebar.css";
 import logo from "../assets/logo.png";
@@ -7,6 +7,11 @@ import logowithtext from "../assets/logotext.png";
 import SidebarBtn from "../components/SidebarBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+
+} from "@mui/material";
 import {
   faPager,
   faList,
@@ -20,6 +25,7 @@ import {
   faCodePullRequest,
   faFileInvoice,
   faUserAstronaut,
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar() {
@@ -85,6 +91,7 @@ function Sidebar() {
               </Button>
             </div>
           </div>
+          <Box height={"80%"}>
           <SidebarBtn
             icon={faPager}
             text="Dashboard"
@@ -147,6 +154,19 @@ function Sidebar() {
             text={"User management"}
             onClick={() => handleNavigate("/userManagement")}
           />
+          </Box>
+          <Box flexGrow={1}/>
+          <Box  height={"10%"} width={"100%"} >
+          <SidebarBtn
+            icon={faDoorOpen}
+            text="Log out"
+            
+            onClick={() => {handleNavigate("/")
+              localStorage.setItem("token",'')
+            }}
+          />
+          </Box>
+         
         </Offcanvas.Body>
       </Offcanvas>
     </>

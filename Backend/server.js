@@ -22,6 +22,7 @@ import {
   fetchSupplyInformation,
   fetchSupplyInformationGroupByMDID,
   getSalesReport,
+  getSalesReportFastMoving,
   getUsers,
   insertSupplyDetails,
   loginValidate,
@@ -48,27 +49,29 @@ const verifyJWT = (allowedRoles) => {
       jwt.verify(token, "jwtSecret", (err, decoded) => {
         if (err) {
           console.log("Failed to authenticate token");
-          return res.json({ auth: false, message: "Failed to authenticate token" });
+          return res.json({
+            auth: false,
+            message: "Failed to authenticate token",
+          });
         } else {
           req.role = parseInt(decoded.role); // Convert decoded role to number
-          console.log("Decoded role type: ", typeof req.role);  // Log the type of decoded role
-          console.log("Allowed roles type: ", typeof allowedRoles[0]);  // Log the type of first element in allowed roles
+          console.log("Decoded role type: ", typeof req.role); // Log the type of decoded role
+          console.log("Allowed roles type: ", typeof allowedRoles[0]); // Log the type of first element in allowed roles
           console.log("Decoded role: ", req.role);
           console.log("Allowed roles: ", allowedRoles);
           if (allowedRoles.includes(req.role)) {
             next();
           } else {
             console.log("Unauthorized access attempt with role: ", req.role);
-            return res.status(403).json({ auth: false, message: "Unauthorized" });
+            return res
+              .status(403)
+              .json({ auth: false, message: "Unauthorized" });
           }
         }
       });
     }
   };
 };
-
-
-
 
 app.get("/isUserAuth", verifyJWT, (req, res) => {
   return res.json({ auth: true, message: "You have a valid token" });
@@ -111,7 +114,7 @@ app.get("/loginValidate", async (req, res) => {
       const username = response.username;
       const userId = response.userId;
       const token = jwt.sign({ role }, "jwtSecret", {
-        expiresIn: 60*60*24,
+        expiresIn: 60 * 60 * 24,
       });
 
       return res.json({
@@ -119,7 +122,7 @@ app.get("/loginValidate", async (req, res) => {
         token: token,
         role: role,
         username: username,
-        userId:userId
+        userId: userId,
       });
     } else {
       return res.json({
@@ -322,24 +325,30 @@ app.get("/createNewInvoice", async (req, res) => {
   }
 });
 app.post("/completeInvoice", async (req, res) => {
-  console.log("object")
+  console.log("object");
   try {
     const updatedInvoiceObject = req.body;
     // Call completeInvoice function and await its completion
     const response = await completeInvoice(updatedInvoiceObject); // Await here
-    console.log(response)
+    console.log(response);
     // Check the response from completeInvoice function
     if (response.createdStatus) {
       // Return success response if invoice completed successfully
-      res.status(200).json({ message: "Invoice completed successfully", response });
+      res
+        .status(200)
+        .json({ message: "Invoice completed successfully", response });
     } else {
       // Return error response if invoice creation failed
-      res.status(500).json({ message: "Error completing the invoice", response });
+      res
+        .status(500)
+        .json({ message: "Error completing the invoice", response });
     }
   } catch (error) {
     console.error("Error completing the invoice:", error);
     // Handle any uncaught errors
-    res.status(500).json({ message: "Error completing the invoice", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error completing the invoice", error: error.message });
   }
 });
 app.post("/supplyDetailsCreate", async (req, res) => {
@@ -445,16 +454,13 @@ app.get("/api/fastmoving-report", async (req, res) => {
 
     // Validate start and end dates
     if (!startDate || !endDate) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Start date and end date are required",
-        });
+      const startDate = new Date(0);
+      const endDate = new Date();
     }
-
+    console.log("sold qu");
     // Call getSalesReport function with start and end dates
-    const salesReport = await getSalesReport(startDate, endDate);
+    const salesReport = await getSalesReportFastMoving(startDate, endDate);
+    console.log(salesReport);
 
     res.json({ success: true, data: salesReport });
   } catch (error) {
@@ -463,24 +469,24 @@ app.get("/api/fastmoving-report", async (req, res) => {
   }
 });
 
-app.put('/updateUser/:userId', async (req, res) => {
+app.put("/updateUser/:userId", async (req, res) => {
   const userId = req.params.userId;
   const userData = req.body; // Assuming you're sending user data in the request body
 
   try {
     const updatedUser = await editUser({
       user_id: userId,
-      ...userData
+      ...userData,
     });
 
     res.status(200).json({ success: true, data: updatedUser });
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ success: false, error: 'Failed to update user' });
+    console.error("Error updating user:", error);
+    res.status(500).json({ success: false, error: "Failed to update user" });
   }
 });
 
-app.delete('/deleteUser/:id', async (req, res) => {
+app.delete("/deleteUser/:id", async (req, res) => {
   const userId = req.params.id;
 
   try {
@@ -488,8 +494,8 @@ app.delete('/deleteUser/:id', async (req, res) => {
     const users = await getUsers(); // Optionally fetch updated users after deletion
     res.status(200).json(users);
   } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Failed to delete user' });
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Failed to delete user" });
   }
 });
 const port = 8080;

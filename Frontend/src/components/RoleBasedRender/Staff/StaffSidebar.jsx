@@ -20,7 +20,9 @@ import {
   faCodePullRequest,
   faFileInvoice,
   faUserAstronaut,
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/material";
 
 function StaffSidebar() {
   const username = localStorage.getItem("username");
@@ -85,29 +87,42 @@ function StaffSidebar() {
               </Button>
             </div>
           </div>
-          <SidebarBtn
-            icon={faPager}
-            text="Dashboard"
-            onClick={() => handleNavigate("/S-dashboard")}
-          />
-          <SidebarBtn
-            icon={faList}
-            text={"Inventory"}
-            onClick={handleVisibilityinv}
-          />
+          <Box height={"80%"}>
+            <SidebarBtn
+              icon={faPager}
+              text="Dashboard"
+              onClick={() => handleNavigate("/S-dashboard")}
+            />
+            <SidebarBtn
+              icon={faList}
+              text={"Inventory"}
+              onClick={handleVisibilityinv}
+            />
 
-          {isVisibleinv && (
-            <div className="button-group">
-              <SidebarBtn
-                text={"List of Medicines"}
-                onClick={() => handleNavigate("/S-inventoryListofmedicine")}
-              />
-              <SidebarBtn
-                text={"Medicine Categories"}
-                onClick={() => handleNavigate("/S-medicineGroups")}
-              />
-            </div>
-          )}
+            {isVisibleinv && (
+              <div className="button-group">
+                <SidebarBtn
+                  text={"List of Medicines"}
+                  onClick={() => handleNavigate("/S-inventoryListofmedicine")}
+                />
+                <SidebarBtn
+                  text={"Medicine Categories"}
+                  onClick={() => handleNavigate("/S-medicineGroups")}
+                />
+              </div>
+            )}
+          </Box>
+          <Box flexGrow={1} />
+          <Box height={"10%"} width={"100%"}>
+            <SidebarBtn
+              icon={faDoorOpen}
+              text="Log out"
+              onClick={() => {
+                handleNavigate("/");
+                localStorage.setItem("token", "");
+              }}
+            />
+          </Box>
         </Offcanvas.Body>
       </Offcanvas>
     </>

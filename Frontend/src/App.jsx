@@ -295,6 +295,7 @@ export default function App() {
             element={
               <>
                 <AuthStaff>
+                  <Dashboard/>
                   <StaffSidebar />
                 </AuthStaff>
               </>
