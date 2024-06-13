@@ -77,6 +77,7 @@ export async function fetchListofMedicineByMedicineId(
   categoryCode,
   medicineId
 ) {
+  
   const query = `
     SELECT 
       medicine.*, 
@@ -88,18 +89,18 @@ export async function fetchListofMedicineByMedicineId(
     ON
       medicine.medicine_categoryid = medicinecategory.mdct_id
     WHERE 
-      medicine.medicine_id LIKE ? AND medicinecategory.mdct_code = ?
+      medicine.medicine_id = ? AND medicinecategory.mdct_code = ?
   `;
 
   // Adding '%' wildcards for LIKE clause
   const likeMedicineId = `%${medicineId}%`;
 
   const [listofMedicine] = await pool.query(query, [
-    likeMedicineId,
+    medicineId,
     categoryCode,
   ]);
 
-  console.log("ff", likeMedicineId, categoryCode);
+  console.log("ff", medicineId, categoryCode);
   console.log(listofMedicine);
 
   return listofMedicine;

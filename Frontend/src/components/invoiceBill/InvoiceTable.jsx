@@ -30,7 +30,7 @@ function parsePayment(payment) {
   return payment.trim() === "" ? 0 : parseFloat(payment);
 }
 
-export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
+ function InvoiceTable({ invoiceObject, setInvoiceObject }) {
   const [payment, setPayment] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
@@ -56,6 +56,15 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
     }
   
     // Check if payment is greater than net amount
+    const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine, index) => ({
+      desc: ` ${medicine.medicineBrandName}`,
+      qty: parseInt(medicine.medicineQuantity) || 0,
+      unit: parseFloat(medicine.medicineUnitPrice) || 0,
+      price:
+        (parseInt(medicine.medicineQuantity) || 0) *
+        (parseFloat(medicine.medicineUnitPrice) || 0),
+    })));
+
     if (parsedPayment <= invoiceSubtotal) {
       setPaymentError("Payment amount must be greater than the net amount.");
       return;
@@ -76,39 +85,25 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
         "http://localhost:8080/completeInvoice",
         updatedInvoiceObject
       );
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      console.log("This is the response", response);
+      // Update state to reflect the changes
+      setInvoiceObject(updatedInvoiceObject);
+      // Optionally, show a success message or perform other actions
+      Swal.fire("Invoice paid successfully!", "", "success");
     } catch (error) {
       console.error("Error completing the invoice:", error);
     }
   };
-  
-  // Define rows by mapping over invoiceObject.medicineData
-  const rows = invoiceObject.medicineData.map((medicine, index) => ({
+
+  const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine, index) => ({
     desc: ` ${medicine.medicineBrandName}`,
     qty: parseInt(medicine.medicineQuantity) || 0,
     unit: parseFloat(medicine.medicineUnitPrice) || 0,
     price:
       (parseInt(medicine.medicineQuantity) || 0) *
       (parseFloat(medicine.medicineUnitPrice) || 0),
-  }));
+  })));
 
-  const emptyRowsCount = Math.max(4 - rows.length, 0);
-  const emptyRows = Array.from({ length: emptyRowsCount }, (_, index) => ({
-    desc: "",
-    qty: "",
-    unit: "",
-    price: "",
-  }));
-
-  const invoiceSubtotal = subtotal(rows);
-  const balance = parsePayment(payment)- invoiceSubtotal ;
+  const balance = parsePayment(payment) - invoiceSubtotal;
 
   return (
     <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 3 }}>
@@ -123,13 +118,13 @@ export default function InvoiceTable({ invoiceObject, setInvoiceObject }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.concat(emptyRows).map((row, index) => (
+          {invoiceObject.medicineData.map((medicine, index) => (
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell align="right">{row.qty}</TableCell>
-              <TableCell align="right">{ccyFormat(row.unit)}</TableCell>
-              <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+              <TableCell>{` ${medicine.medicineBrandName}`}</TableCell>
+              <TableCell align="right">{parseInt(medicine.medicineQuantity) || 0}</TableCell>
+              <TableCell align="right">{ccyFormat(parseFloat(medicine.medicineUnitPrice) || 0)}</TableCell>
+              <TableCell align="right">{ccyFormat((parseInt(medicine.medicineQuantity) || 0) * (parseFloat(medicine.medicineUnitPrice) || 0))}</TableCell>
             </TableRow>
           ))}
           <TableRow>

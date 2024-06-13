@@ -15,6 +15,9 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
+import TablePagination from "@mui/material/TablePagination";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 
 function createData(data) {
   return {
@@ -58,7 +61,6 @@ function Row(props) {
     onDelete(row.sply_stockid);
   };
 
-  // Calculate the expiration date for 3 months, 6 months, and 1 year
   const threeMonthsFromNow = new Date();
   threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
 
@@ -68,18 +70,29 @@ function Row(props) {
   const oneYearFromNow = new Date();
   oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
-  // Determine if the medicine will expire within the specified periods
-  const willExpireWithinThreeMonths = new Date(row.sply_expiredate) <= threeMonthsFromNow;
-  const willExpireWithinSixMonths = new Date(row.sply_expiredate) <= sixMonthsFromNow;
-  const willExpireWithinOneYear = new Date(row.sply_expiredate) <= oneYearFromNow;
+  const willExpireWithinThreeMonths =
+    new Date(row.sply_expiredate) <= threeMonthsFromNow;
+  const willExpireWithinSixMonths =
+    new Date(row.sply_expiredate) <= sixMonthsFromNow;
+  const willExpireWithinOneYear =
+    new Date(row.sply_expiredate) <= oneYearFromNow;
 
   return (
     <React.Fragment>
-      <TableRow sx={{ "& > *": { borderBottom: "unset", backgroundColor: 
-          willExpireWithinThreeMonths ? "lightyellow" :
-          willExpireWithinSixMonths ? "lightgreen" :
-          willExpireWithinOneYear ? "lightblue" : "inherit"
-      } }}>
+      <TableRow
+        sx={{
+          "& > *": {
+            borderBottom: "unset",
+            backgroundColor: willExpireWithinThreeMonths
+              ? "lightyellow"
+              : willExpireWithinSixMonths
+              ? "lightgreen"
+              : willExpireWithinOneYear
+              ? "lightblue"
+              : "inherit",
+          },
+        }}
+      >
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -134,8 +147,6 @@ function Row(props) {
   );
 }
 
-
-
 Row.propTypes = {
   row: PropTypes.shape({
     medicine_brandname: PropTypes.string.isRequired,
@@ -161,6 +172,8 @@ Row.propTypes = {
 
 export default function CollapsibleTable() {
   const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedDateRange, setSelectedDateRange] = useState("3 months");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -208,6 +221,7 @@ export default function CollapsibleTable() {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
+    setPage(0); // Reset page when search query changes
   };
 
   const filteredRows = rows.filter(
@@ -218,25 +232,45 @@ export default function CollapsibleTable() {
       row.medicine_genericname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const emptyRows =
+    rowsPerPage -
+    Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);
+
   return (
     <>
-      <Box>
-        <select value={selectedDateRange} onChange={handleDateRangeChange}>
-          <option value="3 months">3 months</option>
-          <option value="6 months">6 months</option>
-          <option value="1 year">1 year</option>
-        </select>
-        <input
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 2,
+        }}
+      >
+        <Box sx={{ minWidth: 120 }}>
+          <TextField
+            select
+            value={selectedDateRange}
+            onChange={handleDateRangeChange}
+            label="Select Date Range"
+            variant="outlined"
+            fullWidth
+          >
+            <MenuItem value="3 months">3 months</MenuItem>
+            <MenuItem value="6 months">6 months</MenuItem>
+            <MenuItem value="1 year">1 year</MenuItem>
+          </TextField>
+        </Box>
+        <TextField
           type="text"
           placeholder="Search by Brand or Generic Name"
           value={searchQuery}
           onChange={handleSearchChange}
+          label="Search"
+          variant="outlined"
+          fullWidth
+          sx={{ maxWidth: 300 }}
         />
       </Box>
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 3, height: "80vh" }}
-      >
+      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
@@ -251,16 +285,39 @@ export default function CollapsibleTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRows.map((row) => (
+            {(rowsPerPage > 0
+              ? filteredRows.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : filteredRows
+            ).map((row) => (
               <Row
                 key={row.sply_stockid}
                 row={row}
                 onDelete={() => handleDelete(row.sply_stockid)}
               />
             ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={8} />
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredRows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={(event, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+      />
     </>
   );
 }

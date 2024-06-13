@@ -322,17 +322,24 @@ app.get("/createNewInvoice", async (req, res) => {
   }
 });
 app.post("/completeInvoice", async (req, res) => {
+  console.log("object")
   try {
     const updatedInvoiceObject = req.body;
-    // Process the updatedInvoiceObject as needed
-    const response = completeInvoice(req.body);
-
-    // Assuming you want to return some response after processing
-    return response;
+    // Call completeInvoice function and await its completion
+    const response = await completeInvoice(updatedInvoiceObject); // Await here
+    console.log(response)
+    // Check the response from completeInvoice function
+    if (response.createdStatus) {
+      // Return success response if invoice completed successfully
+      res.status(200).json({ message: "Invoice completed successfully", response });
+    } else {
+      // Return error response if invoice creation failed
+      res.status(500).json({ message: "Error completing the invoice", response });
+    }
   } catch (error) {
-    console.log("Error completing the invoice", error);
-    return { createdStatus: false, message: "Error creating the invoice" };
-    res.status(500).send("Error completing the invoice");
+    console.error("Error completing the invoice:", error);
+    // Handle any uncaught errors
+    res.status(500).json({ message: "Error completing the invoice", error: error.message });
   }
 });
 app.post("/supplyDetailsCreate", async (req, res) => {

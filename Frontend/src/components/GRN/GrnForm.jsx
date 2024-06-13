@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Box, Button, TextField, Typography, Grid, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Grid,
+  Paper,
+  FormControl,
+  FormHelperText,
+} from "@mui/material";
 
 const SupplyForm = () => {
   const [companyName, setCompanyName] = useState("");
@@ -14,6 +23,14 @@ const SupplyForm = () => {
     sply_unit_buying_price: "",
   });
   const [stockObject, setStockObject] = useState({});
+  const [formErrors, setFormErrors] = useState({
+    companyName: false,
+    medicineId: false,
+    sply_quantity: false,
+    sply_datetime: false,
+    sply_expiredate: false,
+    sply_unit_buying_price: false,
+  });
 
   const handleSearchSupplier = async () => {
     try {
@@ -31,8 +48,20 @@ const SupplyForm = () => {
           ...prevState,
           supplierId: supplierInfo.sp_id,
         }));
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          companyName: false,
+        }));
       } else {
-        console.log("No suppliers found.");
+        setSupplierInfo(null);
+        setStockObject((prevState) => ({
+          ...prevState,
+          supplierId: undefined,
+        }));
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          companyName: true,
+        }));
       }
     } catch (error) {
       console.error("There was an error fetching the supplier data!", error);
@@ -50,8 +79,21 @@ const SupplyForm = () => {
         ...prevState,
         medicineId: medicine.medicine_id,
       }));
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        medicineId: false,
+      }));
     } catch (error) {
       console.error("There was an error fetching the medicine data!", error);
+      setMedicineInfo(null);
+      setStockObject((prevState) => ({
+        ...prevState,
+        medicineId: undefined,
+      }));
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        medicineId: true,
+      }));
     }
   };
 
@@ -64,23 +106,41 @@ const SupplyForm = () => {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [e.target.name]: false,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add validation logic here
-    if (
-      !companyName ||
-      !medicineId ||
-      !supplyDetails.sply_quantity ||
-      !supplyDetails.sply_datetime ||
-      !supplyDetails.sply_expiredate ||
-      !supplyDetails.sply_unit_buying_price
-    ) {
-      alert("Please fill in all fields");
+    
+    // Validate required fields
+    const errors = {};
+    if (!companyName) {
+      errors.companyName = true;
+    }
+    if (!medicineId) {
+      errors.medicineId = true;
+    }
+    if (!supplyDetails.sply_quantity) {
+      errors.sply_quantity = true;
+    }
+    if (!supplyDetails.sply_datetime) {
+      errors.sply_datetime = true;
+    }
+    if (!supplyDetails.sply_expiredate) {
+      errors.sply_expiredate = true;
+    }
+    if (!supplyDetails.sply_unit_buying_price) {
+      errors.sply_unit_buying_price = true;
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
-    console.log("Stock Object:", stockObject);
+
     try {
       const response = await axios.post(
         "http://localhost:8080/supplyDetailsCreate",
@@ -104,6 +164,7 @@ const SupplyForm = () => {
             label="Supplier Name"
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
+            error={formErrors.companyName}
             sx={{ width: "200px" }}
           />
           <Button
@@ -124,12 +185,18 @@ const SupplyForm = () => {
               </Typography>
             </Box>
           )}
+          {formErrors.companyName && (
+            <FormControl error>
+              <FormHelperText>This field is required.</FormHelperText>
+            </FormControl>
+          )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
             label="Medicine ID"
             value={medicineId}
             onChange={(e) => setMedicineId(e.target.value)}
+            error={formErrors.medicineId}
             sx={{ width: "200px" }}
           />
           <Button
@@ -155,6 +222,11 @@ const SupplyForm = () => {
               </Typography>
             </Box>
           )}
+          {formErrors.medicineId && (
+            <FormControl error>
+              <FormHelperText>This field is required.</FormHelperText>
+            </FormControl>
+          )}
         </Grid>
       </Grid>
       <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
@@ -167,7 +239,13 @@ const SupplyForm = () => {
               onChange={handleChange}
               fullWidth
               required
+              error={formErrors.sply_quantity}
             />
+            {formErrors.sply_quantity && (
+              <FormControl error>
+                <FormHelperText>This field is required.</FormHelperText>
+              </FormControl>
+            )}
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -181,7 +259,13 @@ const SupplyForm = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              error={formErrors.sply_datetime}
             />
+            {formErrors.sply_datetime && (
+              <FormControl error>
+                <FormHelperText>This field is required.</FormHelperText>
+              </FormControl>
+            )}
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -195,7 +279,13 @@ const SupplyForm = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              error={formErrors.sply_expiredate}
             />
+            {formErrors.sply_expiredate && (
+              <FormControl error>
+                <FormHelperText>This field is required.</FormHelperText>
+              </FormControl>
+            )}
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -206,7 +296,13 @@ const SupplyForm = () => {
               onChange={handleChange}
               fullWidth
               required
+              error={formErrors.sply_unit_buying_price}
             />
+            {formErrors.sply_unit_buying_price && (
+              <FormControl error>
+                <FormHelperText>This field is required.</FormHelperText>
+              </FormControl>
+            )}
           </Grid>
         </Grid>
         <Button variant="contained" type="submit" sx={{ mt: 3 }}>
