@@ -449,7 +449,7 @@ app.get("/api/sales-report", async (req, res) => {
 
 app.get("/api/fastmoving-report", async (req, res) => {
   try {
-    // Extract start and end dates from request query parameters
+    console.log("object")
     const { startDate, endDate } = req.query;
 
     // Validate start and end dates

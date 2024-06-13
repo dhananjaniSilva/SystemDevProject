@@ -156,7 +156,7 @@ const SupplyForm = () => {
   return (
     <Box sx={{ p: 2, borderRadius: 3 }} component={Paper}>
       <Typography variant="h4" gutterBottom>
-        Enter Supply Details
+        Enter Stock Details
       </Typography>
       <Grid container>
         <Grid item xs={12} sm={6}>

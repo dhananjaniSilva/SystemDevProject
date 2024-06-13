@@ -220,7 +220,7 @@ function SalesReport() {
               display: "flex",
               alignItems: "center",
               justifyContent: "flex-end",
-           
+             
             }}
           >
             {/* Display Total Sales */}
