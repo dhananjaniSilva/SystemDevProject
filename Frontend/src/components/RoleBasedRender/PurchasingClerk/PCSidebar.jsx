@@ -20,6 +20,7 @@ import {
   faCodePullRequest,
   faFileInvoice,
   faUserAstronaut,
+  faDoorOpen,
 } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/material";
 
@@ -109,6 +110,11 @@ function PCSidebar() {
                 />
               </div>
             )}
+            <SidebarBtn
+            icon={faFileInvoice}
+            text={"Request Order"}
+            onClick={() => handleNavigate("/PC-requestorder")}
+          />
           </Box>
           <Box flexGrow={1} />
           <Box height={"10%"} width={"100%"}>
@@ -122,11 +128,7 @@ function PCSidebar() {
             />
           </Box>
 
-          <SidebarBtn
-            icon={faFileInvoice}
-            text={"Request Order"}
-            onClick={() => handleNavigate("/PC-requestorder")}
-          />
+          
         </Offcanvas.Body>
       </Offcanvas>
     </>

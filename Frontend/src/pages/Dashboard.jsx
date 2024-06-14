@@ -48,7 +48,7 @@ export default function Dashboard() {
           </div>
           <div className="right"></div>
         </div>
-        <div className="middle">
+        {/* <div className="middle">
           <div className="upper-card">
             <DashbaordCardComponent
               bordercolor={"green"}
@@ -77,7 +77,7 @@ export default function Dashboard() {
               icon={WarningAmberOutlinedIcon}
             />
           </div>
-        </div>
+        </div> */}
         {/* table part */}
         <div className="bottompart" style={{ width: "100%" }}>
           <Box
@@ -163,7 +163,7 @@ function Chart1() {
 
     return (
       <Box component={Paper} sx={{p:4,borderRadius:3}}>
-        <Line style={{ width: "500px" }} data={data} options={options} />;
+        <Line style={{ width: "700px" }} data={data} options={options} />;
       </Box>
     );
   };
@@ -247,7 +247,7 @@ function Chart2() {
 
     return (
       <Box component={Paper} sx={{p:4,borderRadius:3}}>
-        <Pie style={{ width: "300px" }} data={data} options={options} />
+        <Pie style={{ width: "400px" }} data={data} options={options} />
       </Box>
     );
   };

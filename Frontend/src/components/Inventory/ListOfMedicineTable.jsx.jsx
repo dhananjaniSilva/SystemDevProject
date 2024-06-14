@@ -56,7 +56,7 @@ const VirtuosoTableComponents = {
     <TableHead
       {...props}
       sx={{
-        backgroundColor: "white", // Set the background color to white
+        backgroundColor: "#A052E0", // Set the background color to white
       }}
     />
   ),
@@ -122,27 +122,31 @@ function rowContent(
   handleDelete,
   handleEditToggle
 ) {
-  const isBottle = row.unit_name == "Bottle" && row.medicine_inhandquantity < 5;
+  const isBottle = 
+    row.unit_name == "Bottle" && row.medicine_inhandquantity <= 5;
   const isTablet =
-    row.unit_name == "Tablet" && row.medicine_inhandquantity <= 100;
+    row.unit_name == "Tablet" && row.medicine_inhandquantity <= 200;
   const isCapsule =
-    row.unit_name == "Capsule" && row.medicine_inhandquantity < 5;
-  const isRepostory =
-    row.unit_name == "Repostory" && row.medicine_inhandquantity <= 100;
-
-  const isTube = row.unit_name == "Tube" && row.medicine_inhandquantity < 5;
+    row.unit_name == "Capsule" && row.medicine_inhandquantity <= 200;
+  const isRepository =
+    row.unit_name == "Repository" && row.medicine_inhandquantity <= 5;
+  const isTube =
+    row.unit_name == "Tube" && row.medicine_inhandquantity <= 5;
+  const isUnit =
+    row.unit_name == "Unit" && row.medicine_inhandquantity <= 5;
   const isCartridge =
-    row.unit_name == "Cartridge" && row.medicine_inhandquantity <= 100;
-
+    row.unit_name == "Cartridge" && row.medicine_inhandquantity <= 5;
+  
   let rowStyle = {};
 
   if (
     isBottle ||
     isTablet ||
     isCapsule ||
-    isRepostory ||
+    isRepository ||
     isTube ||
-    isCartridge
+    isUnit ||
+    isCartridge 
   ) {
     rowStyle.backgroundColor = "#F2FEA4"; // Adjust color for low bottle quantity
   }

@@ -34,7 +34,7 @@ function parseJwt(token) {
 function LoginPage() {
   const schema = yup.object().shape({
     username: yup.string().required().min(3).max(12),
-    password: yup.string().min(3).max(20).required(),
+    password: yup.string().min(8, "Password must be at least 8 characters, First letter of the password should be capital and password must contain a special character (@, $, !, &, etc).").required("Password is required"),
   });
 
   const {
@@ -52,6 +52,12 @@ function LoginPage() {
   const submitForm = async (data) => {
     console.log("This is the submitted data ", data);
     const { username, password } = data;
+
+    if (!password) {
+      setLoginError("Password is required.");
+      return;
+    }
+
     const requestUserObjects = { username, password };
 
     try {
@@ -70,7 +76,7 @@ function LoginPage() {
           localStorage.setItem("role", "Pharmacy Manager");
         } else if (payLoadRole == 2) {
           navigate("/C-dashboard");
-          localStorage.setItem("role", "Chashier");
+          localStorage.setItem("role", "Cashier");
         } else if (payLoadRole == 3) {
           navigate("/PC-dashboard");
           localStorage.setItem("role", "Purchasing Clerk");
@@ -162,8 +168,9 @@ function LoginPage() {
                 fullWidth
                 id="outlined-basic"
                 label=""
+                type="password"
                 inputProps={{ ...register("password") }}
-                error={!!errors.password}
+                error={!!errors.password || !!loginError}
                 helperText={
                   !!loginError ? (
                     <Typography color={"error"} variant="caption">
@@ -202,8 +209,8 @@ function LoginPage() {
           backgroundColor: "#283342",
         }}
       >
-        <img src={logo} style={{ width: "500px" }} />
-        <img src={logotext} style={{ width: "500px" }} />
+        <img src={logo} style={{ width: "500px" }} alt="logo" />
+        <img src={logotext} style={{ width: "500px" }} alt="logotext" />
       </Box>
     </Box>
   );
