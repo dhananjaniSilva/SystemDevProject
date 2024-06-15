@@ -51,3 +51,8 @@
   right: 0; /* Position image at the right of container */
   margin: auto; /* Center the image within the container */
 }
+
+/* Add this to sidebar.css */
+.no-transition {
+  transition: none !important;
+}

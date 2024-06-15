@@ -10,17 +10,9 @@ import { useNavigate } from "react-router-dom";
 import {
   faPager,
   faList,
-  faArrowTrendUp,
-  faBell,
-  faGear,
-  faEllipsisVertical,
-  faIceCream,
-  faNewspaper,
-  faNoteSticky,
-  faCodePullRequest,
   faFileInvoice,
-  faUserAstronaut,
   faDoorOpen,
+  faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/material";
 
@@ -32,22 +24,22 @@ function PCSidebar() {
   const [isVisiblereports, setIsVisiblereports] = useState(false);
   const navigate = useNavigate();
 
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
   const handleVisibilityinv = () => {
-    if (isVisiblereports && isVisibleinv == false) {
+    if (isVisiblereports && isVisibleinv === false) {
       setIsVisibleinv(!isVisibleinv);
       setIsVisiblereports(false);
     }
     setIsVisibleinv(!isVisibleinv);
   };
+
   const handleVisibilityreports = () => {
-    if (isVisibleinv && isVisiblereports == false) {
+    if (isVisibleinv && isVisiblereports === false) {
       setIsVisiblereports(!isVisiblereports);
       setIsVisibleinv(false);
     }
     setIsVisiblereports(!isVisiblereports);
   };
+
   const handleNavigate = (path) => {
     navigate(path);
   };
@@ -55,17 +47,16 @@ function PCSidebar() {
   return (
     <>
       <Offcanvas
-        name="Disable backdrop"
         scroll={true}
         backdrop={false}
-        bsPrefix="offcanvas"
         show={show}
         onHide={() => setShow(false)}
+        className="no-transition" // Apply the custom CSS class
         id="sidebar"
       >
         <Offcanvas.Header className="sidebar-header">
-          <img src={logo} />
-          <img src={logowithtext} />
+          <img src={logo} alt="logo" />
+          <img src={logowithtext} alt="logowithtext" />
         </Offcanvas.Header>
         <Offcanvas.Body className="sidebar-body">
           <div className="top">
@@ -97,7 +88,6 @@ function PCSidebar() {
               text={"Inventory"}
               onClick={handleVisibilityinv}
             />
-
             {isVisibleinv && (
               <div className="button-group">
                 <SidebarBtn
@@ -111,10 +101,10 @@ function PCSidebar() {
               </div>
             )}
             <SidebarBtn
-            icon={faFileInvoice}
-            text={"Request Order"}
-            onClick={() => handleNavigate("/PC-requestorder")}
-          />
+              icon={faFileInvoice}
+              text={"Request Order"}
+              onClick={() => handleNavigate("/PC-requestorder")}
+            />
           </Box>
           <Box flexGrow={1} />
           <Box height={"10%"} width={"100%"}>
@@ -127,8 +117,6 @@ function PCSidebar() {
               }}
             />
           </Box>
-
-          
         </Offcanvas.Body>
       </Offcanvas>
     </>
