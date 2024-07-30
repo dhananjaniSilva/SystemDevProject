@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 const SupplyForm = () => {
+  // State variables to manage form inputs and errors
   const [companyName, setCompanyName] = useState("");
   const [medicineId, setMedicineId] = useState("");
   const [supplierInfo, setSupplierInfo] = useState(null);
@@ -32,6 +33,7 @@ const SupplyForm = () => {
     sply_unit_buying_price: false,
   });
 
+  // Function to search for supplier by company name
   const handleSearchSupplier = async () => {
     try {
       const response = await axios.get(
@@ -68,6 +70,7 @@ const SupplyForm = () => {
     }
   };
 
+  // Function to search for medicine by ID
   const handleSearchMedicine = async () => {
     try {
       const response = await axios.get(
@@ -97,6 +100,7 @@ const SupplyForm = () => {
     }
   };
 
+  // Function to handle form input changes
   const handleChange = (e) => {
     setSupplyDetails({
       ...supplyDetails,
@@ -112,6 +116,7 @@ const SupplyForm = () => {
     }));
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -141,6 +146,7 @@ const SupplyForm = () => {
       return;
     }
 
+    // Submit the form data
     try {
       const response = await axios.post(
         "http://localhost:8080/supplyDetailsCreate",
@@ -204,7 +210,8 @@ const SupplyForm = () => {
             onClick={handleSearchMedicine}
             sx={{ mt: 2 }}
           >
-            Search Medicine
+            
+            Search Medicine   
           </Button>
           {medicineInfo && (
             <Box sx={{ mt: 2 }}>

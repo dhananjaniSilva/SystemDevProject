@@ -11,19 +11,22 @@ import axios from "axios";
 import { Button, Typography } from "@mui/material";
 
 function FastMovingReport() {
+  // State to hold the fast moving data fetched from the API
   const [fastMovingData, setFastMovingData] = useState([]);
+  
+  // State to manage the current field being sorted and the sort order (ascending or descending)
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
+  // Fetch data when the component mounts
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Function to fetch fast moving data from the API
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/fastmoving-report"
-      );
+      const response = await axios.get("http://localhost:8080/api/fastmoving-report");
       const data = response.data;
       if (data.success) {
         setFastMovingData(data.data);
@@ -35,12 +38,14 @@ function FastMovingReport() {
     }
   };
 
+  // Function to handle sorting based on the clicked column header
   const handleSort = (field) => {
     const isAsc = sortField === field && sortOrder === "asc";
     setSortOrder(isAsc ? "desc" : "asc");
     setSortField(field);
   };
 
+  // Function to compare two values for sorting
   const compareValues = (a, b, field) => {
     const valueA = a[field];
     const valueB = b[field];
@@ -51,6 +56,7 @@ function FastMovingReport() {
     return sortOrder === "asc" ? comparison : -comparison;
   };
 
+  // Function to get the sorted data based on the current sort field and order
   const sortedData = () => {
     if (!sortField) return fastMovingData;
 
@@ -72,6 +78,7 @@ function FastMovingReport() {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow>
+                  {/* Column headers with sort functionality */}
                   <TableCell onClick={() => handleSort("medicine_id")}>Medicine ID</TableCell>
                   <TableCell align="right" onClick={() => handleSort("medicine_brandname")}>Brand Name</TableCell>
                   <TableCell align="right" onClick={() => handleSort("medicine_genericname")}>Generic Name</TableCell>
@@ -79,6 +86,7 @@ function FastMovingReport() {
                 </TableRow>
               </TableHead>
               <TableBody>
+                {/* Render sorted data rows */}
                 {sortedData().map((row) => (
                   <TableRow key={row.medicine_id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                     <TableCell component="th" scope="row">{row.medicine_id}</TableCell>

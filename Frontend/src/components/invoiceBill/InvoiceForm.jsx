@@ -75,6 +75,7 @@ function InvoiceForm({ addMedicineData }) {
     e.preventDefault();
     const validationErrors = {};
 
+    // validations
     // Regular expression to match the required pattern: 2-3 letters followed by up to 5 digits
     const idPattern = /^[A-Za-z]{2,3}\d{1,5}$/;
 

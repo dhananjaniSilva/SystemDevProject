@@ -5,10 +5,13 @@ import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 
 function MedicineEnterForm() {
+  // State to hold the array of medicine category codes
   const [medicineCategoryCodesArray, setMedicineCategoryCodesArray] = useState(
     []
   );
+  // State to hold the array of medicine units
   const [medicineUnitArray, setMedicineUnitArray] = useState([]);
+  // State to hold the form data
   const [formData, setFormData] = useState({
     medicine_brandname: "",
     medicine_genericname: "",
@@ -16,8 +19,10 @@ function MedicineEnterForm() {
     mdct_id: 0,
     medicine_packsize: 0,
   });
+  // State to hold form validation errors
   const [errors, setErrors] = useState({});
 
+  // Fetch medicine categories and units on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,6 +33,7 @@ function MedicineEnterForm() {
           "http://localhost:8080/fetchListOfMedicineUnit"
         );
 
+        // Set the fetched categories and units in the state
         setMedicineCategoryCodesArray(
           categoryResponse.data.map((item) => ({
             id: item.mdct_id,
@@ -48,6 +54,7 @@ function MedicineEnterForm() {
     fetchData();
   }, []);
 
+  // Validate the form data
   const validateForm = () => {
     const newErrors = {};
 
@@ -85,9 +92,11 @@ function MedicineEnterForm() {
     return true;
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate the form data
     if (!validateForm()) {
       return;
     }
@@ -100,6 +109,7 @@ function MedicineEnterForm() {
       console.log("Form submitted:", formData);
       console.log("API response:", response.data);
 
+      // Show success message
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -121,6 +131,7 @@ function MedicineEnterForm() {
     }
   };
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -144,6 +155,7 @@ function MedicineEnterForm() {
     <Box sx={{ m: 2 }}>
       <form onSubmit={handleSubmit}>
         <Stack gap={2}>
+          {/* Form group for brand name input */}
           <Form.Group className="mb-3" controlId="medicine_brandname">
             <FormLabel>Brand Name</FormLabel>
             <Form.Control
@@ -158,6 +170,7 @@ function MedicineEnterForm() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          {/* Form group for generic name input */}
           <Form.Group className="mb-3" controlId="medicine_genericname">
             <FormLabel>Generic Name</FormLabel>
             <Form.Control
@@ -172,6 +185,7 @@ function MedicineEnterForm() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          {/* Form group for unit name select */}
           <Form.Group className="mb-3" controlId="unit_id">
             <FormLabel>Unit Name</FormLabel>
             <Form.Select
@@ -192,6 +206,7 @@ function MedicineEnterForm() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          {/* Form group for category code select */}
           <Form.Group className="mb-3" controlId="mdct_id">
             <FormLabel>Category Code</FormLabel>
             <Form.Select
@@ -212,6 +227,7 @@ function MedicineEnterForm() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          {/* Form group for pack size input */}
           <Form.Group className="mb-3" controlId="medicine_packsize">
             <FormLabel>Pack Size</FormLabel>
             <Form.Control
@@ -226,6 +242,7 @@ function MedicineEnterForm() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          {/* Submit button */}
           <Button type="submit" variant="contained">
             Submit
           </Button>

@@ -22,6 +22,7 @@ import {
 } from "chart.js";
 import { Box, Paper } from "@mui/material";
 
+// Registering the necessary components for Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -36,6 +37,7 @@ ChartJS.register(
 export default function Dashboard() {
   const navigate = useNavigate();
 
+  // output of whole page
   return (
     <div className="body">
       <div className="outer-div">
@@ -48,36 +50,7 @@ export default function Dashboard() {
           </div>
           <div className="right"></div>
         </div>
-        {/* <div className="middle">
-          <div className="upper-card">
-            <DashbaordCardComponent
-              bordercolor={"green"}
-              headerbackgroundcolor={"#30ddae"}
-              icon={HealthAndSafetyOutlinedIcon}
-            />
-          </div>
-          <div className="upper-card">
-            <DashbaordCardComponent
-              bordercolor={"yellow"}
-              headerbackgroundcolor={"#c8d74a"}
-              icon={AddCardOutlinedIcon}
-            />
-          </div>
-          <div className="upper-card">
-            <DashbaordCardComponent
-              bordercolor={"lightblue"}
-              headerbackgroundcolor={"#B0A4FE"}
-              icon={MedicalServicesOutlinedIcon}
-            />
-          </div>
-          <div className="upper-card">
-            <DashbaordCardComponent
-              bordercolor={"red"}
-              headerbackgroundcolor={"#FEA4C5"}
-              icon={WarningAmberOutlinedIcon}
-            />
-          </div>
-        </div> */}
+        
         {/* table part */}
         <div className="bottompart" style={{ width: "100%" }}>
           <Box
@@ -94,9 +67,11 @@ export default function Dashboard() {
   );
 }
 
+// Chart1 component to display the sales report as a line chart
 function Chart1() {
   const [salesData, setSalesData] = useState([]);
 
+// Fetch sales report data on component mount
   useEffect(() => {
     const fetchSalesReport = async () => {
       try {
@@ -176,9 +151,12 @@ function Chart1() {
   );
 }
 
+
+// Chart2 component to display fast-moving medicines as a pie chart
 function Chart2() {
   const [fastMovingData, setFastMovingData] = useState([]);
 
+// Fetch fast-moving report data on component mount
   useEffect(() => {
     const fetchFastMovingReport = async () => {
       try {

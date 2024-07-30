@@ -1,4 +1,3 @@
-// RequestOrder.jsx
 import React, { useContext, useState, useEffect } from "react";
 import "../stylings/pages/dashboard.css";
 import { Button, Box, Paper, Stack, Typography } from "@mui/material";
@@ -12,12 +11,22 @@ import { PopupContext } from "../contexts/MainContexts.jsx";
 import MedicineEnterForm from "../components/MedicineEnterForm.jsx";
 
 function RequestOrder() {
+  // Use context to get and set the boolean value for popup visibility
   const { boolValue, setBoolValue } = useContext(PopupContext);
+
+  // State for storing fetched medicine data
   const [medicineArray, setMedicineArray] = useState([]);
+
+  // State for storing search input value
   const [searchValue, setSearchValue] = useState("");
+
+  // State for storing supplier information
   const [supplierInfo, setSupplierInfo] = useState(null);
+
+  // State for storing table data to display
   const [tableData, setTableData] = useState([]);
 
+  // Fetch medicine data grouped by MDID when the component mounts
   useEffect(() => {
     axios.get("http://localhost:8080/fetchSupplyDataGroupByMDID").then((res) => {
       console.log("supply", res.data);
@@ -25,6 +34,7 @@ function RequestOrder() {
     });
   }, []);
 
+  // Handle search for suppliers based on the company name
   const handleSearch = async (searchValue) => {
     try {
       const response = await axios.get(
@@ -53,8 +63,8 @@ function RequestOrder() {
       <div className="outer-div">
         <div className="top">
           <div className="left">
-             {/* <IconBreadcrumbs /> */}
-             <div style={{ paddingRight: "20px"}}>
+            {/* Breadcrumbs or other navigation can be added here */}
+            <div style={{ paddingRight: "20px"}}>
               <h3>Request Order</h3>
             </div>
           </div>
@@ -66,7 +76,7 @@ function RequestOrder() {
               height: "100%",
               display: "flex",
               flexDirection: "row",
-              justifyContent:"space-between"
+              justifyContent: "space-between"
             }}
           >
             <RequestOrderTable
@@ -78,9 +88,10 @@ function RequestOrder() {
           </div>
         </div>
       </div>
-      <OverlayDialogBox>
+      {/* Uncomment the lines below to enable the overlay dialog box with medicine entry form */}
+      {/* <OverlayDialogBox>
         <MedicineEnterForm />
-      </OverlayDialogBox>
+      </OverlayDialogBox> */}
     </div>
   );
 }

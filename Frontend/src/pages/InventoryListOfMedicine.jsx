@@ -9,12 +9,15 @@ import { PopupContext } from "../contexts/MainContexts.jsx";
 import MedicineEnterForm from "../components/MedicineEnterForm.jsx";
 
 function InventoryListOfMedicine() {
+  // Using context to handle popup state
   const { boolValue, setBoolValue } = useContext(PopupContext);
   const [listOfMedicineCategoryArray, setListOfMedicineCategoryArray] = useState([]);
   const [selectedMdctCode, setSelectedMdctCode] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [medicineArray, setMedicineArray] = useState([]);
 
+
+  // Fetch the list of medicine categories on initial load
   useEffect(() => {
     axios
       .get("http://localhost:8080/fetchListOfMedicineCategory")
@@ -24,12 +27,14 @@ function InventoryListOfMedicine() {
       });
   }, []);
 
+   // Fetch all medicines when search value is empty
   useEffect(() => {
     if (searchValue === "") {
       fetchAllMedicines();
     }
   }, [searchValue]);
 
+  // When the search values in the text area is empty, fetch all the medicines
   const fetchAllMedicines = async () => {
     try {
       const res = await axios.get("http://localhost:8080/fetchAllMedicines");
@@ -39,14 +44,17 @@ function InventoryListOfMedicine() {
     }
   };
 
+  // Handle adding a new medicine (currently only logs to console)
   const handleAddNew = (val) => {
     console.log("handleAdd new", val);
   };
 
+   // Handle selection of a medicine category
   const handleOnChange = (categoryCode) => {
     setSelectedMdctCode(categoryCode);
   };
 
+  // Handle search functionality
   const handleSearch = async (searchVal) => {
     setSearchValue(searchVal);
     if (searchVal === "") {
@@ -73,7 +81,9 @@ function InventoryListOfMedicine() {
             <div style={{ paddingRight: "20px"}}>
               <h3><span style={{ color: "grey" }}>Inventory</span> &gt; List of Medicines</h3>
             </div>
-            <Form.Select id="select" onChange={(e) => handleOnChange(e.target.value)}>
+
+            {/* Fetch medicine categories from the array and display in the select category bar */}
+            <Form.Select id="select" onChange={(e) => handleOnChange(e.target.value)}> 
               <option value={0}>- Select Medicine Category -</option>
               {listOfMedicineCategoryArray.map((item, index) => (
                 <option key={index} value={item.mdct_code}>
@@ -81,7 +91,8 @@ function InventoryListOfMedicine() {
                 </option>
               ))}
             </Form.Select>
-            <Form.Control
+            
+            <Form.Control           // Search medicine bar
               placeholder="- Search Medicine - "
               style={{ width: "365px", color: "black" }}
               onChange={(e) => handleSearch(e.target.value)}
@@ -90,10 +101,11 @@ function InventoryListOfMedicine() {
               aria-describedby="passwordHelpBlock"
             />          
           </div>
-          <div className="right">
-            <ButtonComponent
+          
+          <div className="right"> 
+            <ButtonComponent              // Add new medicine button
               variant="danger"
-              text="+ Add New Items"
+              text="+ Add New Medicines"
               color={"#dd0b81"}
               className="cat1"
               onClick={() => setBoolValue(true)}

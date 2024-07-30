@@ -10,16 +10,17 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import Swal from "sweetalert2"; // Import SweetAlert2 here
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-function UsersTable({ users, onEditUser, onDeleteUser }) {
-  console.log("UsersTable received users:", users); // Debugging line
+import Swal from "sweetalert2"; // Import SweetAlert2 for alerts and confirmations
+import EditNoteIcon from "@mui/icons-material/EditNote"; // Icon for editing
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined"; // Icon for deletion
 
+function UsersTable({ users, onEditUser, onDeleteUser }) {
+  console.log("UsersTable received users:", users); // Debugging line to check received users
+
+  // Handler for deleting a user
   const handleDelete = async (user_id) => {
-    // Show confirmation dialog before deletion
+    // Show confirmation dialog before proceeding with deletion
     const confirmDelete = await Swal.fire({
-      // Use Swal.fire() instead of Swal()
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this user!",
       icon: "warning",
@@ -31,12 +32,14 @@ function UsersTable({ users, onEditUser, onDeleteUser }) {
 
     if (confirmDelete.isConfirmed) {
       try {
+        // Send delete request to the server
         const response = await axios.delete(
           `http://localhost:8080/deleteUser/${user_id}`
         );
 
         if (response.status === 200) {
-          onDeleteUser(response.data); // Update state with updated user list
+          // Notify parent component to update state with the updated user list
+          onDeleteUser(response.data);
           console.log("User deleted successfully");
           Swal.fire("Deleted!", "The user has been deleted.", "success");
         } else {
@@ -55,18 +58,21 @@ function UsersTable({ users, onEditUser, onDeleteUser }) {
       <Table>
         <TableHead>
           <TableRow>
+            {/* Table headers */}
             <TableCell>First Name</TableCell>
             <TableCell>Last Name</TableCell>
             <TableCell>NIC</TableCell>
             <TableCell>Phone Number</TableCell>
             <TableCell>Role</TableCell>
             <TableCell>Username</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell>Actions</TableCell> {/* Column for action buttons */}
           </TableRow>
         </TableHead>
         <TableBody>
+          {/* Render each user in a table row */}
           {users.map((user, index) => (
             <TableRow key={index}>
+              {/* User details */}
               <TableCell>{user.user_fname}</TableCell>
               <TableCell>{user.user_lname}</TableCell>
               <TableCell>{user.user_nic}</TableCell>
@@ -74,14 +80,12 @@ function UsersTable({ users, onEditUser, onDeleteUser }) {
               <TableCell>{user.role_name}</TableCell>
               <TableCell>{user.user_username}</TableCell>
               <TableCell width={"200px"}>
+                {/* Action buttons */}
                 <Button color="info" onClick={() => onEditUser(user)}>
-                  <EditNoteIcon />
+                  <EditNoteIcon /> {/* Edit icon */}
                 </Button>
-                <Button
-                  color="error"
-                  onClick={() => handleDelete(user.user_id)}
-                >
-                  <DeleteOutlineOutlinedIcon />
+                <Button color="error" onClick={() => handleDelete(user.user_id)}>
+                  <DeleteOutlineOutlinedIcon /> {/* Delete icon */}
                 </Button>
               </TableCell>
             </TableRow>

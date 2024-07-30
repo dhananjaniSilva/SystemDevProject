@@ -58,7 +58,7 @@ export default function MedicineCategoryForm() {
     e.preventDefault();
     const { categoryName, categoryCode } = formData;
 
-    // Validation logic
+    // Validations
     let errors = {};
 
     if (!categoryName.trim()) {
@@ -226,6 +226,7 @@ export function MedicineCategoryUpdateForm({ medicineCategoryId }) {
     }
   };
 
+  // Validations
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { categoryName, categoryCode } = formData;

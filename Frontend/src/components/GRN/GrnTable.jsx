@@ -19,6 +19,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 
+// Helper function to create data object with history for each row
 function createData(data) {
   return {
     ...data,
@@ -37,6 +38,7 @@ function createData(data) {
   };
 }
 
+// Helper function to format date and time
 function formatDateTime(dateTime) {
   const options = {
     year: "numeric",
@@ -48,19 +50,23 @@ function formatDateTime(dateTime) {
   return new Date(dateTime).toLocaleDateString(undefined, options);
 }
 
+// Helper function to format date
 function formatDate(date) {
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Date(date).toLocaleDateString(undefined, options);
 }
 
+// Row component to display each row of the table
 function Row(props) {
   const { row, onDelete } = props;
   const [open, setOpen] = useState(false);
 
+  // Function to handle deletion of a row
   const handleDelete = () => {
     onDelete(row.sply_stockid);
   };
 
+  // Define dates to check expiration status
   const threeMonthsFromNow = new Date();
   threeMonthsFromNow.setMonth(threeMonthsFromNow.getMonth() + 3);
 
@@ -70,14 +76,12 @@ function Row(props) {
   const oneYearFromNow = new Date();
   oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
 
-  const willExpireWithinThreeMonths =
-    new Date(row.sply_expiredate) <= threeMonthsFromNow;
-  const willExpireWithinSixMonths =
-    new Date(row.sply_expiredate) <= sixMonthsFromNow;
-  const willExpireWithinOneYear =
-    new Date(row.sply_expiredate) <= oneYearFromNow;
+  // Determine if the item will expire within certain time frames
+  const willExpireWithinThreeMonths = new Date(row.sply_expiredate) <= threeMonthsFromNow;
+  const willExpireWithinSixMonths = new Date(row.sply_expiredate) <= sixMonthsFromNow;
+  const willExpireWithinOneYear = new Date(row.sply_expiredate) <= oneYearFromNow;
 
-  return (
+  return ( // conditions for expire date highlights
     <React.Fragment>
       <TableRow
         sx={{
@@ -147,6 +151,7 @@ function Row(props) {
   );
 }
 
+// Define PropTypes for the Row component
 Row.propTypes = {
   row: PropTypes.shape({
     medicine_brandname: PropTypes.string.isRequired,
@@ -170,6 +175,7 @@ Row.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
+// Main component to display the table with collapsible rows
 export default function CollapsibleTable() {
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
@@ -177,10 +183,12 @@ export default function CollapsibleTable() {
   const [selectedDateRange, setSelectedDateRange] = useState("3 months");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch data whenever the selected date range changes
   useEffect(() => {
     fetchData(selectedDateRange);
   }, [selectedDateRange]);
 
+  // Function to fetch data from the server
   const fetchData = (dateRange) => {
     const currentDate = new Date();
     const endDate = new Date();
@@ -201,6 +209,7 @@ export default function CollapsibleTable() {
       });
   };
 
+  // Function to handle deletion of a supply record
   const handleDelete = (sply_stockid) => {
     axios
       .delete(`http://localhost:8080/deleteSupply/${sply_stockid}`)
@@ -215,15 +224,18 @@ export default function CollapsibleTable() {
       });
   };
 
+  // Function to handle date range selection change
   const handleDateRangeChange = (event) => {
     setSelectedDateRange(event.target.value);
   };
 
+  // Function to handle search query change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
     setPage(0); // Reset page when search query changes
   };
 
+  // Filter rows based on the search query
   const filteredRows = rows.filter(
     (row) =>
       row.medicine_brandname
@@ -232,6 +244,10 @@ export default function CollapsibleTable() {
       row.medicine_genericname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+
+
+  // not want
+  // Calculate the number of empty rows to display when there are fewer rows than the current page size
   const emptyRows =
     rowsPerPage -
     Math.min(rowsPerPage, filteredRows.length - page * rowsPerPage);

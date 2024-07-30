@@ -18,15 +18,15 @@ function SalesReport() {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
 
+  // Fetch data when the component mounts
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Fetch sales report data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/sales-report"
-      );
+      const response = await axios.get("http://localhost:8080/api/sales-report");
       const data = response.data;
       if (data.success) {
         setSalesData(data.data);
@@ -39,20 +39,24 @@ function SalesReport() {
     }
   };
 
+  // Format datetime to a readable format
   const formattedDate = (datetime) => {
     return new Date(datetime).toLocaleString();
   };
 
+  // Handle change in start date filter
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
     filterData(event.target.value, endDate);
   };
 
+  // Handle change in end date filter
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
     filterData(startDate, event.target.value);
   };
 
+  // Clear all filters and reset data
   const handleClearFilters = () => {
     setStartDate("");
     setEndDate("");
@@ -61,6 +65,7 @@ function SalesReport() {
     setSalesData(originalData);
   };
 
+  // Handle sorting by different fields
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -70,8 +75,8 @@ function SalesReport() {
     }
   };
 
+  // Filter data based on selected date range
   const filterData = (start, end) => {
-    // Filter data based on selected date range from the original unfiltered data
     const filteredData = originalData.filter((row) => {
       const rowDate = new Date(row.inv_datetime);
       const startDate = new Date(start);
@@ -81,15 +86,10 @@ function SalesReport() {
     setSalesData(filteredData);
   };
 
+  // Compare values for sorting
   const compareValues = (a, b) => {
-    const valueA =
-      typeof a[sortField] === "string"
-        ? a[sortField].toUpperCase()
-        : a[sortField];
-    const valueB =
-      typeof b[sortField] === "string"
-        ? b[sortField].toUpperCase()
-        : b[sortField];
+    const valueA = typeof a[sortField] === "string" ? a[sortField].toUpperCase() : a[sortField];
+    const valueB = typeof b[sortField] === "string" ? b[sortField].toUpperCase() : b[sortField];
 
     let comparison = 0;
     if (valueA > valueB) {
@@ -100,9 +100,9 @@ function SalesReport() {
     return sortOrder === "desc" ? comparison * -1 : comparison;
   };
 
+  // Get sorted data based on sortField and sortOrder
   const sortedData = () => {
     if (!sortField) return salesData;
-
     return [...salesData].sort(compareValues);
   };
 
@@ -117,31 +117,31 @@ function SalesReport() {
       <div className="outer-div">
         <div className="top">
           <div className="left">
-            {/* <IconBreadcrumbs /> */}
-            <div style={{ paddingRight: "20px"}}>
+            {/* Breadcrumbs or other navigation can be added here */}
+            <div style={{ paddingRight: "20px" }}>
               <h3><span style={{ color: "grey" }}>Reports</span> &gt; Sales Report</h3>
             </div>        
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "420px" }}>
-            <input
-              type="datetime-local"
-              value={startDate}
-              onChange={handleStartDateChange}
-              placeholder="Start Date"
-              style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
-            />
-            <span style={{ margin: "0 10px", fontSize: "18px" }}>to</span>
-            <input
-              type="datetime-local"
-              value={endDate}
-              onChange={handleEndDateChange}
-              placeholder="End Date"
-              style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
-            />
-          </div>
+              <input
+                type="datetime-local"
+                value={startDate}
+                onChange={handleStartDateChange}
+                placeholder="Start Date"
+                style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
+              />
+              <span style={{ margin: "0 10px", fontSize: "18px" }}>to</span>
+              <input
+                type="datetime-local"
+                value={endDate}
+                onChange={handleEndDateChange}
+                placeholder="End Date"
+                style={{ width: "200px", height: "50px", borderRadius: "5px", border: "none" }}
+              />
+            </div>
             <Button
               variant="contained"
               onClick={handleClearFilters}
-              style={{ marginLeft: "10px" ,width:"200px" }}
+              style={{ marginLeft: "10px", width: "200px" }}
             >
               Clear Filters
             </Button>
@@ -170,14 +170,7 @@ function SalesReport() {
             </Button>
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            height: "65vh",
-            width: "100%",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ display: "flex", height: "65vh", width: "100%", flexDirection: "column" }}>
           <div style={{ flex: "1 1 auto", overflowY: "auto" }}>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -192,21 +185,11 @@ function SalesReport() {
                 </TableHead>
                 <TableBody>
                   {sortedData().map((row) => (
-                    <TableRow
-                      key={row.inv_id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.inv_id}
-                      </TableCell>
-
-                      <TableCell align="right">
-                        {formattedDate(row.inv_datetime)}
-                      </TableCell>
+                    <TableRow key={row.inv_id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">{row.inv_id}</TableCell>
+                      <TableCell align="right">{formattedDate(row.inv_datetime)}</TableCell>
                       <TableCell align="right">{row.inv_paidamount}</TableCell>
-                      <TableCell align="right">
-                        {row.user_fname} {row.user_lname}
-                      </TableCell>
+                      <TableCell align="right">{row.user_fname} {row.user_lname}</TableCell>
                       <TableCell align="right">{row.totalPrice}</TableCell>
                     </TableRow>
                   ))}
@@ -214,32 +197,10 @@ function SalesReport() {
               </Table>
             </TableContainer>
           </div>
-          <div
-            style={{
-              height: "100px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-             
-            }}
-          >
+          <div style={{ height: "100px", display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
             {/* Display Total Sales */}
-            <div
-              style={{
-                height: "100%",
-                width: "400px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center", // Center the text within the div
-              }}
-            >
-              <div
-                style={{
-                  border: "2px solid #43434a", // Add border with desired color
-                  borderRadius: "5px", // Optional: add border radius
-                  padding: "10px", // Optional: add padding for better appearance
-                }}
-              >
+            <div style={{ height: "100%", width: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ border: "2px solid #43434a", borderRadius: "5px", padding: "10px" }}>
                 <Typography variant="h5" color={"#43434a"}>
                   <strong>Total Sales: {totalSales.toFixed(2)}</strong>
                 </Typography>

@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 
+
+//  decodes a JWT token to extract the payload, which contains information like user roles.
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -32,11 +34,13 @@ function parseJwt(token) {
 }
 
 function LoginPage() {
+  //These are the Login Form validations that has registered under names of the text fields
   const schema = yup.object().shape({
     username: yup.string().required().min(3).max(12),
     password: yup.string().min(8, "Password must be at least 8 characters, First letter of the password should be capital and password must contain a special character (@, $, !, &, etc).").required("Password is required"),
   });
 
+  // React Hook Form setup
   const {
     register,
     handleSubmit,
@@ -45,18 +49,21 @@ function LoginPage() {
     resolver: yupResolver(schema),
   });
 
+// State for handling login errors
   const [loginError, setLoginError] = useState("");
-
+ // Hook for navigation
   const navigate = useNavigate();
-
+//Form submission function
   const submitForm = async (data) => {
     console.log("This is the submitted data ", data);
     const { username, password } = data;
 
-    if (!password) {
-      setLoginError("Password is required.");
-      return;
-    }
+   // Check if the password is not provided
+   if (!password) {
+    // Set an error message if the password is missing
+    setLoginError("Password is required.");
+    return;
+}
 
     const requestUserObjects = { username, password };
 
@@ -67,10 +74,14 @@ function LoginPage() {
       console.log("This is the response", res.data);
       if (res.data.auth === true) {
         localStorage.setItem("token", res.data.token);
+        //retrieve the role id from the decoded payload of the token by passing the token to the 
+        //above parseJWT function
         const payLoadRole = parseJwt(res.data.token).role;
         localStorage.setItem("userId", res.data.userId);
         localStorage.setItem("roleId", payLoadRole);
         console.log("This is the role ", payLoadRole);
+        
+          // Navigate based on user role
         if (payLoadRole == 1) {
           navigate("/dashboard");
           localStorage.setItem("role", "Pharmacy Manager");
@@ -117,6 +128,7 @@ function LoginPage() {
           backgroundColor: "#283342",
         }}
       >
+        {/*  logs the data, checks for a password, makes an API request to validate the login, and handles the response: */}
         <form noValidate onSubmit={handleSubmit(submitForm)}>
           <Paper
             elevation={10}

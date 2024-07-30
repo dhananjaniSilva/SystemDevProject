@@ -32,6 +32,7 @@ import StaffSidebar from "./components/RoleBasedRender/Staff/StaffSidebar";
 import ICInventoryListOfMedicine from "./components/RoleBasedRender/InventoryClerk/ICInventoryListofMedicine";
 import ICMedicineGroups from "./components/RoleBasedRender/InventoryClerk/ICMedicineGroups";
 
+// Function to parse JWT token
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -49,20 +50,24 @@ function parseJwt(token) {
 }
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState("");
+// State to hold current user role
+  const [currentUser, setCurrentUser] = useState(''); 
+// Get token from local storage
   const token = localStorage.getItem("token");
 
+// Effect to decode token and set current user role
   useEffect(() => {
     if (token) {
       try {
         const decoded = parseJwt(token);
-        setCurrentUser(decoded.userRole);
+        setCurrentUser(decoded.userRole); // Set user role
       } catch (error) {
         console.error("Error decoding token:", error);
       }
     }
   }, [token]);
 
+  // routes for each tabs
   return (
     <Router>
       <AuthContextProvider>
@@ -162,7 +167,7 @@ export default function App() {
             }
           />
 
-          <Route
+          <Route         // Routes based on user roles
             path="/PC-dashboard"
             element={
               <AuthPC>
@@ -329,43 +334,34 @@ export default function App() {
   );
 }
 
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return <Navigate to="/" />;
-  }
-
-  try {
-    parseJwt(token); // Verify token is valid
-    return children;
-  } catch (error) {
-    console.error("Invalid token:", error);
-    return <Navigate to="/" />;
-  }
-}
+// These are the protected routes for the User roles
+// Users roles are checking by the decoded tokens 'roleID'
 function AuthAdmin({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
     console.log("toke", decoded);
-    if (decoded.role == 1) {
+    if (decoded.role == 1) { // Check if role is Admin
       return children;
     }
   }
-  return <Navigate to="/" />;
+  return <Navigate to="/" />; // Redirect to login if not authorized
 }
+
+// Function to protect routes for Purchasing Clerk role
 function AuthPC({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
     console.log("toke", decoded);
-    if (decoded.role == 3) {
+    if (decoded.role == 3) { // Check if role is Purchasing Clerk
       return children;
     }
   }
-  return <Navigate to="/" />;
+  return <Navigate to="/" />; // Redirect to login if not authorized
 }
 
+// Function to protect routes for Inventory Clerk role
 function AuthIC({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
@@ -377,11 +373,12 @@ function AuthIC({ children }) {
   return <Navigate to="/" />;
 }
 
+// Function to protect routes for Cashier role
 function AuthCashier({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
-    if (decoded.role == 2) {
+    if (decoded.role == 2) { 
       // Ensure you check `userRole` instead of `role`
       return children;
     }
@@ -389,13 +386,14 @@ function AuthCashier({ children }) {
   return <Navigate to="/" />;
 }
 
+// Function to protect routes for Staff role
 function AuthStaff({ children }) {
   const token = localStorage.getItem("token");
   if (token) {
     const decoded = parseJwt(token);
-    if (decoded.role == 5) {
+    if (decoded.role == 5) { 
       return children;
     }
   }
-  return <Navigate to="/" />;
+  return <Navigate to="/" />; // Redirect to login if not authorized
 }

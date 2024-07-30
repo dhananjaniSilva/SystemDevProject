@@ -17,6 +17,8 @@ import OverlayDialogBox from "../OverlayDialogBox";
 import { PopupContext } from "../../contexts/MainContexts";
 import { useContext } from "react";
 import EditNoteIcon from '@mui/icons-material/EditNote';
+
+// Define table columns
 const columns = [
   {
     width: 100,
@@ -40,6 +42,7 @@ const columns = [
   },
 ];
 
+// Define Virtuoso table components
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
     <TableContainer component={Paper} {...props} ref={ref} />
@@ -57,6 +60,7 @@ const VirtuosoTableComponents = {
   )),
 };
 
+// Define fixed header content for the table
 function fixedHeaderContent() {
   return (
     <TableRow>
@@ -77,6 +81,7 @@ function fixedHeaderContent() {
   );
 }
 
+// Define row content for the table
 function rowContent(_index, row, handleUpdate) {
   return (
     <React.Fragment>
@@ -91,7 +96,7 @@ function rowContent(_index, row, handleUpdate) {
               color="secondary"
               onClick={() => handleUpdate(row.mdct_id)}
             >
-              <EditNoteIcon/>
+              <EditNoteIcon />
             </Button>
           ) : (
             row[column.dataKey]
@@ -103,9 +108,12 @@ function rowContent(_index, row, handleUpdate) {
 }
 
 export default function ReactVirtualizedTable() {
+  // State to hold the table rows data
   const [rows, setRows] = useState([]);
+  // Context to manage popup state and selected medicine category ID
   const { boolValue, setBoolValue, medicineCategoryId, setMedicineCategoryId } = useContext(PopupContext);
 
+  // Fetch data from the server on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -119,6 +127,7 @@ export default function ReactVirtualizedTable() {
     fetchData();
   }, []);
 
+  // Handle update button click to open the update form
   const handleUpdate = (medicineCategoryId) => {
     setMedicineCategoryId(medicineCategoryId);
     setBoolValue(true);
@@ -132,8 +141,10 @@ export default function ReactVirtualizedTable() {
         fixedHeaderContent={fixedHeaderContent}
         itemContent={(index, row) => rowContent(index, row, handleUpdate)}
       />
+      {/* Display overlay dialog box if boolValue is true */}
       {boolValue && (
         <OverlayDialogBox>
+          {/* Show update form if medicineCategoryId is not 0, otherwise show the create form */}
           {medicineCategoryId !== 0 ? <MedicineCategoryUpdateForm medicineCategoryId={medicineCategoryId} /> : <MedicineCategoryForm />}
         </OverlayDialogBox>
       )}

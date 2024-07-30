@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 export default function UsersForm({ selectedUser, setUsers }) {
   const [currentForm, setCurrentForm] = useState("submit"); // 'submit' or 'update'
 
+  // Function to switch between forms
   const handleFormSwitch = (formType) => {
     setCurrentForm(formType);
   };
@@ -36,6 +37,7 @@ function SubmitUserForm({ setUsers }) {
     reset,
   } = useForm();
 
+  // Function to handle form submission
   const onSubmit = async (data) => {
     try {
       const response = await axios.post(
@@ -74,6 +76,7 @@ function SubmitUserForm({ setUsers }) {
     }
   };
 
+  // validations
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-3" controlId="user_fname">
@@ -228,6 +231,7 @@ function UpdateUserForm({ selectedUser, setUsers }) {
     setValue,
   } = useForm();
 
+  // Effect to set form values when a user is selected for update
   useEffect(() => {
     if (selectedUser) {
       setValue("user_fname", selectedUser.user_fname);
@@ -236,13 +240,14 @@ function UpdateUserForm({ selectedUser, setUsers }) {
       setValue("user_nic", selectedUser.user_nic);
       setValue("user_pno", selectedUser.user_pno);
       setValue("user_username", selectedUser.user_username);
-      setValue("user_id",selectedUser.user_id)
+      setValue("user_id", selectedUser.user_id);
       // Add more fields if needed
     } else {
       reset();
     }
   }, [selectedUser, setValue, reset]);
 
+  // Function to handle form submission
   const onSubmit = async (data) => {
     console.log(data);
     try {

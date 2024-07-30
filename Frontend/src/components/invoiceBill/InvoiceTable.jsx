@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+// Helper function to format currency
 function ccyFormat(num) {
   const number = parseFloat(num);
   if (isNaN(number)) {
@@ -19,24 +20,28 @@ function ccyFormat(num) {
   return `${number.toFixed(2)}`;
 }
 
+// Helper function to calculate the subtotal of items
 function subtotal(items) {
   return items
     .map(({ price }) => parseFloat(price) || 0)
     .reduce((sum, i) => sum + i, 0);
 }
 
-// Helper function to safely parse payment
+// Helper function to safely parse payment input
 function parsePayment(payment) {
   return payment.trim() === "" ? 0 : parseFloat(payment);
 }
 
- function InvoiceTable({ invoiceObject, setInvoiceObject }) {
+function InvoiceTable({ invoiceObject, setInvoiceObject }) {
+  // State to manage the payment amount and any errors
   const [payment, setPayment] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
+  // Handle changes in the payment input field
   const handleChangePayment = (e) => {
     const value = e.target.value;
     setPayment(value);
+
     if (!value.trim()) {
       setPaymentError("Payment amount is required.");
     } else if (!/^\d*\.?\d*$/.test(value.trim())) {
@@ -46,17 +51,17 @@ function parsePayment(payment) {
     }
   };
 
+  // Handle the invoice payment process
   const handlePayInvoice = async () => {
-    
-    // Check if payment is a valid number
+    // Parse and validate the payment amount
     const parsedPayment = parsePayment(payment);
     if (isNaN(parsedPayment)) {
       setPaymentError("Payment amount must be a number.");
       return;
     }
-  
-    // Check if payment is greater than net amount
-    const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine, index) => ({
+
+    // Calculate the subtotal of the invoice
+    const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine) => ({
       desc: ` ${medicine.medicineBrandName}`,
       qty: parseInt(medicine.medicineQuantity) || 0,
       unit: parseFloat(medicine.medicineUnitPrice) || 0,
@@ -65,36 +70,35 @@ function parsePayment(payment) {
         (parseFloat(medicine.medicineUnitPrice) || 0),
     })));
 
+    // Ensure the payment amount is greater than the subtotal
     if (parsedPayment <= invoiceSubtotal) {
       setPaymentError("Payment amount must be greater than the net amount.");
       return;
     }
-  
-    // Proceed with paying the invoice
+
+    // Prepare the updated invoice object
     const currentDateTime = new Date().toISOString().slice(0, 19).replace("T", " ");
-  
     const updatedInvoiceObject = {
       ...invoiceObject,
       paidAmount: parseFloat(payment),
       invoiceDate: currentDateTime,
       userId: localStorage.getItem("userId"),
     };
-  
+
     try {
-      const response = await axios.post(
-        "http://localhost:8080/completeInvoice",
-        updatedInvoiceObject
-      );
-      // Update state to reflect the changes
+      // Send a request to complete the invoice
+      const response = await axios.post("http://localhost:8080/completeInvoice", updatedInvoiceObject);
+      // Update state with the new invoice data
       setInvoiceObject(updatedInvoiceObject);
-      // Optionally, show a success message or perform other actions
+      // Display a success message
       Swal.fire("Invoice paid successfully!", "", "success");
     } catch (error) {
       console.error("Error completing the invoice:", error);
     }
   };
 
-  const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine, index) => ({
+  // Calculate the subtotal of the invoice
+  const invoiceSubtotal = subtotal(invoiceObject.medicineData.map((medicine) => ({
     desc: ` ${medicine.medicineBrandName}`,
     qty: parseInt(medicine.medicineQuantity) || 0,
     unit: parseFloat(medicine.medicineUnitPrice) || 0,
@@ -103,6 +107,7 @@ function parsePayment(payment) {
       (parseFloat(medicine.medicineUnitPrice) || 0),
   })));
 
+  // Calculate the balance (remaining amount) after payment
   const balance = parsePayment(payment) - invoiceSubtotal;
 
   return (
@@ -110,6 +115,7 @@ function parsePayment(payment) {
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
           <TableRow>
+            {/* Table headers */}
             <TableCell>Item no.</TableCell>
             <TableCell>Desc</TableCell>
             <TableCell align="right">Qty.</TableCell>
@@ -118,6 +124,7 @@ function parsePayment(payment) {
           </TableRow>
         </TableHead>
         <TableBody>
+          {/* Render each medicine item in the invoice */}
           {invoiceObject.medicineData.map((medicine, index) => (
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
@@ -127,6 +134,7 @@ function parsePayment(payment) {
               <TableCell align="right">{ccyFormat((parseInt(medicine.medicineQuantity) || 0) * (parseFloat(medicine.medicineUnitPrice) || 0))}</TableCell>
             </TableRow>
           ))}
+          {/* Display the net amount, paid amount, and balance */}
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={3}>Net Amount</TableCell>
@@ -161,3 +169,5 @@ function parsePayment(payment) {
     </TableContainer>
   );
 }
+
+export default InvoiceTable;
